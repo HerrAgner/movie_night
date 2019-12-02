@@ -33,7 +33,7 @@ public class JwtUtil {
     }
 
     private boolean isTokenExpired(String token){
-        return extractExpiration(SECRET_KEY).before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
     public String generateToken(UserDetails userDetails){

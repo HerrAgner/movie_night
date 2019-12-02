@@ -49,7 +49,7 @@ public class MyWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    @Bean
+    @Bean("authenticationManager")
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
