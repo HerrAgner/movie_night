@@ -1,2 +1,2 @@
 # movie_rest_api
-Spring Security + JWT 
+simple rest with custom login
