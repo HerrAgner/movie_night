@@ -30,13 +30,9 @@ public class MyWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                 .antMatchers(HttpMethod.GET,"/api/**").authenticated()
-                // .antMatchers(HttpMethod.POST,"/api/register").permitAll()
-                // .antMatchers(HttpMethod.DELETE,"/api/**").authenticated()
-                // .antMatchers(HttpMethod.PUT,"/api/**").authenticated()
-                // .antMatchers(HttpMethod.POST,"/api/newMovie").authenticated()
-                .and().formLogin().permitAll().defaultSuccessUrl("/", true)
-                .and().logout().permitAll().logoutSuccessUrl("/")
+                .antMatchers(HttpMethod.POST, "/api/login").permitAll()
+                 .antMatchers(HttpMethod.POST,"/api/register").permitAll()
+                 .antMatchers("/api/**").authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();
 

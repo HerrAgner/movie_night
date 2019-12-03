@@ -30,7 +30,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @PostConstruct
     private void createDefaultUsers() {
-        if (repository.findDistinctFirstByUsernameIgnoreCase("admin") == null) {
+        if (repository.findDistinctFirstByUsernameIgnoreCase("user") == null) {
             addUser("user", "user");
         }
     }
@@ -54,7 +54,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails toUserDetails(User user) {
-        String[] roles = (String[]) user.getRoles().toArray();
+        String[] roles = user.getRoles().stream().toArray(String[]::new);
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
