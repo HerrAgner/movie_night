@@ -2,20 +2,27 @@ package com.spring.demo.entities;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class User {
     @Id
     private String id;
 
     private String username;
     private String password;
-    private String role;
 
-    public User() {}
 
-    public User(String username, String password, String role) {
+    private Set<String> roles;
+
+    public User() {
+    }
+
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = new HashSet<>();
+        this.roles.add("USER");
     }
 
     public String getUsername() {
@@ -42,11 +49,19 @@ public class User {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public void addRole(String role) {
+        this.roles.add(role);
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void removeRole(String role) {
+        this.roles.remove(role);
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }

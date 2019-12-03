@@ -1,6 +1,6 @@
 package com.spring.demo.filter;
 
-import com.spring.demo.configurations.MyUserDetailsService;
+import com.spring.demo.services.MyUserDetailsService;
 import com.spring.demo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

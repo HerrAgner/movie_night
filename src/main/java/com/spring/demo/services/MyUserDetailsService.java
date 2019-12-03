@@ -1,4 +1,4 @@
-package com.spring.demo.configurations;
+package com.spring.demo.services;
 
 import com.spring.demo.db.UserRepository;
 import com.spring.demo.entities.User;
@@ -19,16 +19,19 @@ import javax.annotation.PostConstruct;
 public class MyUserDetailsService implements UserDetailsService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    public BCryptPasswordEncoder getEncoder() { return encoder; }
+
+    public BCryptPasswordEncoder getEncoder() {
+        return encoder;
+    }
 
     @Autowired
     private UserRepository repository;
 
 
     @PostConstruct
-    private void createDefaultUsers(){
+    private void createDefaultUsers() {
         if (repository.findDistinctFirstByUsernameIgnoreCase("admin") == null) {
-            addUser("admin", "admin", "ADMIN");
+            addUser("user", "user");
         }
     }
 
@@ -41,8 +44,8 @@ public class MyUserDetailsService implements UserDetailsService {
         return toUserDetails(user);
     }
 
-    public void addUser(String name, String password, String role){
-        User u = new User(name, encoder.encode(password), role);
+    public void addUser(String name, String password) {
+        User u = new User(name, encoder.encode(password));
         try {
             repository.save(u);
         } catch (Exception ex) {
@@ -51,17 +54,18 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails toUserDetails(User user) {
+        String[] roles = (String[]) user.getRoles().toArray();
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .roles(user.getRole()).build();
+                .roles(roles).build();
     }
 
-    @Bean(name="myPasswordEncoder")
-    public PasswordEncoder getPasswordEncoder() {
-        DelegatingPasswordEncoder delPasswordEncoder=  (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        BCryptPasswordEncoder bcryptPasswordEncoder =new BCryptPasswordEncoder();
-        delPasswordEncoder.setDefaultPasswordEncoderForMatches(bcryptPasswordEncoder);
-        return delPasswordEncoder;
-    }
+//    @Bean(name = "myPasswordEncoder")
+//    public PasswordEncoder getPasswordEncoder() {
+//        DelegatingPasswordEncoder delPasswordEncoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+//        delPasswordEncoder.setDefaultPasswordEncoderForMatches(bcryptPasswordEncoder);
+//        return delPasswordEncoder;
+//    }
 }

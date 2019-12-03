@@ -1,6 +1,6 @@
 package com.spring.demo.controllers;
 
-import com.spring.demo.configurations.MyUserDetailsService;
+import com.spring.demo.services.MyUserDetailsService;
 import com.spring.demo.models.AuthenticationRequest;
 import com.spring.demo.models.AuthenticationResponse;
 import com.spring.demo.util.JwtUtil;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("api/login")
-public class loginController {
+public class LoginController {
 
     @Autowired
     @Resource(name="authenticationManager")
@@ -30,8 +31,8 @@ public class loginController {
     private JwtUtil jwtTokenUtil;
 
     @GetMapping
-    public String getUsers(){
-        return "hello";
+    public Object getUsers(){
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 

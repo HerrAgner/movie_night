@@ -1,12 +1,12 @@
 package com.spring.demo.configurations;
 
 import com.spring.demo.filter.JwtRequestFilter;
+import com.spring.demo.services.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,7 +30,7 @@ public class MyWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                // .antMatchers(HttpMethod.GET,"/api/**").permitAll()
+                 .antMatchers(HttpMethod.GET,"/api/**").authenticated()
                 // .antMatchers(HttpMethod.POST,"/api/register").permitAll()
                 // .antMatchers(HttpMethod.DELETE,"/api/**").authenticated()
                 // .antMatchers(HttpMethod.PUT,"/api/**").authenticated()
