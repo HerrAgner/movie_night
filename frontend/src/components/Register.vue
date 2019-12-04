@@ -37,6 +37,7 @@
 
 
 <script>
+import AddUserService from '../services/AddUserService.js'
 
 export default {
     data: () => ({
@@ -55,21 +56,10 @@ export default {
     methods: {
         async validate() {
             if (this.$refs.registerForm.validate()) {
-                //let existUsername = await this.$store.dispatch('checkUsernameInDb', this.username)
-                //if (existUsername){
-                    //this.messageToClient = 'Username is already taken!'
-                //}else {
-                    //this.$store.state.userInfo = [];
-                    //if (this.$store.state.userInfo.email === undefined){
-                        this.messageToClient = '';
-                        this.snackbar = true;
+                this.messageToClient = '';
+                this.snackbar = true;
+                await AddUserService().addUserToDB({username:this.username, password: this.password,})
 
-                        this.$store.dispatch('addUserToDB',{username:this.username,
-                                                            password: this.password,})
-                        this.messageToClient = 'Account registered successfully!'
-                        this.reset()
-                    
-                //}
             }
         },
         reset() {
