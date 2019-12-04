@@ -10,13 +10,17 @@
 </template>
 <script>
 import Navbar from './components/Navbar';
+import Cookie from "js-cookie";
 
 export default {
   name: 'App',
   components: {
     Navbar
   },
-  mounted() {
+  mounted(){
+    if (Cookie.get("token") !== undefined) {
+      this.$store.state.isLoggedin = true
+    }
     if(this.$route.query.redirect) {
       this.$router.push({path: this.$route.query.redirect})
     }

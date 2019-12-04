@@ -10,7 +10,7 @@
                 <v-text-field
                 v-model="email"
                 :rules="emailRules"
-                label="E-mail"
+                label="username"
                 required
                 ></v-text-field>
 
@@ -29,7 +29,7 @@
                 >
                 Log in
                 </v-btn>
-                {{messageToClient}}
+                {{errorMessage}}
 
             </v-form>
       </v-app>
@@ -39,7 +39,7 @@
 <script>
 export default {
     data: () => ({
-    messageToClient: '',
+    errorMessage: '',
     valid: true,
     password: '',
     passwordRules: [
@@ -47,7 +47,7 @@ export default {
     ],
     email: '',
     emailRules: [
-      v => !!v || 'E-mail is required'
+      v => !!v || 'Username is required'
     ]
   }),
 
@@ -56,10 +56,9 @@ export default {
       if(this.$refs.loginForm.validate()) {
         await this.$store.dispatch('login', 
                       {email: this.email, password: this.password});                       
-        if (!this.$store.state.status){
-          this.messageToClient = 'E-mail and/or password is incorrect';
-        }
-                                                                             
+        if (!this.$store.state.isLoggedin){
+          this.errorMessage = 'Username and/or password is incorrect';
+        }                                                                    
       }
     }
   }
