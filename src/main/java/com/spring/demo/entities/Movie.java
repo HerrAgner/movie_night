@@ -2,7 +2,9 @@ package com.spring.demo.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document("movies")
 public class Movie {
 
     @Id

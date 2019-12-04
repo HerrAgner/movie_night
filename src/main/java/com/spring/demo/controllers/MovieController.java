@@ -1,16 +1,12 @@
 package com.spring.demo.controllers;
 
-import com.spring.demo.db.MovieRepository;
-import com.spring.demo.db.UserRepository;
 import com.spring.demo.entities.Movie;
 import com.spring.demo.services.OmdbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("api/movies")
