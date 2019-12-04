@@ -48,7 +48,7 @@ public class Movie {
     public Movie(){}
 
     public String[] getGenre() {
-        return genre.split(", ");
+        return genre != null ? genre.split(", ") : null;
     }
 
     public void setGenre(String genre) {
@@ -56,7 +56,7 @@ public class Movie {
     }
 
     public String[] getWriter() {
-        return writer.split(", ");
+        return writer != null ? writer.split(", ") : null;
     }
 
     public void setWriter(String writer) {
@@ -64,7 +64,7 @@ public class Movie {
     }
 
     public String[] getActors() {
-        return actors.split(", ");
+        return actors != null ? actors.split(", ") : null;
     }
 
     public void setActors(String actors) {
@@ -72,7 +72,7 @@ public class Movie {
     }
 
     public String[] getLanguage() {
-        return language.split(", ");
+        return language != null ? language.split(", ") : null;
     }
 
     public void setLanguage(String language) {

@@ -29,8 +29,10 @@ public class MovieCache {
     }
 
     public static void addMovieToCache(Movie movie) {
-        movieCache.add(movie.getImdbID());
-        movieRepository.insert(movie);
+        if (movie != null && movie.getTitle() != null) {
+            movieCache.add(movie.getImdbID());
+            movieRepository.insert(movie);
+        }
     }
 
     public static Optional<Movie> getMovieFromCache(String movieId) {

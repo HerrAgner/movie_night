@@ -35,7 +35,13 @@ public class OmdbService {
     }
 
     public Movie findOneMovieById(String id) {
-        return omdbRestTemplate.getForObject(omdbUrl + "?i=" + id + apikey, Movie.class);
+        Movie movie = null;
+        try {
+            movie = omdbRestTemplate.getForObject(omdbUrl + "?i=" + id + apikey, Movie.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return movie.getTitle() != null ? movie : null;
     }
 
     public SearchResult searchMovies(String query, int page) {
