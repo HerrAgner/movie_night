@@ -60,7 +60,7 @@ export default {
       return this.movie;
     },
     getPoster() {
-      return this.movie && this.movie.Poster !== "N/A" ? this.movie.Poster : "";
+      return this.movie && this.movie.Poster !== 'N/A' ? this.movie.Poster : '';
     },
     getRating() {
       return Math.floor(this.getMovie.imdbRating);
@@ -70,17 +70,33 @@ export default {
     },
     isLoading() {
       return this.loading;
+    },
+    getRoute(){
+      return this.$route;
     }
   },
-  async mounted() {
-    if (this.$route.query.id) {
-      this.loading = true;
-      this.movie = await movieDetailsService().getMovieDetails(
-        this.$route.query.id
-      );
-      this.loading = false;
-    } else {
-      this.$router.push({ path: '/' });
+  methods: {
+    async fetchMovie() {
+      if (this.$route.query.id) {
+        this.loading = true;
+        this.movie = await movieDetailsService().getMovieDetails(
+          this.$route.query.id
+        );
+        this.loading = false;
+      } else {
+        this.$router.push({ path: '/' });
+      }
+    }
+  },
+  mounted() {
+    this.fetchMovie();
+  },
+  watch: {
+    getRoute: function(value, oldValue) {
+      if(value !== oldValue) {
+        this.fetchMovie();
+      }
+
     }
   }
 };
