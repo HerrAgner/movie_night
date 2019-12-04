@@ -1,5 +1,10 @@
 <template>
-    
+    <v-text-field
+            class="searchField"
+            outlined
+            label="Search"
+            append-icon="search">
+    </v-text-field>
 </template>
 
 <script>
@@ -9,5 +14,6 @@
 </script>
 
 <style scoped>
-
+    .searchField {
+    }
 </style>
