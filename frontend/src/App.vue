@@ -17,12 +17,8 @@ export default {
     Navbar
   },
   mounted() {
-    // Fixes redirects from backend pahts
-    if (window.location.search.startsWith('?redirect=')) {
-      console.log(window.location.search);
-      this.$router.push({
-        path: window.location.search.replace('?redirect=', '')
-      });
+    if(this.$route.query.redirect) {
+      this.$router.push({path: this.$route.query.redirect})
     }
   }
 };
