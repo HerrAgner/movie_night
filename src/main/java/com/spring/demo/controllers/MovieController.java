@@ -25,9 +25,8 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<Movie> getMovie(@RequestParam(defaultValue = "") String i) {
-        System.out.println(MovieCache.getMovieCache().size());
         var movie = movieService.getMovieById(i);
-        System.out.println(MovieCache.getMovieCache().size());
-        return new ResponseEntity<>(movie, HttpStatus.OK);
+
+        return new ResponseEntity<>(movie, movie != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 }

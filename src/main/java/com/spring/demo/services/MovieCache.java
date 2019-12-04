@@ -16,7 +16,7 @@ public class MovieCache {
 
     public MovieCache(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
-        movieCache = movieRepository.findAll().stream().map(m -> m.getId()).collect(Collectors.toSet());
+        movieCache = movieRepository.findAll().stream().parallel().map(m -> m.getId()).collect(Collectors.toSet());
     }
 
     public static Set<String> getMovieCache() {
@@ -29,13 +29,12 @@ public class MovieCache {
 
     public static void addMovieToCache(Movie movie) {
         movieCache.add(movie.getId());
-        System.out.println(movie.getId());
         movieRepository.insert(movie);
     }
 
     public static Optional<Movie> getMovieFromCache(String movieId) {
         if (movieCache.contains(movieId)) {
-            System.out.println("Returning " + movieId + " from cache");
+            System.out.println("Returning movie with id " + movieId + " from database");
             return movieRepository.findById(movieId);
         } else return Optional.empty();
     }

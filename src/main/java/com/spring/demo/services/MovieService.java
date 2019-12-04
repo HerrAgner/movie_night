@@ -18,14 +18,16 @@ public class MovieService {
 
         var cachedMovie = MovieCache.getMovieFromCache(id);
         if (cachedMovie.isPresent()) {
-            System.out.println("Cached movie");
             return cachedMovie.get();
         } else {
-            // Add request to OmdbService
+            //move to OmdbService
             Movie movie = new Movie();
             movie.setId(id);
 
+
             MovieCache.addMovieToCache(movie);
+            //end
+
             return movie;
         }
     }
