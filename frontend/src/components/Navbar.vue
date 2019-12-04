@@ -37,7 +37,7 @@ export default {
     },
     methods:{
       changeStatus(){
-          this.$store.dispatch('logout', this.$store.state.userInfo.email)
+          this.$store.dispatch('logout')
           
       }
     },

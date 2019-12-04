@@ -25,8 +25,7 @@ export default new Vuex.Store({
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-      })
-      .then(async response => {
+      }).then(async response => {
         this.response = response.status === 200 ? await response.json() : null;
         if (this.response !== null) {
           Cookie.set("token", this.response.jwt);
@@ -35,6 +34,10 @@ export default new Vuex.Store({
         }
       })
     },
+    async logout() {
+      Cookie.remove("token")
+      this.commit("setLogin", false);
+    }
   },
   modules: {}
 });
