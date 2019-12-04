@@ -24,7 +24,7 @@ public class OmdbService {
         } else if (i != null && !i.isEmpty()) {
             movie = findOneMovieById(i);
         }
-        if (movie.getTitle() == null) {
+        if ((movie != null ? movie.getTitle() : null) == null) {
             return null;
         }
         return movie;
