@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final OmdbService omdbService;
 
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, OmdbService omdbService) {
         this.movieRepository = movieRepository;
+        this.omdbService = omdbService;
     }
 
     public Movie getMovieById(String id) {
@@ -20,14 +22,8 @@ public class MovieService {
         if (cachedMovie.isPresent()) {
             return cachedMovie.get();
         } else {
-            //move to OmdbService
-            Movie movie = new Movie();
-            movie.setId(id);
-
-
+            var movie = omdbService.findOneMovieById(id);
             MovieCache.addMovieToCache(movie);
-            //end
-
             return movie;
         }
     }

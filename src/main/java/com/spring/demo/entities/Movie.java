@@ -47,6 +47,10 @@ public class Movie {
 
     public Movie(){}
 
+//    public String getId() {
+//        return id;
+//    }
+
     public String[] getGenre() {
         return genre.split(", ");
     }

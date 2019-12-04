@@ -4,6 +4,7 @@ import com.spring.demo.db.MovieRepository;
 import com.spring.demo.entities.Movie;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ public class MovieCache {
 
     public MovieCache(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
-        movieCache = movieRepository.findAll().stream().parallel().map(m -> m.getId()).collect(Collectors.toSet());
+        movieCache = movieRepository.findAll().stream().parallel().map(m -> m.getImdbID()).collect(Collectors.toSet());
     }
 
     public static Set<String> getMovieCache() {
@@ -28,7 +29,7 @@ public class MovieCache {
     }
 
     public static void addMovieToCache(Movie movie) {
-        movieCache.add(movie.getId());
+        movieCache.add(movie.getImdbID());
         movieRepository.insert(movie);
     }
 
