@@ -1,37 +1,89 @@
 package com.spring.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document("movies")
 public class Movie {
 
     @Id
+    @JsonProperty("imdbID")
     private String id;
+    @JsonProperty("Title")
     private String title;
+    @JsonProperty("Year")
     private int year;
+    @JsonProperty("Rated")
     private String rated;
+    @JsonProperty("Released")
     private String released;
-    private String[] Genre;
+    @JsonProperty("Genre")
+    private String genre;
+    @JsonProperty("Director")
     private String director;
-    private String[] writer;
-    private String[] actors;
+    @JsonProperty("Writer")
+    private String writer;
+    @JsonProperty("Actors")
+    private String actors;
+    @JsonProperty("Plot")
     private String plot;
-    private String[] language;
+    @JsonProperty("Language")
+    private String language;
+    @JsonProperty("Country")
     private String country;
+    @JsonProperty("Awards")
     private String awards;
+    @JsonProperty("Poster")
     private String poster;
+    @JsonProperty("Metascore")
     private String metascore;
     private float imdbRating;
-    private int imdbVotes;
+    private String imdbVotes;
+    @JsonProperty("Type")
     private String type;
+    @JsonProperty("Production")
     private String production;
 
     public Movie(){}
 
-    public String getId() {
+    public String[] getGenre() {
+        return genre.split(", ");
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String[] getWriter() {
+        return writer.split(", ");
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
+    }
+
+    public String[] getActors() {
+        return actors.split(", ");
+    }
+
+    public void setActors(String actors) {
+        this.actors = actors;
+    }
+
+    public String[] getLanguage() {
+        return language.split(", ");
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getImdbID() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setImdbID(String id) {
         this.id = id;
     }
 
@@ -67,13 +119,6 @@ public class Movie {
         this.released = released;
     }
 
-    public String[] getGenre() {
-        return Genre;
-    }
-
-    public void setGenre(String[] genre) {
-        Genre = genre;
-    }
 
     public String getDirector() {
         return director;
@@ -81,22 +126,6 @@ public class Movie {
 
     public void setDirector(String director) {
         this.director = director;
-    }
-
-    public String[] getWriter() {
-        return writer;
-    }
-
-    public void setWriter(String[] writer) {
-        this.writer = writer;
-    }
-
-    public String[] getActors() {
-        return actors;
-    }
-
-    public void setActors(String[] actors) {
-        this.actors = actors;
     }
 
     public String getPlot() {
@@ -107,13 +136,6 @@ public class Movie {
         this.plot = plot;
     }
 
-    public String[] getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String[] language) {
-        this.language = language;
-    }
 
     public String getCountry() {
         return country;
@@ -155,11 +177,11 @@ public class Movie {
         this.imdbRating = imdbRating;
     }
 
-    public int getImdbVotes() {
+    public String getImdbVotes() {
         return imdbVotes;
     }
 
-    public void setImdbVotes(int imdbVotes) {
+    public void setImdbVotes(String imdbVotes) {
         this.imdbVotes = imdbVotes;
     }
 
