@@ -10,11 +10,17 @@
 </template>
 <script>
 import Navbar from "./components/Navbar";
+import Cookie from "js-cookie";
 
 export default {
   name: "App",
   components: {
     Navbar
+  },
+  mounted(){
+    if (Cookie.get("token") !== undefined) {
+      this.$store.state.isLoggedin = true
+    }
   }
 };
 </script>
