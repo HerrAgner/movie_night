@@ -32,7 +32,6 @@ public class OmdbService {
 
     public Movie findOneMovieByTitle(String title) {
         return omdbRestTemplate.getForObject(omdbUrl + "?t=" + title + apikey, Movie.class);
-
     }
 
     public Movie findOneMovieById(String id) {
