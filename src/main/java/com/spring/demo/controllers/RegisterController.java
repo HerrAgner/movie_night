@@ -27,7 +27,7 @@ public class RegisterController {
     @PostMapping
     public ResponseEntity createUser(@RequestBody User user){
         if (repository.findDistinctFirstByUsernameIgnoreCase(user.getUsername()) == null) {
-            //myUserDetailsService.addUser(user.getUsername(), user.getPassword());
+            myUserDetailsService.addUser(user.getUsername(), user.getPassword());
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();

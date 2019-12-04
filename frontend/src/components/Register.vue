@@ -58,8 +58,13 @@ export default {
             if (this.$refs.registerForm.validate()) {
                 this.messageToClient = '';
                 this.snackbar = true;
-                await AddUserService().addUserToDB({username:this.username, password: this.password,})
-
+                let addedUser = await AddUserService().addUserToDB({username:this.username, password: this.password,})
+                console.log(addedUser);
+                
+                if (addedUser) {
+                    this.messageToClient = 'Account registered successfully!'
+                    this.reset()
+                }else {this.messageToClient = 'Username is already taken!'}
             }
         },
         reset() {
