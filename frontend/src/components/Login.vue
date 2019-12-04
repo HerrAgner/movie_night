@@ -55,7 +55,7 @@ export default {
     async validate() {
       if(this.$refs.loginForm.validate()) {
         await this.$store.dispatch('login', 
-                      {email: this.email, password: this.password}); 
+                      {email: this.email, password: this.password});                       
         if (!this.$store.state.status){
           this.messageToClient = 'E-mail and/or password is incorrect';
         }
