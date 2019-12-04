@@ -1,21 +1,18 @@
 <template>
-  <v-card flat id="nav">
-    <v-bottom-nav :value="true" absolute color="white">
-      <v-btn to="/" color="teal" flat value="home">
+  <v-card text id="nav">
+      <v-btn to="/" color="teal" text value="home">
         <span>Home</span>
       </v-btn>
 
       <v-btn
         to="/login"
         color="teal"
-        flat
+        text
         value="LoginRegister"
-        v-if="!statusT"
       >
         <span>Login</span>
       </v-btn>
 
-    </v-bottom-nav>
   </v-card>
 </template>
 

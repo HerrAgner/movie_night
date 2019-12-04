@@ -41,6 +41,7 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authRequest) throws Exception {
+        System.out.println("came a request");
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));

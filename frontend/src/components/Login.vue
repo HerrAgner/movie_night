@@ -53,7 +53,7 @@ export default {
 
   methods: {    
     async validate() {
-      if(this.$refs.loginForm.validate()) {        
+      if(this.$refs.loginForm.validate()) {
         await this.$store.dispatch('login', 
                       {email: this.email, password: this.password}); 
         if (!this.$store.state.status){
