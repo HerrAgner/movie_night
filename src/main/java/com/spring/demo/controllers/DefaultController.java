@@ -14,7 +14,6 @@ public class DefaultController {
     public ModelAndView path(@PathVariable String path, HttpServletRequest request){
         String path2push = "redirect:/?redirect="+request.getRequestURI();
         path2push = request.getQueryString() != null ? path2push.concat("?" + request.getQueryString()) : path2push;
-        System.out.println(request.getQueryString());
         return new ModelAndView(path2push);
     }
 }
