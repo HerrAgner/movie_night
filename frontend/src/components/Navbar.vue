@@ -26,17 +26,18 @@
             >
                 <span>Log out </span>
             </v-btn>
+            <v-btn
+                    color="teal"
+                    text
+                    value="Google Account"
+                    v-if="isLoggedin"
+                    @click="googleLogin"
+            >
+                <span>Google Account</span>
+            </v-btn>
         </v-container>
 
-      <v-btn
-        color="teal"
-        text
-        value="Google Account"
-        v-if="isLoggedin"
-        @click="googleLogin"
-      >
-        <span>Google Account</span>
-      </v-btn>
+      
 
   </v-card>
 </template>
@@ -122,7 +123,7 @@ name: "Navbar",
 
 <style scoped>
     #nav {
-        height: 6vh;
+        height: 6.5vh;
         z-index: 999;
         padding: 5px;
     }
