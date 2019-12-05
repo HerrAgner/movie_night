@@ -10,10 +10,16 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     isLoggedin: false,
+    loggedInUser: '',
   },
   mutations: {
     setLogin(state, status) {
       state.isLoggedin = status;
+    },
+    setLoggedInUser(state, user) {
+      console.log(user);
+      state.loggedInUser = user;
+
     }
   },
   actions: {

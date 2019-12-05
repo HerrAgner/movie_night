@@ -1,5 +1,6 @@
 package com.spring.demo.entities;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,8 +14,8 @@ public class User {
 
     private String username;
     private String password;
-
-
+    private GoogleTokenResponse googleToken;
+    private long googleTokenExpiresAt;
     private Set<String> roles;
 
     public User() {
@@ -23,6 +24,8 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.googleToken = null;
+        this.googleTokenExpiresAt = 0;
         this.roles = new HashSet<>();
         this.roles.add("USER");
     }
@@ -65,5 +68,21 @@ public class User {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public GoogleTokenResponse getGoogleToken() {
+        return googleToken;
+    }
+
+    public void setGoogleToken(GoogleTokenResponse googleToken) {
+        this.googleToken = googleToken;
+    }
+
+    public long getGoogleTokenExpiresAt() {
+        return googleTokenExpiresAt;
+    }
+
+    public void setGoogleTokenExpiresAt(long googleTokenExpiresAt) {
+        this.googleTokenExpiresAt = googleTokenExpiresAt;
     }
 }

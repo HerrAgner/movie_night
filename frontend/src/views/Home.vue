@@ -2,7 +2,7 @@
   <div class="home">
     <v-container>
       <div>
-        Hi {{username}}!
+        Hi {{getUsername}}!
       </div>
       </v-container> 
   </div>
@@ -16,9 +16,14 @@ import Cookie from "js-cookie";
 export default {
   name: 'home',
   data: () => ({
-    username: ''
+    // username: ''
   }),
   components: {
+  },
+  computed: {
+    getUsername() {
+      return this.$store.state.loggedInUser;
+    }
   },
   async mounted(){   
     if (Cookie.get("token") !== undefined){
@@ -31,7 +36,8 @@ export default {
       });
       if (res.status === 200){
         res = await res.json();
-        this.username = res.username
+        // this.username = res.username
+        this.$store.commit('setLoggedInUser', res.username);
       }else {
         await this.$router.push({path: '/login'})
         this.$store.state.isLoggedin = false
