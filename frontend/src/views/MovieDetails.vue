@@ -5,31 +5,69 @@
       v-else-if="!isLoading && getMovie"
       class="movie_info_container"
     >
-      <v-row justify-content="center">
-        <v-col cols="4" class="movie_poster">
-          <v-img :src="getPoster" />
-        </v-col>
-        <v-col cols="8" class="movie_info">
-          <div class="display-3 text-left">
-            {{ getMovie.Title }}
+      <v-row justify="center">
+        <v-col
+          cols="12"
+          md="4"
+          class="movie_poster_container"
+          :class="breakpointSmAndDown && 'poster_below_sm'"
+        >
+          <v-img :src="getPoster" class="movie_poster" alt="Image not found" />
+          <div v-if="breakpointSmAndDown">
+            <div class="text-center display-1">
+              {{ getMovie.Title }}
+            </div>
+            <v-rating
+              v-if="breakpointSmAndDown"
+              
+              dense
+              :value="getMovie.imdbRating"
+              empty-icon="star_border"
+              half-icon="star_half"
+              full-icon="star"
+              length="10"
+              half-increments
+              color="orange"
+              background-color="orange"
+              readonly
+            ></v-rating>
           </div>
-          <div class="title text-left">{{ getMovie.imdbRating }}/10</div>
-          <div class="title text-left">{{ getMovie.Metascore }}/100</div>
-          <table>
+        </v-col>
+        <v-col cols="12" md="8" class="movie_info">
+          <div v-if="!breakpointSmAndDown">
+            <div class="text-left display-2">
+              {{ getMovie.Title }}
+            </div>
+            <div class="movie_rating">
+              <v-rating
+                v-if="!breakpointSmAndDown"
+                :value="getMovie.imdbRating"
+                empty-icon="star_border"
+                half-icon="star_half"
+                full-icon="star"
+                length="10"
+                half-increments
+                color="orange"
+                background-color="orange"
+                readonly
+              ></v-rating>
+            </div>
+          </div>
+          <table class="movie_info_table">
             <tr>
-              <td>Year:</td>
+              <td class="movie_info_prop">Year:</td>
               <td>{{ getMovie.Year }}</td>
             </tr>
             <tr>
-              <td>Genre:</td>
+              <td class="movie_info_prop">Genre:</td>
               <td>{{ getGenres }}</td>
             </tr>
             <tr>
-              <td>Plot:</td>
+              <td class="movie_info_prop">Plot:</td>
               <td>{{ getMovie.Plot }}</td>
             </tr>
             <tr>
-              <td>Awards:</td>
+              <td class="movie_info_prop">Awards:</td>
               <td>{{ getMovie.Awards }}</td>
             </tr>
           </table>
@@ -60,10 +98,12 @@ export default {
       return this.movie;
     },
     getPoster() {
-      return this.movie && this.movie.Poster !== 'N/A' ? this.movie.Poster : '';
+      return this.movie && this.movie.Poster && this.movie.Poster !== 'N/A'
+        ? this.movie.Poster
+        : 'assets/not-found.png';
     },
     getRating() {
-      return Math.floor(this.getMovie.imdbRating);
+      return this.getMovie.imdbRating;
     },
     getGenres() {
       return this.movie.Genre.join(', ');
@@ -71,17 +111,24 @@ export default {
     isLoading() {
       return this.loading;
     },
-    getRoute(){
+    getRoute() {
       return this.$route;
+    },
+    breakpointSmAndDown() {
+      return this.$vuetify.breakpoint.smAndDown;
     }
   },
   methods: {
     async fetchMovie() {
       if (this.$route.query.id) {
         this.loading = true;
-        this.movie = await movieDetailsService().getMovieDetails(
-          this.$route.query.id
-        );
+        try {
+          this.movie = await movieDetailsService().getMovieDetails(
+            this.$route.query.id
+          );
+        } catch (err) {
+          console.log(err);
+        }
         this.loading = false;
       } else {
         this.$router.push({ path: '/' });
@@ -93,13 +140,41 @@ export default {
   },
   watch: {
     getRoute: function(value, oldValue) {
-      if(value !== oldValue) {
+      if (value !== oldValue) {
         this.fetchMovie();
       }
-
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+.movie_info_table {
+  text-align: left;
+}
+
+.movie_info_table td {
+  padding: 5px;
+}
+.movie_poster {
+  width: 100%;
+  /* max-width: 300px; */
+  /* min-width: 300px; */
+}
+
+.poster_below_sm {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.movie_info_prop {
+  font-weight: bold;
+  vertical-align: text-top;
+}
+.movie_rating {
+  display: flex;
+  justify-content: flex-start;
+}
+</style>
