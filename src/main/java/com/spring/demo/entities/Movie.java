@@ -13,7 +13,7 @@ public class Movie {
     @JsonProperty("Title")
     private String title;
     @JsonProperty("Year")
-    private int year;
+    private String year;
     @JsonProperty("Rated")
     private String rated;
     @JsonProperty("Released")
@@ -95,11 +95,11 @@ public class Movie {
         this.title = title;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
