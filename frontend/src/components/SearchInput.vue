@@ -90,12 +90,21 @@
       }
     },
     computed: {
-
       searches() {
         return this.movieList
       },
       isLoading() {
         return this.loading;
+      },
+      searchChange() {
+        return this.search;
+      }
+    },
+    watch: {
+      searchChange: function(value, oldValue) {
+        if (value !== oldValue) {
+          this.movieList = [];
+        }
       }
     }
   }
