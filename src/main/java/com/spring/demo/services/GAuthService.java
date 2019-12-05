@@ -7,6 +7,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.spring.demo.entities.User;
 import com.spring.demo.util.SuperSecretInformation;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -62,42 +63,49 @@ public class GAuthService {
         return tokenResponse;
     }
 
-    public boolean timeToRefreshToken(long expiresAt) {
+    private boolean timeToRefreshToken(long expiresAt) {
         var epoch = Instant.now().getEpochSecond();
-        if((expiresAt - epoch) > 300) {
+        if ((expiresAt - epoch) > 300) {
             return false;
         }
         return true;
     }
 
-    public GoogleTokenResponse refreshToken() {
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(username == null) return null;
-
-        var user = userService.getUserByUsername(username);
-        if(user == null) return null;
-
+    private GoogleTokenResponse refreshToken(User user) {
         var refreshedToken = getRefreshedCredentials(user.getGoogleToken().getRefreshToken());
 
-        if(refreshedToken != null) {
-            user.setGoogleToken(refreshedToken);
-            long expiresAt = Instant.now().getEpochSecond() + refreshedToken.getExpiresInSeconds();
+        if (refreshedToken != null) {
+            user.refreshGoogleAccessToken(refreshedToken);
+            long expiresAt = Instant.now().getEpochSecond() + 3600;
             user.setGoogleTokenExpiresAt(expiresAt);
             user = userService.saveUser(user);
         }
 
-        return user != null ? user.getGoogleToken(): null;
+        return user != null ? user.getGoogleToken() : null;
+    }
+
+    public GoogleTokenResponse tryRefreshToken() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (username == null) return null;
+
+        var user = userService.getUserByUsername(username);
+        if (user == null) return null;
+
+        var isTimeToRefresh = timeToRefreshToken(user.getGoogleTokenExpiresAt());
+        if (isTimeToRefresh) {
+            return refreshToken(user);
+        }
+        return null;
     }
 
     private GoogleTokenResponse getRefreshedCredentials(String refreshCode) {
         try {
             GoogleTokenResponse response = new GoogleRefreshTokenRequest(
-                    new NetHttpTransport(), JacksonFactory.getDefaultInstance(), refreshCode, superSecretInformation.getClientId(), superSecretInformation.getClientSecret() )
+                    new NetHttpTransport(), JacksonFactory.getDefaultInstance(), refreshCode, superSecretInformation.getClientId(), superSecretInformation.getClientSecret())
                     .execute();
 
             return new GoogleTokenResponse().setAccessToken(response.getAccessToken());
-        }
-        catch( Exception ex ){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }

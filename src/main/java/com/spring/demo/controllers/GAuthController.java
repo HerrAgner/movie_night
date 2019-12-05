@@ -42,4 +42,10 @@ public class GAuthController {
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
+
+//    @GetMapping
+//    public ResponseEntity<GoogleTokenResponse> refresh(){
+//        var refreshed = gAuthService.tryRefreshToken();
+//        return new ResponseEntity(refreshed, HttpStatus.OK);
+//    }
 }
