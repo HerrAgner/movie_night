@@ -68,7 +68,7 @@
 
 <style scoped>
     #nav {
-        height: 6vh;
+        height: 6.5vh;
         z-index: 999;
         padding: 5px;
     }
