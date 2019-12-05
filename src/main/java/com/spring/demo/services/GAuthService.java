@@ -20,6 +20,7 @@ public class GAuthService {
 
     private final SuperSecretInformation superSecretInformation;
     private final UserService userService;
+    private final int REFRESH_LIMIT = 300;
 
     public GAuthService(SuperSecretInformation superSecretInformation, UserService userService) {
         this.superSecretInformation = superSecretInformation;
@@ -65,7 +66,7 @@ public class GAuthService {
 
     private boolean timeToRefreshToken(long expiresAt) {
         var epoch = Instant.now().getEpochSecond();
-        if ((expiresAt - epoch) > 300) {
+        if ((expiresAt - epoch) > REFRESH_LIMIT) {
             return false;
         }
         return true;
