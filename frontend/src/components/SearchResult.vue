@@ -26,6 +26,7 @@
     props: ['title', 'year', 'poster', 'id'],
     methods: {
       goToMovie() {
+        this.$emit("closemenu")
         this.$router.push({path: "details?id=" + this.id})
       }
     }
