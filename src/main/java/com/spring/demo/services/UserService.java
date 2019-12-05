@@ -14,11 +14,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User setGoogleToken(String username, GoogleTokenResponse googleTokenResponse) {
+    public User setGoogleToken(String username, GoogleTokenResponse googleTokenResponse, long expiresAt) {
         var user = userRepository.findDistinctFirstByUsernameIgnoreCase(username);
         if(user == null) return null;
 
         user.setGoogleToken(googleTokenResponse);
+        user.setGoogleTokenExpiresAt(expiresAt);
         userRepository.save(user);
         return user;
     }

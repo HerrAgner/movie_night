@@ -43,6 +43,7 @@
 
 <script>
   import Search from "@/components/SearchInput.vue"
+import Cookie from "js-cookie";
 
   export default {
     components: {
@@ -64,18 +65,19 @@ name: "Navbar",
             console.log('authResult', authResult);
 
             if (authResult['code']) {
-
                 // Hide the sign-in button now that the user is authorized
                 //$('#signinButton').hide();
 
                 // Send the code to the server
-                let result = await fetch('http://localhost:8080/storeauthcode', {
+                let token = Cookie.get("token");
+                let result = await fetch('api/gauth', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/octet-stream; charset=utf-8',
                         'X-Requested-With': 'XMLHttpRequest',
+                        'Authorization': `Bearer ${token}`
                     },
-                    data: authResult['code']
+                    body: authResult['code']
                 });
                 console.log(result)
             } else {

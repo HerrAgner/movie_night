@@ -15,6 +15,7 @@ public class User {
     private String username;
     private String password;
     private GoogleTokenResponse googleToken;
+    private long googleTokenExpiresAt;
     private Set<String> roles;
 
     public User() {
@@ -24,6 +25,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.googleToken = null;
+        this.googleTokenExpiresAt = 0;
         this.roles = new HashSet<>();
         this.roles.add("USER");
     }
@@ -74,5 +76,13 @@ public class User {
 
     public void setGoogleToken(GoogleTokenResponse googleToken) {
         this.googleToken = googleToken;
+    }
+
+    public long getGoogleTokenExpiresAt() {
+        return googleTokenExpiresAt;
+    }
+
+    public void setGoogleTokenExpiresAt(long googleTokenExpiresAt) {
+        this.googleTokenExpiresAt = googleTokenExpiresAt;
     }
 }
