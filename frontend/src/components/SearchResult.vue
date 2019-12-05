@@ -5,7 +5,7 @@
                 @click="goToMovie"
         >
             <v-list-item-avatar style="height: min-content" tile>
-                <v-img :src="poster"/>
+                <v-img :src="getPoster" @error="placeholderfunc"/>
             </v-list-item-avatar>
             
             <v-list-item-content>
@@ -21,14 +21,28 @@
   export default {
     name: "SearchResult",
     data() {
-      return {}
+      return {
+        posterError: false
+      }
     },
     props: ['title', 'year', 'poster', 'id'],
     methods: {
       goToMovie() {
-        this.$emit("closemenu")
+        this.$emit("closemenu");
         this.$router.push({path: "details?id=" + this.id})
+      },
+      placeholderfunc() {
+        this.posterError = true;
       }
+    },
+    computed: {
+        getPoster() {
+          if (this.posterError === false) {
+            return this.poster;
+          } else {
+            return "assets/not-found.png";
+          }
+        }
     }
   }
 </script>
