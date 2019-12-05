@@ -103,6 +103,7 @@ name: "Navbar",
       status() {
         return this.$store.state.isLoggedin
       }
+<<<<<<< HEAD
     },
     mounted() {
     // window.start = a;
@@ -116,6 +117,8 @@ name: "Navbar",
     //         });
     //     });
     // }
+=======
+>>>>>>> dev
     }
 };
 </script>
