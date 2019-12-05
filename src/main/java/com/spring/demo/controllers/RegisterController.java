@@ -28,8 +28,8 @@ public class RegisterController {
     public ResponseEntity createUser(@RequestBody User user){
         if (repository.findDistinctFirstByUsernameIgnoreCase(user.getUsername()) == null) {
             myUserDetailsService.addUser(user.getUsername(), user.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.ok().build();
         }
-        throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "username is already taken");
+        return ResponseEntity.badRequest().build();
     }
 }
