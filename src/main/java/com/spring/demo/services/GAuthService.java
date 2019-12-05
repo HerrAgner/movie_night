@@ -59,4 +59,25 @@ public class GAuthService {
 
         return tokenResponse;
     }
+
+    public boolean timeToRefreshToken(long expiresAt) {
+        var epoch = Instant.now().getEpochSecond();
+        if((expiresAt - epoch) > 300) {
+            return false;
+        }
+        return true;
+    }
+
+    public GoogleTokenResponse refreshToken() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(username == null) return null;
+
+        var user = userService.getUserByUsername(username);
+
+
+        return user.getGoogleToken();
+
+    }
+
+
 }

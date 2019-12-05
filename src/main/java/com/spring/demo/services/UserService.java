@@ -23,4 +23,11 @@ public class UserService {
         userRepository.save(user);
         return user;
     }
+
+    public User getUserByUsername(String username) {
+        var user = userRepository.findDistinctFirstByUsernameIgnoreCase(username);
+        if(user == null) return null;
+
+        return user;
+    }
 }
