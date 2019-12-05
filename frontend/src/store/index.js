@@ -9,7 +9,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    isLoggedin: false
+    isLoggedin: false,
   },
   mutations: {
     setLogin(state, status) {
@@ -37,7 +37,7 @@ export default new Vuex.Store({
     async logout() {
       Cookie.remove("token")
       this.commit("setLogin", false);
-    }
+    },
   },
   modules: {}
 });
