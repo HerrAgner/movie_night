@@ -3,7 +3,7 @@ const backend = 'http://localhost:8080';
 module.exports = {
   publicPath: '',
   outputDir: './../src/main/resources/static/',
-  assetsDir: './assets/',
+  assetsDir: './',
   devServer: {
     port: 8081,
     proxy: {
