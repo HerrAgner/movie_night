@@ -26,17 +26,18 @@
             >
                 <span>Log out </span>
             </v-btn>
+            <v-btn
+                    color="teal"
+                    text
+                    value="Google Account"
+                    v-if="isLoggedin"
+                    @click="googleLogin"
+            >
+                <span>Google Account</span>
+            </v-btn>
         </v-container>
 
-      <v-btn
-        color="teal"
-        text
-        value="Google Account"
-        v-if="isLoggedin"
-        @click="googleLogin"
-      >
-        <span>Google Account</span>
-      </v-btn>
+      
 
   </v-card>
 </template>
