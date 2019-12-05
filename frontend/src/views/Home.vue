@@ -1,7 +1,9 @@
 <template>
   <div class="home">
     <v-container>
-      {{username}}
+      <div>
+        Hi {{username}}!
+      </div>
       </v-container> 
   </div>
 </template>
@@ -27,8 +29,14 @@ export default {
           'Authorization': `Bearer ${token}`
         },
       });
-      this.res = res.status === 200 ? await res.json() : null;
-      this.username = this.res.username
+      if (res.status === 200){
+        res = await res.json();
+        this.username = res.username
+      }else {
+        await this.$router.push({path: '/login'})
+        this.$store.state.isLoggedin = false
+
+      }
   }
       
   }

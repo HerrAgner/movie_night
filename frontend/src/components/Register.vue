@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <h1>Sign Up</h1>
+        <h1>Register</h1>
         <v-app id="inspire">
             <v-form
                 ref="registerForm"
@@ -27,7 +27,7 @@
                 color="success"
                 @click="validate"
                 >
-                sign up
+                submit
                 </v-btn> 
                 {{messageToClient}}
             </v-form>
