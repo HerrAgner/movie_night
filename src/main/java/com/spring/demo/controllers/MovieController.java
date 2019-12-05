@@ -38,7 +38,7 @@ public class MovieController {
             movie = movieService.getMovieById(i);
 
         if (movie == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(movie, HttpStatus.OK);
     }
