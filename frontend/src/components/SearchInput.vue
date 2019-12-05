@@ -11,8 +11,11 @@
                 style="position: absolute; width: 30%; top: 5px; z-index: 2; height: 5.5vh; background-color: white"
         >
         </v-text-field>
+        <transition name="fade">
         <div @click="closeMenu" v-if="movieList.length > 0" class="overlay"
              style="position:fixed; top:0; left:0; width: 100vw; height: 100vh; background-color: rgba(10,10,10,0.4); z-index: 1"/>
+        </transition>
+        <transition name="fade">
         <Loading class="listComponent" v-if="isLoading && searching && movieList.length === 0" style="right: 25%;"/>
         <v-list class="listComponent" v-else-if="movieList.length > 0"
                 style="max-height: 60vh; overflow-x:scroll;">
@@ -28,6 +31,7 @@
         <v-container class="listComponent" v-else-if="!isLoading && this.search.length > 0 && this.searchResponse === 0"
                      style="background-color: white">No movies found
         </v-container>
+        </transition>
     </v-container>
 </template>
 
@@ -117,5 +121,18 @@
         top: 6vh;
         width: 30%;
         z-index: 2;
+    }
+    
+    
+
+    .fade-enter-active, .fade-leave-active {
+        transition: ease-in-out opacity 0.5s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
+    }
+    @keyframes fadein {
+        from { opacity: 0; }
+        to   { opacity: 1; }
     }
 </style>
