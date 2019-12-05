@@ -2,6 +2,8 @@ package com.spring.demo.services;
 
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -73,10 +75,32 @@ public class GAuthService {
         if(username == null) return null;
 
         var user = userService.getUserByUsername(username);
+        if(user == null) return null;
 
+        var refreshedToken = getRefreshedCredentials(user.getGoogleToken().getRefreshToken());
 
-        return user.getGoogleToken();
+        if(refreshedToken != null) {
+            user.setGoogleToken(refreshedToken);
+            long expiresAt = Instant.now().getEpochSecond() + refreshedToken.getExpiresInSeconds();
+            user.setGoogleTokenExpiresAt(expiresAt);
+            user = userService.saveUser(user);
+        }
 
+        return user != null ? user.getGoogleToken(): null;
+    }
+
+    private GoogleTokenResponse getRefreshedCredentials(String refreshCode) {
+        try {
+            GoogleTokenResponse response = new GoogleRefreshTokenRequest(
+                    new NetHttpTransport(), JacksonFactory.getDefaultInstance(), refreshCode, superSecretInformation.getClientId(), superSecretInformation.getClientSecret() )
+                    .execute();
+
+            return new GoogleTokenResponse().setAccessToken(response.getAccessToken());
+        }
+        catch( Exception ex ){
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 

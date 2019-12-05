@@ -105,18 +105,17 @@ name: "Navbar",
       }
     },
     mounted() {
-    window.start = a;
-    function a() {
-        console.log("loaded: a")
-        const CLIENT_ID = "988102945544-klqauldh975vifp1vf5ea6u69qi9ji53.apps.googleusercontent.com";
-        window.gapi.load('auth2', function() {
-            window.auth2 = window.gapi.auth2.init({
-                client_id: CLIENT_ID,
-                scope: "https://www.googleapis.com/auth/calendar.events"
-            });
-        });
-    }
-
+    // window.start = a;
+    // function a() {
+    //     console.log("loaded: a")
+    //     const CLIENT_ID = "988102945544-klqauldh975vifp1vf5ea6u69qi9ji53.apps.googleusercontent.com";
+    //     window.gapi.load('auth2', function() {
+    //         window.auth2 = window.gapi.auth2.init({
+    //             client_id: CLIENT_ID,
+    //             scope: "https://www.googleapis.com/auth/calendar.events"
+    //         });
+    //     });
+    // }
     }
 };
 </script>

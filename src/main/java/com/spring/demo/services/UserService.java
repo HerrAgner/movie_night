@@ -16,7 +16,7 @@ public class UserService {
 
     public User setGoogleToken(String username, GoogleTokenResponse googleTokenResponse, long expiresAt) {
         var user = userRepository.findDistinctFirstByUsernameIgnoreCase(username);
-        if(user == null) return null;
+        if (user == null) return null;
 
         user.setGoogleToken(googleTokenResponse);
         user.setGoogleTokenExpiresAt(expiresAt);
@@ -26,8 +26,16 @@ public class UserService {
 
     public User getUserByUsername(String username) {
         var user = userRepository.findDistinctFirstByUsernameIgnoreCase(username);
-        if(user == null) return null;
+        if (user == null) return null;
 
         return user;
+    }
+
+    public User saveUser(User user) {
+        try {
+            return userRepository.save(user);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
