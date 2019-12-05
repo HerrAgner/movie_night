@@ -30,3 +30,4 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/resources/static/
+/src/main/java/com/spring/demo/util/SuperSecretInformation.java

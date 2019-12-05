@@ -37,7 +37,6 @@ public class MovieCache {
 
     public static Optional<Movie> getMovieFromCache(String movieId) {
         if (movieCache.contains(movieId)) {
-            System.out.println("Returning movie with id " + movieId + " from database");
             return movieRepository.findById(movieId);
         } else return Optional.empty();
     }
