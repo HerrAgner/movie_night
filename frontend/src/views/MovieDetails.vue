@@ -70,6 +70,9 @@
               <td class="movie_info_prop">Awards:</td>
               <td>{{ getMovie.Awards }}</td>
             </tr>
+
+            <popupEvent />
+
           </table>
         </v-col>
       </v-row>
@@ -83,11 +86,13 @@
 <script>
 import movieDetailsService from '@/services/movieDetailsService';
 import Loading from '@/components/Loading';
+import popupEvent from "./popupEvent";
 
 export default {
   name: 'MovieDetails',
   components: {
-    Loading
+    Loading,
+    popupEvent
   },
   data: () => ({
     movie: null,
