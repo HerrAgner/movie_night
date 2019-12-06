@@ -19,7 +19,7 @@
             </div>
             <v-rating
               v-if="breakpointSmAndDown"
-              
+
               dense
               :value="getMovie.imdbRating"
               empty-icon="star_border"
@@ -71,7 +71,7 @@
               <td>{{ getMovie.Awards }}</td>
             </tr>
 
-            <popupEvent />
+            <popupEvent :movie="movie" />
 
           </table>
         </v-col>
@@ -86,7 +86,7 @@
 <script>
 import movieDetailsService from '@/services/movieDetailsService';
 import Loading from '@/components/Loading';
-import popupEvent from "./popupEvent";
+import popupEvent from "../components/popupEvent";
 
 export default {
   name: 'MovieDetails',
