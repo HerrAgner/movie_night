@@ -82,7 +82,9 @@
 
 <script>
 import movieDetailsService from '@/services/movieDetailsService';
+import GCalendarService from '@/services/GCalendarService';
 import Loading from '@/components/Loading';
+import { slategray } from 'color-name';
 
 export default {
   name: 'MovieDetails',
@@ -133,10 +135,29 @@ export default {
       } else {
         this.$router.push({ path: '/' });
       }
+    },
+    async fetchCalenders() {
+      let res = await GCalendarService().getFreeBusyCalendarFromList(['admin', 'martin']);
+      
+
+      for(let user of Object.values(res)) {
+        if(user && user.calendars && user.calendars.primary && user.calendars.primary.busy) {
+          for(let event of user.calendars.primary.busy) {
+            let startDate = new Date(event.start.value);
+            console.log('start', startDate.toLocaleString());
+            let endDate = new Date(event.end.value);
+            console.log('end', endDate.toLocaleString());
+
+          }
+        }
+      }
+      return res;
     }
   },
   mounted() {
     this.fetchMovie();
+    this.fetchCalenders();  
+
   },
   watch: {
     getRoute: function(value, oldValue) {
