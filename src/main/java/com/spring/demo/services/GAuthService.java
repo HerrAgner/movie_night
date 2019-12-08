@@ -121,7 +121,7 @@ public class GAuthService {
         return user.getGoogleToken().getAccessToken();
     }
 
-    public AccessToken buildAccessToken(String username) {
+    public AccessToken getAccessToken(String username) {
         var user = userService.getUserByUsername(username);
         if(user == null || user.getGoogleToken() == null || user.getGoogleTokenExpiresAt() == 0) return null;
         var accessToken = new AccessToken(user.getGoogleToken().getAccessToken(), new Date(user.getGoogleTokenExpiresAt()));

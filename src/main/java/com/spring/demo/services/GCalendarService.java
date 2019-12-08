@@ -62,7 +62,7 @@ public class GCalendarService {
     }
 
     private Calendar getCalendar(String username) {
-        GoogleCredentials credential = GoogleCredentials.create(gAuthService.buildAccessToken(username));
+        GoogleCredentials credential = GoogleCredentials.create(gAuthService.getAccessToken(username));
         if(credential == null || credential.getAccessToken() == null) return null;
         return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(credential.getAccessToken().getTokenValue()))
                 .setApplicationName(superSecretInformation.getApplicationName())
