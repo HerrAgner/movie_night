@@ -19,20 +19,45 @@
                                     <v-col cols="12" md="8" class="movie_info">
                                         <div>
                                             <v-col cols="12" sm="6" md="3">
-                                                <v-text-field v-model="eventName" required
-                                                              label="Event name"
+                                                <v-text-field
+                                                    v-model="eventName"
+                                                    required
+                                                    label="Event name"
                                                 />
                                             </v-col>
                                             <v-col cols="12" sm="6">
                                                 <v-select
-                                                        v-model="value"
-                                                        :items="items"
-                                                        attach
-                                                        chips
-                                                        label="Invite friends"
-                                                        multiple
+                                                    v-model="value"
+                                                    :items="items"
+                                                    attach
+                                                    chips
+                                                    label="Invite friends"
+                                                    multiple
                                                 />
                                             </v-col>
+
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-menu
+                                                    v-model="menu"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="290px"
+                                                >
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-text-field
+                                                            v-model="date"
+                                                            label="Pick a date"
+                                                            prepend-icon="event"
+                                                            readonly
+                                                            v-on="on"
+                                                        />
+                                                    </template>
+                                                    <v-date-picker v-model="date" @input="menu = false"/>
+                                                </v-menu>
+                                            </v-col>
+
                                         </div>
                                     </v-col>
                                 </v-row>
@@ -41,8 +66,6 @@
                         </v-card-text>
 
                         <v-card-actions>
-                            <v-spacer></v-spacer>
-
                             <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
 
                             <v-btn color="green darken-1" text @click="dialog = false">Save</v-btn>
@@ -63,6 +86,8 @@ export default {
         eventName: '',
         items: [],
         value: [],
+        date: new Date().toISOString().substr(0, 10),
+        menu: false,
     }),
     methods: {
 
