@@ -25,16 +25,23 @@
                                                     label="Event name"
                                                 />
                                             </v-col>
-                                            <v-col cols="12" sm="6">
-                                                <v-select
-                                                    v-model="value"
-                                                    :items="items"
-                                                    attach
-                                                    chips
-                                                    label="Invite friends"
-                                                    multiple
-                                                />
-                                            </v-col>
+
+                                            <v-select
+                                                v-model="selectedFriends"
+                                                :items="friends"
+                                                label="Favorite Fruits"
+                                                multiple
+                                            >
+                                                <template v-slot:prepend-item>
+                                                    <v-list-item
+                                                        @click="toggle"
+                                                    >
+                                                        <v-list-item-content>
+                                                            <v-list-item-title>{{selectTitle}}</v-list-item-title>
+                                                        </v-list-item-content>
+                                                    </v-list-item>
+                                                </template>
+                                            </v-select>
 
                                             <v-col cols="12" sm="6" md="4">
                                                 <v-menu
@@ -66,6 +73,8 @@
                         </v-card-text>
 
                         <v-card-actions>
+                            <v-spacer></v-spacer>
+
                             <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
 
                             <v-btn color="green darken-1" text @click="dialog = false">Save</v-btn>
@@ -84,18 +93,33 @@ export default {
     data: () => ({
         dialog: false,
         eventName: '',
-        items: [],
+        friends: [],
         value: [],
         date: new Date().toISOString().substr(0, 10),
         menu: false,
+        selectedFriends: [],
+        selectTitle: 'Select All'
     }),
     methods: {
-
+        toggle () {
+            this.$nextTick(() => {
+                if (this.inviteAllFriends) {
+                    this.selectedFriends = [];
+                    this.selectTitle = 'Select All'
+                } else {
+                    this.selectedFriends = this.friends.slice();
+                    this.selectTitle = 'Select None'
+                }
+            })
+        },
     },
     computed: {
         breakpointSmAndDown() {
             return this.$vuetify.breakpoint.smAndDown;
-        }
+        },
+        inviteAllFriends () {
+            return this.selectedFriends.length === this.friends.length
+        },
     },
     async mounted(){
         let token = this.$store.state.cookie;
@@ -109,8 +133,8 @@ export default {
             res = await res.json();
             res.forEach(item => {
                 if (this.$store.state.loggedInUser !== item.username) {
-                    this.items.push(item.username);
-                    this.value.push(item.id);
+                    this.friends.push(item.username);
+                    //this.value.push(item.id);
                 }
             });
         }
