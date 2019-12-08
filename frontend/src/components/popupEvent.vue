@@ -23,7 +23,16 @@
                                                               label="Event name"
                                                 />
                                             </v-col>
-
+                                            <v-col cols="12" sm="6">
+                                                <v-select
+                                                        v-model="value"
+                                                        :items="items"
+                                                        attach
+                                                        chips
+                                                        label="Invite friends"
+                                                        multiple
+                                                />
+                                            </v-col>
                                         </div>
                                     </v-col>
                                 </v-row>
@@ -51,7 +60,9 @@
         props: ['movie'],
         data: () => ({
             dialog: false,
-            eventName: ''
+            eventName: '',
+            items: ['foo', 'bar', 'fizz', 'buzz'],
+            value: ['foo', 'bar', 'fizz', 'buzz'],
         }),
         methods: {
 
