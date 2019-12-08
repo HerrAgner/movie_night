@@ -112,5 +112,13 @@ public class GAuthService {
         }
     }
 
+    public String getBearerTokenForUser(String username) {
+        var user = userService.getUserByUsername(username);
+        if(user == null) return null;
+        if(user.getGoogleToken() == null) return null;
+
+        return user.getGoogleToken().getAccessToken();
+    }
+
 
 }

@@ -1,20 +1,10 @@
 package com.spring.demo.controllers;
 
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.spring.demo.services.GAuthService;
-import com.spring.demo.services.UserService;
-import com.spring.demo.util.SuperSecretInformation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 
 @RestController
@@ -43,9 +33,9 @@ public class GAuthController {
 
     }
 
-//    @GetMapping
-//    public ResponseEntity<GoogleTokenResponse> refresh(){
-//        var refreshed = gAuthService.tryRefreshToken();
-//        return new ResponseEntity(refreshed, HttpStatus.OK);
-//    }
+    @GetMapping
+    public ResponseEntity<GoogleTokenResponse> refresh(){
+        var refreshed = gAuthService.tryRefreshToken();
+        return new ResponseEntity(refreshed, HttpStatus.OK);
+    }
 }
