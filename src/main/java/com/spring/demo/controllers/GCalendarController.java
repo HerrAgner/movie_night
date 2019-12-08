@@ -3,6 +3,7 @@ package com.spring.demo.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.FreeBusyRequest;
 import com.google.api.services.calendar.model.FreeBusyResponse;
 import com.spring.demo.services.GCalendarService;
@@ -26,20 +27,12 @@ public class GCalendarController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, FreeBusyResponse>> getFreeBusy(@RequestBody List<String> requestForUsers) {
-
-
+    public ResponseEntity<Map<String, FreeBusyResponse>> getCal(@RequestBody List<String> requestForUsers) {
         var response = new HashMap<String, FreeBusyResponse>();
         for (String username : requestForUsers) {
-            var freeBusyResponse = gCalendarService.getFreeBusy(username);
+            var freeBusyResponse = gCalendarService.getFreeBusyFromCalendar(username);
             response.put(username, freeBusyResponse);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping
-    public ResponseEntity printEvents() {
-        gCalendarService.printEvents(SecurityContextHolder.getContext().getAuthentication().getName());
-        return new ResponseEntity(HttpStatus.OK);
     }
 }

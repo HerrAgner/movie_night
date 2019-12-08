@@ -1,87 +1,72 @@
 package com.spring.demo.services;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.*;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.spring.demo.util.SuperSecretInformation;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class GCalendarService {
 
 
     private final GAuthService gAuthService;
+    private final SuperSecretInformation superSecretInformation;
     private final RestTemplate restTemplate = new RestTemplate();
     private final String FREE_BUSY_URL = "https://www.googleapis.com/calendar/v3/freeBusy";
-    private final long FREE_BUSY_NUM_DAYS_AHEAD = 30;
+    private final long NUM_DAYS_AHEAD = 30;
+    private final long NUM_DAYS_START = 0;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public GCalendarService(GAuthService gAuthService) {
+    public GCalendarService(GAuthService gAuthService, SuperSecretInformation superSecretInformation) {
         this.gAuthService = gAuthService;
+        this.superSecretInformation = superSecretInformation;
     }
 
-    public FreeBusyResponse getFreeBusy(String username) {
-        //Get access_token from db
-        String bearerToken = gAuthService.getBearerTokenForUser(username);
+    private FreeBusyRequest getFreeBusyRequest(long start, long end) {
+        var request = new FreeBusyRequest();
+        var timeMin = new DateTime(Instant.now().plus(Duration.ofDays(start)).toString());
+        var timeMax = new DateTime(Instant.now().plus(Duration.ofDays(end)).toString());
+        request.setTimeMin(timeMin);
+        request.setTimeMax(timeMax);
+        request.setItems(List.of(new FreeBusyRequestItem().setId("primary")));
+        return request;
+    }
 
-        //Set headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(bearerToken);
+    public FreeBusyResponse getFreeBusyFromCalendar(String username) {
+        gAuthService.tryRefreshToken(username);
+//        String accessToken = gAuthService.getBearerTokenForUser(username);
+        var calendar = getCalendar(username);
+        if(calendar == null) return null;
 
-        //Create request params
-        var timeMin = new DateTime(Instant.now().toString());
-        var timeMax = new DateTime(Instant.now().plus(Duration.ofDays(30)).toString());
-        var items = List.of(new FreeBusyRequestItem().setId("primary"));
-
-        //Put requestparams in request
-        Map<String, Object> mapReq = new HashMap<>();
-        mapReq.put("timeMin", timeMin.toStringRfc3339());
-        mapReq.put("timeMax", timeMax.toStringRfc3339());
-        mapReq.put("items", items);
-
-        String objAsJson = null;
+        var request = getFreeBusyRequest(NUM_DAYS_START, NUM_DAYS_AHEAD);
+        FreeBusyResponse response = null;
         try {
-            objAsJson = objectMapper.writeValueAsString(mapReq);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+            response = calendar.freebusy().query(request).execute();
+        } catch (IOException io) {
+            io.printStackTrace();
         }
+        return response;
+    }
 
-        //Create entity from request and headers
-        HttpEntity entity = new HttpEntity(objAsJson, headers);
-
-
-        Map<String, Object> response = null;
-        try {
-            response = restTemplate.postForObject(FREE_BUSY_URL, entity, Map.class);
-        } catch (HttpClientErrorException e) {
-            System.out.println(e.getResponseBodyAsString());
-            e.printStackTrace();
-            return null;
-        }
-
-        var freeBusyResponse = new FreeBusyResponse();
-        try {
-            freeBusyResponse.setTimeMin(new DateTime((String) response.get("timeMin")));
-            freeBusyResponse.setTimeMax(new DateTime((String) response.get("timeMax")));
-            freeBusyResponse.setCalendars((Map<String, FreeBusyCalendar>) response.get("calendars"));
-        } catch (Exception e) {
-            System.out.println("Key not present");
-//            e.printStackTrace();
-        }
-        return freeBusyResponse;
+    private Calendar getCalendar(String username) {
+        GoogleCredentials credential = GoogleCredentials.create(gAuthService.buildAccessToken(username));
+        if(credential == null || credential.getAccessToken() == null) return null;
+        return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(credential.getAccessToken().getTokenValue()))
+                .setApplicationName(superSecretInformation.getApplicationName())
+                .build();
     }
 }
+

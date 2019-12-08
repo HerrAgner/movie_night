@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.spring.demo.services.GAuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -35,7 +36,7 @@ public class GAuthController {
 
     @GetMapping
     public ResponseEntity<GoogleTokenResponse> refresh(){
-        var refreshed = gAuthService.tryRefreshToken();
+        var refreshed = gAuthService.tryRefreshToken(SecurityContextHolder.getContext().getAuthentication().getName());
         return new ResponseEntity(refreshed, HttpStatus.OK);
     }
 }
