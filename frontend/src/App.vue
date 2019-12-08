@@ -20,6 +20,7 @@ export default {
   mounted(){
     if (Cookie.get("token") !== undefined) {
       this.$store.state.isLoggedin = true
+      this.$store.state.cookie = Cookie.get("token");
     }
     if(this.$route.query.redirect) {
       this.$router.push({path: this.$route.query.redirect})

@@ -55,22 +55,40 @@
 </template>
 <script>
 
-    export default {
-        name: 'popupEvent',
-        props: ['movie'],
-        data: () => ({
-            dialog: false,
-            eventName: '',
-            items: ['foo', 'bar', 'fizz', 'buzz'],
-            value: ['foo', 'bar', 'fizz', 'buzz'],
-        }),
-        methods: {
+export default {
+    name: 'popupEvent',
+    props: ['movie'],
+    data: () => ({
+        dialog: false,
+        eventName: '',
+        items: [],
+        value: [],
+    }),
+    methods: {
 
-        },
-        computed: {
-            breakpointSmAndDown() {
-                return this.$vuetify.breakpoint.smAndDown;
-            }
+    },
+    computed: {
+        breakpointSmAndDown() {
+            return this.$vuetify.breakpoint.smAndDown;
         }
-    };
+    },
+    async mounted(){
+        let token = this.$store.state.cookie;
+        let res = await fetch('/api/event', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        if (res.status === 200){
+            res = await res.json();
+            res.forEach(item => {
+                if (this.$store.state.loggedInUser !== item.username) {
+                    this.items.push(item.username);
+                    this.value.push(item.id);
+                }
+            });
+        }
+    }
+};
 </script>
