@@ -1,5 +1,6 @@
 package com.spring.demo.entities;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,6 +18,7 @@ public class User {
     private String username;
     private String password;
     private GoogleTokenResponse googleToken;
+    private GoogleIdToken.Payload googleInfo;
     private long googleTokenExpiresAt;
     private Set<String> roles;
 
@@ -94,5 +96,13 @@ public class User {
         } catch (Exception e) {
             System.out.println("GoogleAccessToken not set!");
         }
+    }
+
+    public GoogleIdToken.Payload getGoogleInfo() {
+        return googleInfo;
+    }
+
+    public void setGoogleInfo(GoogleIdToken.Payload googleInfo) {
+        this.googleInfo = googleInfo;
     }
 }

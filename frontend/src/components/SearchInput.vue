@@ -137,21 +137,3 @@
     }
 </style>
 
-
-data.Columns.Add("OdometerMaxPlusUnit", typeof(string));
-
-if (row["OdometerCode"] != DBNull.Value)
-					{
-						switch (Convert.ToInt16(row["OdometerCode"]))
-						{
-							case 1:
-								row["OdometerMaxPlusUnit"] = row["maxOdometer"] + " km";
-								break;
-							case 5:
-								row["OdometerMaxPlusUnit"] = row["maxOdometer"] + " hours";
-								break;
-							default:
-								row["OdometerMaxPlusUnit"] = string.Empty;
-								break;
-						}
-					}

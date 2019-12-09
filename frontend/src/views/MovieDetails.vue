@@ -19,7 +19,7 @@
             </div>
             <v-rating
               v-if="breakpointSmAndDown"
-
+              
               dense
               :value="getMovie.imdbRating"
               empty-icon="star_border"
@@ -70,9 +70,7 @@
               <td class="movie_info_prop">Awards:</td>
               <td>{{ getMovie.Awards }}</td>
             </tr>
-
             <popupEvent :movie="movie" />
-
           </table>
         </v-col>
       </v-row>
@@ -87,7 +85,9 @@
 import movieDetailsService from '@/services/movieDetailsService';
 import GCalendarService from '@/services/GCalendarService';
 import Loading from '@/components/Loading';
-import popupEvent from "../components/popupEvent";
+import AuthService from '@/services/AuthService';
+import popupEvent from '@/components/popupEvent';
+
 
 export default {
   name: 'MovieDetails',
@@ -141,10 +141,11 @@ export default {
       }
     },
     async fetchCalendars() {
-      let res = await GCalendarService().getFreeBusyCalendarFromList(['martin', 'user']);
+      let freebusy = await GCalendarService().getFreeBusyCalendarFromList(['user']);
+      let events = await GCalendarService().getEventsFromCalendar(['user']);
       
-    console.log(res);
-      for(let user of Object.values(res)) {
+      console.log(events);
+      for(let user of Object.values(freebusy)) {
         console.log(user);
         if(user && user.calendars && user.calendars.primary && user.calendars.primary.busy) {
           for(let event of user.calendars.primary.busy) {
@@ -156,12 +157,12 @@ export default {
           }
         }
       }
-      return res;
+      
     }
   },
   mounted() {
     this.fetchMovie();
-    this.fetchCalendars();  
+    this.fetchCalendars();
 
   },
   watch: {

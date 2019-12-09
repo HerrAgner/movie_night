@@ -5,6 +5,8 @@ import com.spring.demo.db.UserRepository;
 import com.spring.demo.entities.User;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 public class UserService {
 
@@ -20,6 +22,11 @@ public class UserService {
 
         user.setGoogleToken(googleTokenResponse);
         user.setGoogleTokenExpiresAt(expiresAt);
+        try {
+            user.setGoogleInfo(googleTokenResponse.parseIdToken().getPayload());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         userRepository.save(user);
         return user;
     }
@@ -28,6 +35,13 @@ public class UserService {
         var user = userRepository.findDistinctFirstByUsernameIgnoreCase(username);
         if (user == null) return null;
 
+        return user;
+    }
+
+    public User findUserByUsername(String username) {
+        System.out.println("usernamew: "+username);
+        User user = userRepository.findDistinctFirstByUsernameIgnoreCase("user");
+        System.out.println(user.getId());
         return user;
     }
 
