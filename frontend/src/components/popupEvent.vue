@@ -150,6 +150,8 @@
       },
       async createEvent() {
         const data = {
+          movieId: this.movie.imdbID,
+          eventName: this.eventName,
           creator: this.$store.state.loggedInUser,
           startTime: new Date(this.date).toLocaleString().replace(" ", "T"),
           endTime: new Date(this.date).toLocaleString().replace(" ", "T"),

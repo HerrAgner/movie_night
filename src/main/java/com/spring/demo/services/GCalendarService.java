@@ -9,6 +9,7 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.*;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.spring.demo.entities.MovieEvent;
+import com.spring.demo.entities.User;
 import com.spring.demo.util.SuperSecretInformation;
 import org.springframework.stereotype.Service;
 
@@ -91,7 +92,8 @@ public class GCalendarService {
         TimeZone tz = TimeZone.getTimeZone(movieEvent.getTimeZone());
         String offset = tz.toZoneId().getRules().getStandardOffset(Instant.now()).getId();
         Event event = new Event()
-                .setSummary("Movie Night");
+                .setSummary(movieEvent.getEventName())
+                .setDescription("https://www.imdb.com/title/" + movieEvent.getMovieId());
         DateTime startDateTime = new DateTime(movieEvent.getStartTime() + offset);
 //        2015-05-28T09:00:00-07:00
         EventDateTime start = new EventDateTime()
@@ -106,12 +108,14 @@ public class GCalendarService {
 
         ArrayList<EventAttendee> eventAttendees = new ArrayList<>();
         for (String attendee : movieEvent.getAttendees()) {
-            String email = userService.getUserByUsername(attendee).getGoogleInfo().getEmail();
-            if (email != null && !email.isEmpty()) {
-                eventAttendees.add(new EventAttendee().setEmail(email));
+            User user = userService.getUserByUsername(attendee);
+            if (user != null && user.getGoogleInfo() != null) {
+                String email = user.getGoogleInfo().getEmail();
+                if (email != null && !email.isEmpty()) {
+                    eventAttendees.add(new EventAttendee().setEmail(email));
+                }
             }
         }
-
         event.setAttendees(eventAttendees);
 
         EventReminder[] reminderOverrides = new EventReminder[]{
