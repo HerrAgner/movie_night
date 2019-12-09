@@ -81,5 +81,11 @@ public class GCalendarService {
                 .setApplicationName(superSecretInformation.getApplicationName())
                 .build();
     }
+
+//    public Event createCalendarEvent(String[] attendees, ){
+//        Event event = new Event()
+//                .setSummary("Movie Night")
+//                .;
+//    }
 }
 
