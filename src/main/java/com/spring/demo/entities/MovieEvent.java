@@ -4,6 +4,7 @@ import java.util.List;
 
 public class MovieEvent {
 
+    private String eventId;
     private String movieId;
     private String eventName;
     private String creator;
@@ -15,7 +16,8 @@ public class MovieEvent {
     public MovieEvent(){
     }
 
-    public MovieEvent(String movieId, String eventName, String creator, String startTime, String endTime, String timeZone, List<String> attendees) {
+    public MovieEvent(String eventId, String movieId, String eventName, String creator, String startTime, String endTime, String timeZone, List<String> attendees) {
+        this.eventId = eventId;
         this.movieId = movieId;
         this.eventName = eventName;
         this.creator = creator;
@@ -79,5 +81,13 @@ public class MovieEvent {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 }

@@ -11,6 +11,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.spring.demo.entities.MovieEvent;
 import com.spring.demo.entities.User;
 import com.spring.demo.util.SuperSecretInformation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,6 +32,9 @@ public class GCalendarService {
     private final String FREE_BUSY_URL = "https://www.googleapis.com/calendar/v3/freeBusy";
     private final long NUM_DAYS_AHEAD = 30;
     private final long NUM_DAYS_START = 0;
+
+    @Autowired
+    MovieEventService movieEventService;
 
     public GCalendarService(GAuthService gAuthService, SuperSecretInformation superSecretInformation, UserService userService) {
         this.gAuthService = gAuthService;
@@ -134,6 +138,9 @@ public class GCalendarService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        movieEvent.setEventId(event.getId());
+        movieEventService.saveMovieEventToDb(movieEvent);
         return event;
     }
 }
