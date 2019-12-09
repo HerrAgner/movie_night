@@ -105,7 +105,7 @@ public class GCalendarService {
 
 
         ArrayList<EventAttendee> eventAttendees = new ArrayList<>();
-        for (String attendee: attendees) {
+        for (String attendee : attendees) {
             eventAttendees.add(new EventAttendee().setEmail(attendee));
         }
 //        EventAttendee[] eventAttende = new EventAttendee[]{

@@ -2,6 +2,7 @@ package com.spring.demo.services;
 
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -76,6 +77,7 @@ public class GAuthService {
     private GoogleTokenResponse refreshToken(User user) {
         var refreshedToken = getRefreshedCredentials(user.getGoogleToken().getRefreshToken());
 
+
         if (refreshedToken != null) {
             user.refreshGoogleAccessToken(refreshedToken);
             long expiresAt = Instant.now().getEpochSecond() + 3600;
@@ -111,6 +113,8 @@ public class GAuthService {
             return null;
         }
     }
+
+
 
     public String getBearerTokenForUser(String username) {
         var user = userService.getUserByUsername(username);
