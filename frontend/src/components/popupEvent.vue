@@ -156,7 +156,6 @@
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           attendees: this.selectedFriends
         };
-        console.log(data.attendees);
         await GCalendarService().createGoogleCalendarEvent(data);
         this.dialog = false;
       }

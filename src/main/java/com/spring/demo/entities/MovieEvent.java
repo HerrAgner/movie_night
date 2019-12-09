@@ -4,6 +4,8 @@ import java.util.List;
 
 public class MovieEvent {
 
+    private String movieId;
+    private String eventName;
     private String creator;
     private String startTime;
     private String endTime;
@@ -13,7 +15,9 @@ public class MovieEvent {
     public MovieEvent(){
     }
 
-    public MovieEvent(String creator, String startTime, String endTime, String timeZone, List<String> attendees) {
+    public MovieEvent(String movieId, String eventName, String creator, String startTime, String endTime, String timeZone, List<String> attendees) {
+        this.movieId = movieId;
+        this.eventName = eventName;
         this.creator = creator;
         this.startTime = startTime;
         this.endTime = endTime;
