@@ -94,7 +94,6 @@ public class GCalendarService {
         DateTime startDateTime = new DateTime(startTime + offset);
 //        2015-05-28T09:00:00-07:00
         EventDateTime start = new EventDateTime()
-                .setTimeZone("Europe/Stockholm")
                 .setDateTime(startDateTime);
         event.setStart(start);
 
