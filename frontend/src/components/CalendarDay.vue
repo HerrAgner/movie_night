@@ -15,22 +15,31 @@
           color="primary"
           type="day"
           v-model="getStart"
-          :events="compEvents"
+          :events="getEvents"
           :event-overlap-threshold="0"
           interval-height="24"
           :interval-format="format"
           :max-days="10"
-          @mousedown:time="date => createEventStart(date)"
-          @mouseup:time="date => createEventEnd(date)"
-          @change="data => handleChange(data)"
         >
-          <!-- @click:time="console.log('hej')" -->
           <template v-slot:day-header="{ day }"> </template>
-          <!-- <template v-slot:day-body="{ time }"> {{time}} </template> -->
-          <!-- <template v-slot:interval="{ time }"> {{time}}</template> -->
         </v-calendar>
       </v-sheet>
     </v-col>
+    <div class="calendar_time_pickers">
+      START
+      <v-time-picker
+        v-model="startTime"
+        format="24hr"
+        @change="handleChangeStartTime"
+      ></v-time-picker>
+      END
+      <v-time-picker
+        v-model="endTime"
+        format="24hr"
+        @change="handleChangeEndTime"
+      ></v-time-picker>
+      <v-btn class="create_event" @click="createEvent">CREATE</v-btn>
+    </div>
   </v-row>
 </template>
 
@@ -45,35 +54,28 @@ export default {
     Loading
   },
   data: () => ({
-    start: new Date(),
-    newEvent: {eventSet: false},
-    events: [
-      {
-        name: '',
-        details:
-          'This starts in the middle of an event and spans over multiple events',
-        start: '2019-12-08 12:00',
-        end: '2019-12-08 14:00',
-        color: 'deep-purple'
-      }
-    ],
+    start: TimeService().getCurrentDate(),
+    startTime: null,
+    endTime: null,
+    events: [],
+    newEvent: [],
     loading: true
   }),
   computed: {
     getStart: {
       get: function() {
-        return this.start.toLocaleString();
+        return this.start;
       },
       set: function(newValue) {
         this.start = newValue;
       }
     },
-    compEvents: {
+    getEvents: {
       get: function() {
-        return this.events;
+        return this.events.concat(this.newEvent);
       },
-      set: function(newValue) {
-        this.events = newValue;
+      set: function(value) {
+        this.events = value;
       }
     },
     isLoading() {
@@ -113,40 +115,43 @@ export default {
         }
       }
       this.loading = false;
-      console.log(this.events);
     },
     format(date) {
       return date.time;
     },
-    createEventStart(date) {
-      this.newEvent.start = date;
+    handleChangeStartTime() {
+      console.log('start', this.startTime);
     },
-    createEventEnd(date) {
-      this.newEvent.end = date;
-      const startTime = `${this.newEvent.start.date} ${this.newEvent.start.time}`;
-      const endTime = `${this.newEvent.end.date} ${this.newEvent.end.time}`;
-      // console.log('timetoy', date.timeToY(true));
-      // console.log(this.isEventSet);
-      if (!this.isEventSet) {
-        this.compEvents = [...this.compEvents, {start: startTime, end: endTime, name: ''}]
-        console.log(this.compEvents);
-        this.newEvent.eventSet = true;
-      } else {
-        // console.log('eeevent', this.events[0]);
-        // this.compEvents = this.compEvents;
-        console.log('eeevent', this.events[0]);
+    handleChangeEndTime() {
+      console.log('end', this.endTime);
+    },
+    createEvent() {
+      console.log(this.getStart);
+      if (this.startTime && this.endTime && this.startTime < this.endTime) {
+        let startTime = `${this.getStart} ${this.startTime}`;
+        let endTime = `${this.getStart} ${this.endTime}`;
+        this.newEvent = [
+          {
+            start: startTime,
+            end: endTime,
+            name: '',
+            color: '',
+            description: ''
+          }
+        ];
       }
-      console.log(this.newEvent);
-      
-    },
-    handleChange(data) {
-      console.log(data);
     }
   },
+
   mounted() {
     this.getBusyEvents();
   }
 };
 </script>
 
-<style></style>
+<style>
+.calendar_time_pickers {
+  display: flex;
+  flex-direction: column;
+}
+</style>
