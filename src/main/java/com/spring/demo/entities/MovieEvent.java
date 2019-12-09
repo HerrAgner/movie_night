@@ -64,4 +64,20 @@ public class MovieEvent {
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
     }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 }
