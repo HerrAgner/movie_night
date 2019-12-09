@@ -24,11 +24,9 @@ public class GCalendarService {
 
     private final GAuthService gAuthService;
     private final SuperSecretInformation superSecretInformation;
-    private final RestTemplate restTemplate = new RestTemplate();
     private final String FREE_BUSY_URL = "https://www.googleapis.com/calendar/v3/freeBusy";
     private final long NUM_DAYS_AHEAD = 30;
     private final long NUM_DAYS_START = 0;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public GCalendarService(GAuthService gAuthService, SuperSecretInformation superSecretInformation) {
         this.gAuthService = gAuthService;
@@ -45,10 +43,8 @@ public class GCalendarService {
         return request;
     }
 
-    public FreeBusyResponse getFreeBusyFromCalendar(String username) {
-        gAuthService.tryRefreshToken(username);
-//        String accessToken = gAuthService.getBearerTokenForUser(username);
-        var calendar = getCalendar(username);
+    public FreeBusyResponse getFreeBusyFromCalendar(Calendar calendar) {
+
         if(calendar == null) return null;
 
         var request = getFreeBusyRequest(NUM_DAYS_START, NUM_DAYS_AHEAD);
@@ -61,7 +57,24 @@ public class GCalendarService {
         return response;
     }
 
-    private Calendar getCalendar(String username) {
+    public List<Event> getEventsFromCalendar(Calendar calendar) {
+        Events events = null;
+        var now = new DateTime(Instant.now().toString());
+        try {
+            events = calendar.events().list("primary")
+                    .setMaxResults(10)
+                    .setTimeMin(now)
+                    .setOrderBy("startTime")
+                    .setSingleEvents(true)
+                    .execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return events.getItems();
+    }
+
+    public Calendar getCalendar(String username) {
+        gAuthService.tryRefreshToken(username);
         GoogleCredentials credential = GoogleCredentials.create(gAuthService.getAccessToken(username));
         if(credential == null || credential.getAccessToken() == null) return null;
         return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(credential.getAccessToken().getTokenValue()))

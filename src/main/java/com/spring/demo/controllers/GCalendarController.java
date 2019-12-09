@@ -1,15 +1,11 @@
 package com.spring.demo.controllers;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.FreeBusyRequest;
+import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.FreeBusyResponse;
 import com.spring.demo.services.GCalendarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,11 +23,23 @@ public class GCalendarController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, FreeBusyResponse>> getCal(@RequestBody List<String> requestForUsers) {
+    public ResponseEntity<Map<String, FreeBusyResponse>> getFreeBusyResponse(@RequestBody List<String> requestForUsers) {
         var response = new HashMap<String, FreeBusyResponse>();
         for (String username : requestForUsers) {
-            var freeBusyResponse = gCalendarService.getFreeBusyFromCalendar(username);
+            var calendar = gCalendarService.getCalendar(username);
+            var freeBusyResponse = gCalendarService.getFreeBusyFromCalendar(calendar);
             response.put(username, freeBusyResponse);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("events")
+    public ResponseEntity<Map<String, List<Event>>> getEvents(@RequestBody List<String> requestForUsers) {
+        var response = new HashMap<String, List<Event>>();
+        for (String username : requestForUsers) {
+            var calendar = gCalendarService.getCalendar(username);
+            var events = gCalendarService.getEventsFromCalendar(calendar);
+            response.put(username, events);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

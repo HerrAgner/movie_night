@@ -84,7 +84,6 @@
 import movieDetailsService from '@/services/movieDetailsService';
 import GCalendarService from '@/services/GCalendarService';
 import Loading from '@/components/Loading';
-import { slategray } from 'color-name';
 
 export default {
   name: 'MovieDetails',
@@ -136,17 +135,18 @@ export default {
         this.$router.push({ path: '/' });
       }
     },
-    async fetchCalenders() {
-      let res = await GCalendarService().getFreeBusyCalendarFromList(['admin', 'martin']);
+    async fetchCalendars() {
+      let res = await GCalendarService().getFreeBusyCalendarFromList(['martin', 'user']);
       
-
+    console.log(res);
       for(let user of Object.values(res)) {
+        console.log(user);
         if(user && user.calendars && user.calendars.primary && user.calendars.primary.busy) {
           for(let event of user.calendars.primary.busy) {
             let startDate = new Date(event.start.value);
-            console.log('start', startDate.toLocaleString());
+            console.log('start', startDate.toLocaleString('SV-se'));
             let endDate = new Date(event.end.value);
-            console.log('end', endDate.toLocaleString());
+            console.log('end', endDate.toLocaleString('SV-se'));
 
           }
         }
@@ -156,7 +156,7 @@ export default {
   },
   mounted() {
     this.fetchMovie();
-    this.fetchCalenders();  
+    this.fetchCalendars();  
 
   },
   watch: {
