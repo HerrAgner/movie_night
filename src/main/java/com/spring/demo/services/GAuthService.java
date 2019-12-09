@@ -7,6 +7,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.auth.oauth2.AccessToken;
 import com.spring.demo.entities.User;
 import com.spring.demo.util.SuperSecretInformation;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Date;
 
 @Service
 public class GAuthService {
@@ -85,8 +87,7 @@ public class GAuthService {
         return user != null ? user.getGoogleToken() : null;
     }
 
-    public GoogleTokenResponse tryRefreshToken() {
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+    public GoogleTokenResponse tryRefreshToken(String username) {
         if (username == null) return null;
 
         var user = userService.getUserByUsername(username);
@@ -110,6 +111,21 @@ public class GAuthService {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public String getBearerTokenForUser(String username) {
+        var user = userService.getUserByUsername(username);
+        if(user == null) return null;
+        if(user.getGoogleToken() == null) return null;
+
+        return user.getGoogleToken().getAccessToken();
+    }
+
+    public AccessToken getAccessToken(String username) {
+        var user = userService.getUserByUsername(username);
+        if(user == null || user.getGoogleToken() == null || user.getGoogleTokenExpiresAt() == 0) return null;
+        var accessToken = new AccessToken(user.getGoogleToken().getAccessToken(), new Date(user.getGoogleTokenExpiresAt()));
+        return accessToken;
     }
 
 

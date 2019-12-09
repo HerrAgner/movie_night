@@ -85,6 +85,7 @@
 
 <script>
 import movieDetailsService from '@/services/movieDetailsService';
+import GCalendarService from '@/services/GCalendarService';
 import Loading from '@/components/Loading';
 import popupEvent from "../components/popupEvent";
 
@@ -138,10 +139,31 @@ export default {
       } else {
         this.$router.push({ path: '/' });
       }
+    },
+    async fetchCalendars() {
+      let freebusy = await GCalendarService().getFreeBusyCalendarFromList(['martin', 'user']);
+      let events = await GCalendarService().getEventsFromCalendar(['martin', 'user']);
+      
+      console.log(events);
+      for(let user of Object.values(freebusy)) {
+        console.log(user);
+        if(user && user.calendars && user.calendars.primary && user.calendars.primary.busy) {
+          for(let event of user.calendars.primary.busy) {
+            let startDate = new Date(event.start.value);
+            console.log('start', startDate.toLocaleString('SV-se'));
+            let endDate = new Date(event.end.value);
+            console.log('end', endDate.toLocaleString('SV-se'));
+
+          }
+        }
+      }
+      
     }
   },
   mounted() {
     this.fetchMovie();
+    this.fetchCalendars();
+
   },
   watch: {
     getRoute: function(value, oldValue) {
