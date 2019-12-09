@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
@@ -85,7 +86,7 @@ public class GCalendarService {
                 .build();
     }
 
-    public Event createCalendarEvent(String creator, String startTime, String endTime, String timeZone) {
+    public Event createCalendarEvent(String creator, String startTime, String endTime, String timeZone, List<String> attendees) {
         Calendar calendar = getCalendar(creator);
         TimeZone tz = TimeZone.getTimeZone(timeZone);
         String offset = tz.toZoneId().getRules().getStandardOffset(Instant.now()).getId();
@@ -102,11 +103,16 @@ public class GCalendarService {
                 .setDateTime(endDateTime);
         event.setEnd(end);
 
-        EventAttendee[] attendees = new EventAttendee[]{
-                new EventAttendee().setEmail("test@asd.se"),
-                new EventAttendee().setEmail("sbrin@example.com"),
-        };
-        event.setAttendees(Arrays.asList(attendees));
+
+        ArrayList<EventAttendee> eventAttendees = new ArrayList<>();
+        for (String attendee: attendees) {
+            eventAttendees.add(new EventAttendee().setEmail(attendee));
+        }
+//        EventAttendee[] eventAttende = new EventAttendee[]{
+//                new EventAttendee().setEmail("test@asd.se"),
+//                new EventAttendee().setEmail("sbrin@example.com"),
+//        };
+        event.setAttendees(eventAttendees);
 
         EventReminder[] reminderOverrides = new EventReminder[]{
                 new EventReminder().setMethod("email").setMinutes(24 * 60),

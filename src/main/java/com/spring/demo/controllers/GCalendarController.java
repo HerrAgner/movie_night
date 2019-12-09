@@ -3,6 +3,7 @@ package com.spring.demo.controllers;
 
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.FreeBusyResponse;
+import com.spring.demo.entities.MovieEvent;
 import com.spring.demo.services.GCalendarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,6 @@ public class GCalendarController {
             var freeBusyResponse = gCalendarService.getFreeBusyFromCalendar(calendar);
             response.put(username, freeBusyResponse);
         }
-        gCalendarService.createCalendarEvent("","","");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -43,5 +43,14 @@ public class GCalendarController {
             response.put(username, events);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("events/create")
+    public ResponseEntity<Event> createEvent(@RequestBody MovieEvent event){
+        Event newEvent = gCalendarService.createCalendarEvent(event.getCreator(), event.getStartTime(), event.getEndTime(),event.getTimeZone(), event.getAttendees());
+        if (newEvent == null || newEvent.getCreator() == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(newEvent, HttpStatus.OK);
     }
 }
