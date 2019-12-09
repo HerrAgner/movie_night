@@ -29,7 +29,7 @@
                                             <v-select
                                                 v-model="selectedFriends"
                                                 :items="friends"
-                                                label="Favorite Fruits"
+                                                label="Invite friends"
                                                 multiple
                                             >
                                                 <template v-slot:prepend-item>
@@ -132,9 +132,8 @@ export default {
         if (res.status === 200){
             res = await res.json();
             res.forEach(item => {
-                if (this.$store.state.loggedInUser !== item.username) {
+                if (this.$store.state.loggedInUser !== item.username && item.googleToken !== null) {
                     this.friends.push(item.username);
-                    //this.value.push(item.id);
                 }
             });
         }
