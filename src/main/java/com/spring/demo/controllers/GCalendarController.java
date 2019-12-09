@@ -30,6 +30,7 @@ public class GCalendarController {
             var freeBusyResponse = gCalendarService.getFreeBusyFromCalendar(calendar);
             response.put(username, freeBusyResponse);
         }
+        gCalendarService.createCalendarEvent("","","");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

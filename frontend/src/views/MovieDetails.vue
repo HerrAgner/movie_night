@@ -136,8 +136,8 @@ export default {
       }
     },
     async fetchCalendars() {
-      let freebusy = await GCalendarService().getFreeBusyCalendarFromList(['martin', 'user']);
-      let events = await GCalendarService().getEventsFromCalendar(['martin', 'user']);
+      let freebusy = await GCalendarService().getFreeBusyCalendarFromList(['user']);
+      let events = await GCalendarService().getEventsFromCalendar(['user']);
       
       console.log(events);
       for(let user of Object.values(freebusy)) {

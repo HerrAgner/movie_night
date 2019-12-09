@@ -16,7 +16,10 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 
 @Service
 public class GCalendarService {
@@ -45,7 +48,7 @@ public class GCalendarService {
 
     public FreeBusyResponse getFreeBusyFromCalendar(Calendar calendar) {
 
-        if(calendar == null) return null;
+        if (calendar == null) return null;
 
         var request = getFreeBusyRequest(NUM_DAYS_START, NUM_DAYS_AHEAD);
         FreeBusyResponse response = null;
@@ -76,16 +79,53 @@ public class GCalendarService {
     public Calendar getCalendar(String username) {
         gAuthService.tryRefreshToken(username);
         GoogleCredentials credential = GoogleCredentials.create(gAuthService.getAccessToken(username));
-        if(credential == null || credential.getAccessToken() == null) return null;
+        if (credential == null || credential.getAccessToken() == null) return null;
         return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(credential.getAccessToken().getTokenValue()))
                 .setApplicationName(superSecretInformation.getApplicationName())
                 .build();
     }
 
-//    public Event createCalendarEvent(String[] attendees, ){
-//        Event event = new Event()
-//                .setSummary("Movie Night")
-//                .;
-//    }
+    public Event createCalendarEvent(String creator, String startTime, String endTime, String timeZone) {
+        Calendar calendar = getCalendar(creator);
+        TimeZone tz = TimeZone.getTimeZone(timeZone);
+        String offset = tz.toZoneId().getRules().getStandardOffset(Instant.now()).getId();
+        Event event = new Event()
+                .setSummary("Movie Night");
+        DateTime startDateTime = new DateTime(startTime + offset);
+//        2015-05-28T09:00:00-07:00
+        EventDateTime start = new EventDateTime()
+                .setTimeZone("Europe/Stockholm")
+                .setDateTime(startDateTime);
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime(endTime + offset);
+        EventDateTime end = new EventDateTime()
+                .setDateTime(endDateTime);
+        event.setEnd(end);
+
+        EventAttendee[] attendees = new EventAttendee[]{
+                new EventAttendee().setEmail("test@asd.se"),
+                new EventAttendee().setEmail("sbrin@example.com"),
+        };
+        event.setAttendees(Arrays.asList(attendees));
+
+        EventReminder[] reminderOverrides = new EventReminder[]{
+                new EventReminder().setMethod("email").setMinutes(24 * 60),
+                new EventReminder().setMethod("popup").setMinutes(10),
+        };
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(reminderOverrides));
+        event.setReminders(reminders);
+
+        String calendarId = "primary";
+        try {
+            event = calendar.events().insert(calendarId, event).execute();
+            System.out.printf("Event created: %s\n", event.getHtmlLink());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return event;
+    }
 }
 
