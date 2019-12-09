@@ -35,12 +35,17 @@
                                                 >
                                                     <template v-slot:prepend-item>
                                                         <v-list-item
+                                                                ripple
                                                                 @click="toggle"
                                                         >
+                                                            <v-list-item-action>
+                                                                <v-icon color="indigo darken-4">{{ icon }}</v-icon>
+                                                            </v-list-item-action>
                                                             <v-list-item-content>
-                                                                <v-list-item-title>{{selectTitle}}</v-list-item-title>
+                                                                <v-list-item-title>Select All</v-list-item-title>
                                                             </v-list-item-content>
                                                         </v-list-item>
+                                                        <v-divider class="mt-2"/>
                                                     </template>
                                                 </v-select>
 
@@ -130,23 +135,12 @@
       date: new Date().toISOString().substr(0, 10),
       menu: false,
       selectedFriends: [],
-      selectTitle: 'Select All',
-      loading: false,
     }),
     methods: {
       toggle() {
         this.$nextTick(() => {
-          if (this.inviteAllFriends) {
-            this.selectedFriends = [];
-            this.selectTitle = 'Select All'
-          } else {
-            this.selectedFriends = this.friends.slice();
-            this.selectTitle = 'Select None'
-          }
+          this.inviteAllFriends ? this.selectedFriends = [] : this.selectedFriends = this.friends.slice();
         })
-      },
-      close() {
-        alert('Chip close clicked')
       },
       async createEvent() {
         const data = {
@@ -176,6 +170,14 @@
       inviteAllFriends() {
         return this.selectedFriends.length === this.friends.length
       },
+        inviteSomeFriends () {
+            return this.selectedFriends.length > 0 && !this.inviteAllFriends
+        },
+        icon () {
+            if (this.inviteAllFriends) return 'check_circle';
+            if (this.inviteSomeFriends) return 'minimize';
+            return 'check_circle_outline'
+        },
     },
     async mounted() {
       let token = this.$store.state.cookie;
@@ -188,9 +190,9 @@
       if (res.status === 200) {
         res = await res.json();
         res.forEach(item => {
-          //if (this.$store.state.loggedInUser !== item.username && item.googleToken !== null) {
+          if (this.$store.state.loggedInUser !== item.username && item.googleToken !== null) {
                     this.friends.push(item.username);
-          //}
+          }
         });
       }
     }
