@@ -11,6 +11,7 @@ export default new Vuex.Store({
   state: {
     isLoggedin: false,
     loggedInUser: '',
+    cookie: ''
   },
   mutations: {
     setLogin(state, status) {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     setLoggedInUser(state, user) {
       state.loggedInUser = user;
 
+    },
+    setCookie(state, cookie) {
+      state.cookie = cookie;
     }
   },
   actions: {
@@ -35,6 +39,7 @@ export default new Vuex.Store({
         if (this.response !== null) {
           Cookie.set("token", this.response.jwt);
           this.commit("setLogin", true);
+          this.commit("setCookie", this.response.jwt);
           router.push({ path: '/' })
         }
       })
