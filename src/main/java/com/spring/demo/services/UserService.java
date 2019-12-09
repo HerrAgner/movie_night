@@ -38,6 +38,13 @@ public class UserService {
         return user;
     }
 
+    public User findUserByUsername(String username) {
+        System.out.println("usernamew: "+username);
+        User user = userRepository.findDistinctFirstByUsernameIgnoreCase("user");
+        System.out.println(user.getId());
+        return user;
+    }
+
     public User saveUser(User user) {
         try {
             return userRepository.save(user);

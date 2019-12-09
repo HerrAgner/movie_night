@@ -70,10 +70,10 @@
               <td class="movie_info_prop">Awards:</td>
               <td>{{ getMovie.Awards }}</td>
             </tr>
+            <popupEvent :movie="movie" />
           </table>
         </v-col>
       </v-row>
-      <v-btn @click="createEvent">testo</v-btn>
     </v-container>
     <v-container v-else>
       Could not find movie..
@@ -86,12 +86,14 @@ import movieDetailsService from '@/services/movieDetailsService';
 import GCalendarService from '@/services/GCalendarService';
 import Loading from '@/components/Loading';
 import AuthService from '@/services/AuthService';
+import popupEvent from '@/components/popupEvent';
 
 
 export default {
   name: 'MovieDetails',
   components: {
-    Loading
+    Loading,
+    popupEvent
   },
   data: () => ({
     movie: null,
@@ -156,20 +158,6 @@ export default {
         }
       }
       
-    },
-    async createEvent() {
-      const data = { creator: "user", startTime: "2019-12-11T09:00:00", endTime: "2019-12-11T15:00:00",
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, attendees: ["rami.albadri77@gmail.com"]};
-  
-      let res = await fetch('/api/gcal/events/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: AuthService().getBearerTokenAsString()
-        },
-        body: JSON.stringify(data)
-      });
-      return res.status === 200 ? true : false;
     }
   },
   mounted() {

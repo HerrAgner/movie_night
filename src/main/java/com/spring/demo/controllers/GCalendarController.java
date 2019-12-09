@@ -34,20 +34,20 @@ public class GCalendarController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("events")
-    public ResponseEntity<Map<String, List<Event>>> getEvents(@RequestBody List<String> requestForUsers) {
-        var response = new HashMap<String, List<Event>>();
-        for (String username : requestForUsers) {
-            var calendar = gCalendarService.getCalendar(username);
-            var events = gCalendarService.getEventsFromCalendar(calendar);
-            response.put(username, events);
-        }
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+//    @PostMapping("events")
+//    public ResponseEntity<Map<String, List<Event>>> getEvents(@RequestBody List<String> requestForUsers) {
+//        var response = new HashMap<String, List<Event>>();
+//        for (String username : requestForUsers) {
+//            var calendar = gCalendarService.getCalendar(username);
+//            var events = gCalendarService.getEventsFromCalendar(calendar);
+//            response.put(username, events);
+//        }
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
 
     @PostMapping("events/create")
     public ResponseEntity<Event> createEvent(@RequestBody MovieEvent event){
-        Event newEvent = gCalendarService.createCalendarEvent(event.getCreator(), event.getStartTime(), event.getEndTime(),event.getTimeZone(), event.getAttendees());
+        Event newEvent = gCalendarService.createCalendarEvent(event);
         if (newEvent == null || newEvent.getCreator() == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

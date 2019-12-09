@@ -25,5 +25,16 @@ export default () => ({
     });
     response = response.status === 200 ? await response.json() : null;
     return response;
+  },
+  async createGoogleCalendarEvent(data) {
+       let res = await fetch('/api/gcal/events/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthService().getBearerTokenAsString()
+      },
+      body: JSON.stringify(data)
+    });
+    return res.status === 200 ? true : false;
   }
 });
