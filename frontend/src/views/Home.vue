@@ -3,6 +3,8 @@
     <v-container>
       <div>
         Hi {{getUsername}}!
+
+        <CalendarDay /> 
       </div>
       </v-container> 
   </div>
@@ -10,6 +12,7 @@
 
 <script>
 import Cookie from "js-cookie";
+import CalendarDay from '@/components/CalendarDay';
 
 // @ is an alias to /src
 
@@ -19,6 +22,7 @@ export default {
     // username: ''
   }),
   components: {
+    CalendarDay
   },
   computed: {
     getUsername() {
@@ -44,7 +48,7 @@ export default {
 
       }
   }
-
+      
   }
 }
 </script>
