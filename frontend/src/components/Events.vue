@@ -35,7 +35,7 @@
 
                                 </v-row>
 
-                            <EventEditor />
+                            <EventEditor :event="item" :key="i"/>
 
                         <v-avatar
                                 cols="12" md="4"
@@ -59,13 +59,10 @@ import EventEditor from "./EventEditor";
         },
         data: () => ({
             events: [],
-            selectedFriends: []
         }),
         async mounted() {
             let res = await EventsService().getAllEvents();
             res.forEach(item => {
-                item.attendees.forEach(friend =>
-                    this.selectedFriends.push(friend));
                 this.events.push(item);
 
             });

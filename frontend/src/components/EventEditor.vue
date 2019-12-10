@@ -4,7 +4,7 @@
             <v-row justify="center">
                 <v-btn text @click.stop="dialog = true">Edit</v-btn>
 
-                <v-dialog v-model="dialog" max-width="800">
+                <v-dialog v-model="dialog" max-width="800" @click:outside="resetPopup">
                     <v-card>
                         <v-card-title class="headline">Edit event</v-card-title>
 
@@ -19,7 +19,8 @@
                                                         v-model="eventName"
                                                         required
                                                         label="Event name"
-                                                />
+                                                >
+                                                </v-text-field>
                                             </v-col>
 
                                             <v-col cols="12" sm="6" md="10">
@@ -123,13 +124,16 @@
 
     export default {
         name: 'popupEvent',
+        props: {
+            event: Object,
+        },
         data: () => ({
             dialog: false,
             eventName: '',
             friends: [],
             date: new Date().toISOString().substr(0, 10),
             menu: false,
-            selectedFriends: [],
+            selectedFriends: []
         }),
         methods: {
             toggle() {
@@ -149,6 +153,9 @@
                 };
                 await GCalendarService().createGoogleCalendarEvent(data);
                 this.dialog = false;
+            },
+            resetPopup(){
+                this.selectedFriends = [...this.event.attendees]
             }
         },
         computed: {
@@ -166,6 +173,9 @@
                 if (this.inviteSomeFriends) return 'minimize';
                 return 'check_circle_outline'
             },
+        },
+        async created() {
+            this.selectedFriends = [...this.event.attendees]
         },
         async mounted() {
             let token = this.$store.state.cookie;
