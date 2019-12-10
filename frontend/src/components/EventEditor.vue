@@ -19,8 +19,8 @@
                                                         v-model="eventName"
                                                         required
                                                         label="Event name"
-                                                >
-                                                </v-text-field>
+                                                        :value="eventName"
+                                                />
                                             </v-col>
 
                                             <v-col cols="12" sm="6" md="10">
@@ -108,7 +108,7 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
+                            <v-btn color="green darken-1" text @click="resetPopup">Cancel</v-btn>
 
                             <v-btn color="green darken-1" text @click="createEvent">Save</v-btn>
                         </v-card-actions>
@@ -155,7 +155,9 @@
                 this.dialog = false;
             },
             resetPopup(){
-                this.selectedFriends = [...this.event.attendees]
+                this.dialog = false;
+                this.selectedFriends = [...this.event.attendees];
+                this.eventName = this.event.eventName
             }
         },
         computed: {
@@ -176,6 +178,7 @@
         },
         async created() {
             this.selectedFriends = [...this.event.attendees]
+            this.eventName = this.event.eventName
         },
         async mounted() {
             let token = this.$store.state.cookie;
