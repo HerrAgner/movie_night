@@ -19,7 +19,7 @@
             </div>
             <v-rating
               v-if="breakpointSmAndDown"
-              
+
               dense
               :value="getMovie.imdbRating"
               empty-icon="star_border"

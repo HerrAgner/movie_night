@@ -4,6 +4,7 @@ package com.spring.demo.controllers;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.FreeBusyResponse;
 import com.spring.demo.entities.MovieEvent;
+import com.spring.demo.entities.MovieEvent;
 import com.spring.demo.services.GCalendarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
