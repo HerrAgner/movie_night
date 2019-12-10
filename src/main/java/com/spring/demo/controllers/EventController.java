@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -33,9 +34,9 @@ public class EventController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<MovieEvent>> getEvents(@RequestParam String username){
-        List<MovieEvent> events = movieEventRepository.findAllByAttendeesContains(username);
-        List<MovieEvent> eventsByCreator = movieEventRepository.findAllByCreator(username);
+    public ResponseEntity<List<MovieEvent>> getEvents(Principal principal){
+        List<MovieEvent> events = movieEventRepository.findAllByAttendeesContains(principal.getName());
+        List<MovieEvent> eventsByCreator = movieEventRepository.findAllByCreator(principal.getName());
         events.addAll(eventsByCreator);
         return new ResponseEntity<>(events, HttpStatus.OK);
 

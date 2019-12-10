@@ -4,7 +4,7 @@
 </template>
 
 <script>
-    export default {
+import EventsService from "../services/EventsService";   export default {
         data: () => ({
 
         }),
@@ -12,10 +12,10 @@
         methods: {
 
         },
-        computed: {
-            getMyEvents(){
+        mounted() {
+            let res = EventsService().getAllEvents();
+            console.log("events: ",res)
 
-            }
         }
 
     }
