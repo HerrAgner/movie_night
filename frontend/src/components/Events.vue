@@ -1,5 +1,4 @@
 <template>
-    <v-container>
         <v-row>
             <v-col
                     v-for="(item, i) in events"
@@ -10,34 +9,45 @@
                         color="#1F7087"
                         dark
                 >
-                    <div class="d-flex flex-no-wrap justify-space-between">
-                        <div>
                             <v-card-title
                                     class="headline"
                                     v-text="item.eventName"
                             />
-                            <v-card-text>Invited friends:</v-card-text>
 
-                            <v-col v-for="(friend, i) in item.attendees"
-                                        :key="i"> {{friend}}
-                            </v-col>
+                                <v-row >
+                                    <v-col class="friendChip" cols="12" md="2">
+                                        <v-card-text>Invited friends:</v-card-text>
+                                    </v-col>
 
-                            <v-btn text>EDIT</v-btn>
+                                    <v-col cols="12" sm="12" md="2" class="invitedFriendsList">
+                                        <v-card-text
+                                                v-for="(friend, i) in item.attendees"
+                                                    :key="i"
+                                                class="invitedFriendsList">
+                                            <v-avatar left>
+                                                <v-icon>account_circle</v-icon>
+                                            </v-avatar>
+                                            {{friend}}
+                                        </v-card-text>
+                                    </v-col>
 
-                        </div>
 
+
+                                </v-row>
+
+                            <v-btn text
+                                   class="edit">EDIT</v-btn>
 
                         <v-avatar
-                                class="ma-3"
+                                cols="12" md="4"
                                 size="125"
                                 tile
+                                class="poster"
                         >
                         </v-avatar>
-                    </div>
                 </v-card>
             </v-col>
         </v-row>
-    </v-container>
 
 </template>
 
@@ -64,5 +74,21 @@ export default {
 
 <style scoped>
 
+    .friendChip {
+        padding: 0;
+    }
+    .invitedFriendsList{
+        padding: 0;
+        margin-left: -3vw;
+        margin-top: 0.3vh;
+    }
+    .edit{
+        display: flex;
+        justify-content: start;
+    }
+    .poster{
+        display: flex;
+        justify-content: end;
+    }
 
 </style>
