@@ -11,6 +11,11 @@
 
         methods: {
 
+        },
+        computed: {
+            getMyEvents(){
+
+            }
         }
 
     }
