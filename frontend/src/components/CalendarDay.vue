@@ -113,7 +113,7 @@ export default {
         }
       }
       this.loading = false;
-      console.log(this.events);
+      //console.log(this.events);
     },
     format(date) {
       return date.time;
@@ -129,14 +129,14 @@ export default {
       // console.log(this.isEventSet);
       if (!this.isEventSet) {
         this.compEvents = [...this.compEvents, {start: startTime, end: endTime, name: ''}]
-        console.log(this.compEvents);
+        //console.log(this.compEvents);
         this.newEvent.eventSet = true;
       } else {
         // console.log('eeevent', this.events[0]);
         // this.compEvents = this.compEvents;
         console.log('eeevent', this.events[0]);
       }
-      console.log(this.newEvent);
+      //console.log(this.newEvent);
       
     },
     handleChange(data) {
