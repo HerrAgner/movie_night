@@ -35,8 +35,7 @@
 
                                 </v-row>
 
-                            <v-btn text
-                                   class="edit">EDIT</v-btn>
+                            <EventEditor />
 
                         <v-avatar
                                 cols="12" md="4"
@@ -53,22 +52,24 @@
 
 <script>
 import EventsService from "../services/EventsService";
-export default {
-        data: () => ({
-            events: []
-        }),
-
-        methods: {
-
+import EventEditor from "./EventEditor";
+    export default {
+        components: {
+            EventEditor
         },
+        data: () => ({
+            events: [],
+            selectedFriends: []
+        }),
         async mounted() {
             let res = await EventsService().getAllEvents();
             res.forEach(item => {
+                item.attendees.forEach(friend =>
+                    this.selectedFriends.push(friend));
                 this.events.push(item);
 
             });
         }
-
     }
 </script>
 
