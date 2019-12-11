@@ -9,13 +9,15 @@
                         color="#1F7087"
                         dark
                 >
+                    <v-row>
+                        <v-col cols="12" md="9" class="movie_info">
                             <v-card-title
                                     class="headline"
                                     v-text="item.eventName"
                             />
 
                                 <v-row >
-                                    <v-col class="friendChip" cols="12" md="2">
+                                    <v-col class="friendChip" cols="12" md="3">
                                         <v-card-text>Invited friends:</v-card-text>
                                     </v-col>
 
@@ -32,8 +34,14 @@
 
 
                                 </v-row>
+                        </v-col>
 
+                        <v-col cols="12" md="2" class="movie_poster_container" :class="breakpointSmAndDown
+                                    && 'poster_below_sm'">
                             <v-img v-if="isLoading" :src="item.poster" class="movie_poster" alt="Image not found"/>
+                        </v-col>
+
+                    </v-row>
 
                             <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
 
@@ -58,6 +66,9 @@ import movieDetailsService from "../services/movieDetailsService";
             isLoading: false
         }),
         methods: {
+            breakpointSmAndDown() {
+                return this.$vuetify.breakpoint.smAndDown;
+            },
             getCurrentUser() {
                 return this.$store.state.loggedInUser
             },
