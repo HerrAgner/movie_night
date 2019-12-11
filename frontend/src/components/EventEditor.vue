@@ -139,7 +139,8 @@
             },
             async createEvent() {
                 const data = {
-                    movieId: this.movie.imdbID,
+                    eventId: this.event.eventId,
+                    movieId: this.event.movieId,
                     eventName: this.eventName,
                     creator: this.$store.state.loggedInUser,
                     startTime: new Date(this.date).toLocaleString().replace(" ", "T"),
@@ -147,7 +148,7 @@
                     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     attendees: this.selectedFriends
                 };
-                await GCalendarService().createGoogleCalendarEvent(data);
+                await GCalendarService().updateGoogleCalendarEvent(data);
                 this.dialog = false;
             },
             resetPopup(){

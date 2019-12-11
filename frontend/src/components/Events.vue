@@ -114,7 +114,6 @@ import movieDetailsService from "../services/movieDetailsService";
                 })
             });
             this.isLoading = true
-            console.log(this.events[0])
         }
     }
 </script>
