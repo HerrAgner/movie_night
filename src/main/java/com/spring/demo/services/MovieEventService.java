@@ -20,4 +20,8 @@ public class MovieEventService {
     public MovieEvent getMovieEvent(MovieEvent event){
         return movieEventRepository.findByEventId(event.getEventId());
     }
+
+    public void deleteMovieEvent(String id){
+         movieEventRepository.deleteByEventId(id);
+    }
 }

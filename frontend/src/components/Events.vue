@@ -65,6 +65,7 @@
                     </v-row>
 
                             <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
+                            <v-btn text v-if = "item.creator === getCurrentUser()" @click="deleteEvent(item.eventId)">Delete</v-btn>
 
                 </v-card>
             </v-col>
@@ -76,6 +77,7 @@
 import EventsService from "../services/EventsService";
 import EventEditor from "./EventEditor";
 import movieDetailsService from "../services/movieDetailsService";
+import GCalendarService from "../services/GCalendarService";
 
     export default {
         components: {
@@ -87,6 +89,9 @@ import movieDetailsService from "../services/movieDetailsService";
             isLoading: false
         }),
         methods: {
+            deleteEvent(eventId){
+                GCalendarService().deleteEvent(eventId)
+            },
             breakpointSmAndDown() {
                 return this.$vuetify.breakpoint.smAndDown;
             },

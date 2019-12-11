@@ -72,8 +72,14 @@ public class GCalendarController {
         movieEvent.setMovieId(event.getMovieId());
         movieEvent.setStartTime(event.getStartTime());
         movieEvent.setTimeZone(event.getTimeZone());
-        movieEventService.saveMovieEventToDb(movieEvent);
+        movieEventService.saveMovieEventToDb(event);
 
+        return new ResponseEntity<>( HttpStatus.OK);
+    }
+
+    @DeleteMapping("event/{id}")
+    public ResponseEntity<Event> deleteEvent( @PathVariable String id){
+        movieEventService.deleteMovieEvent(id);
         return new ResponseEntity<>( HttpStatus.OK);
     }
 }
