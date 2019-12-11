@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 @RestController
@@ -50,6 +50,20 @@ public class MovieController {
         var result = movieSearchService.searchMovies(s, p);
 
         return new ResponseEntity<>(result, result.getTotalResults() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
+
+
+    @PostMapping()
+    public ResponseEntity<SearchResult> getSomeMovies(@RequestBody ArrayList<Movie> s) {
+        for ( var item : s){
+
+            System.out.println(item.getImdbID());
+        }
+        //((if(p <= 0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        //var result = movieSearchService.searchMovies(s, p);
+
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 
 

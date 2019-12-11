@@ -51,24 +51,35 @@
 <script>
 import EventsService from "../services/EventsService";
 import EventEditor from "./EventEditor";
+import movieDetailsService from "../services/movieDetailsService";
+
     export default {
         components: {
             EventEditor
         },
         data: () => ({
             events: [],
+            moviesID: []
         }),
         methods: {
             getCurrentUser() {
                 return this.$store.state.loggedInUser
+            },
+            async getMoviePoster(id) {
+                let moviePoster = await movieDetailsService().getMovieDetails(id);
+                this.isLoading = true;
+                //console.log(moviePoster.Poster);
+                return moviePoster.Poster;
             }
         },
         async mounted() {
             let res = await EventsService().getAllEvents();
-            res.forEach(item => {
+            await res.forEach(item => {
                 this.events.push(item);
-
+                this.moviesID.push({imdbID: item.movieId})
             });
+
+            await movieDetailsService().getAllMoviesDetails(this.moviesID)
         }
     }
 </script>
