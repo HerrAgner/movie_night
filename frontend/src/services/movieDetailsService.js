@@ -20,7 +20,6 @@ export default () => ({
         //url = url + ',' + allId[i];
       //}
     //}
-    console.log(JSON.stringify(ids));
     let response = await fetch('api/movies', {
       method: 'POST',
       headers: {
@@ -29,6 +28,7 @@ export default () => ({
       },
       body: JSON.stringify(ids)
     });
-
+    response = response.status === 200 ? await response.json() : null;
+    return response;
   }
 });

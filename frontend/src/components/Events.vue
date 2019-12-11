@@ -33,13 +33,8 @@
 
                                 </v-row>
 
-                        <v-avatar
-                                cols="12" md="4"
-                                size="125"
-                                tile
-                                class="poster"
-                        >
-                        </v-avatar>
+                            <v-img v-if="isLoading" :src="item.poster" class="movie_poster" alt="Image not found"/>
+
                             <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
 
                 </v-card>
@@ -59,7 +54,8 @@ import movieDetailsService from "../services/movieDetailsService";
         },
         data: () => ({
             events: [],
-            moviesID: []
+            moviesID: [],
+            isLoading: false
         }),
         methods: {
             getCurrentUser() {
@@ -79,7 +75,14 @@ import movieDetailsService from "../services/movieDetailsService";
                 this.moviesID.push({imdbID: item.movieId})
             });
 
-            await movieDetailsService().getAllMoviesDetails(this.moviesID)
+            let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
+            movies.forEach(movie => {
+                this.events.forEach(e => {
+                    if (e.movieId === movie.imdbID) e.poster = movie.Poster
+                })
+            });
+            this.isLoading = true
+            console.log(this.events[0])
         }
     }
 </script>
