@@ -21,12 +21,10 @@
 
                                     <v-col cols="12" sm="12" md="2" class="invitedFriendsList">
                                         <v-card-text
-                                                v-for="(friend, i) in item.attendees"
-                                                    :key="i"
-                                                class="invitedFriendsList">
-                                            <v-avatar left>
-                                                <v-icon>account_circle</v-icon>
-                                            </v-avatar>
+                                            v-for="(friend, i) in item.attendees"
+                                                :key="i"
+                                            class="invitedFriendsList">
+                                            <v-icon>account_circle</v-icon>
                                             {{friend}}
                                         </v-card-text>
                                     </v-col>
@@ -35,8 +33,6 @@
 
                                 </v-row>
 
-                            <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
-
                         <v-avatar
                                 cols="12" md="4"
                                 size="125"
@@ -44,6 +40,8 @@
                                 class="poster"
                         >
                         </v-avatar>
+                            <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
+
                 </v-card>
             </v-col>
         </v-row>
@@ -62,7 +60,6 @@ import EventEditor from "./EventEditor";
         }),
         methods: {
             getCurrentUser() {
-                console.log(this.$store.state.loggedInUser)
                 return this.$store.state.loggedInUser
             }
         },
@@ -84,11 +81,7 @@ import EventEditor from "./EventEditor";
     .invitedFriendsList{
         padding: 0;
         margin-left: -3vw;
-        margin-top: 0.3vh;
-    }
-    .edit{
-        display: flex;
-        justify-content: start;
+        margin-top: 0.8vh;
     }
     .poster{
         display: flex;

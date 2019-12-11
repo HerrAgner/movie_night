@@ -1,6 +1,4 @@
 <template>
-    <div id="app">
-        <v-app id="inspire">
             <v-row justify="center">
                 <v-btn text @click.stop="dialog = true">Edit</v-btn>
 
@@ -114,8 +112,7 @@
                     </v-card>
                 </v-dialog>
             </v-row>
-        </v-app>
-    </div>
+
 </template>
 <script>
 
