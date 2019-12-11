@@ -16,24 +16,45 @@
                                     v-text="item.eventName"
                             />
 
-                                <v-row >
-                                    <v-col class="friendChip" cols="12" md="3">
-                                        <v-card-text>Invited friends:</v-card-text>
-                                    </v-col>
+                            <v-row >
+                                <v-col class="friendChip2" cols="12" md="3">
+                                    <v-card-text>Invited friends:</v-card-text>
+                                </v-col>
 
-                                    <v-col cols="12" sm="12" md="2" class="invitedFriendsList">
-                                        <v-card-text
-                                            v-for="(friend, i) in item.attendees"
-                                                :key="i"
-                                            class="invitedFriendsList">
-                                            <v-icon>account_circle</v-icon>
-                                            {{friend}}
-                                        </v-card-text>
-                                    </v-col>
+                                <v-col cols="12" sm="12" md="2" class="invitedFriendsList">
+                                    <v-card-text
+                                        v-for="(friend, i) in item.attendees"
+                                            :key="i"
+                                        class="invitedFriendsList">
+                                        <v-icon>account_circle</v-icon>
+                                        {{friend}}
+                                    </v-card-text>
+                                </v-col>
+                            </v-row>
+
+                            <v-row >
+                                <v-col class="friendChip" cols="12" md="2">
+                                    <v-card-text>Date: </v-card-text>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="2" class="dateTime">
+                                    <v-card-text class="dateTime">
+                                            {{item.startTime.split('T')[0]}}
+                                    </v-card-text>
+                                </v-col>
+                            </v-row>
 
 
+                            <v-row >
+                                <v-col class="friendChip" cols="12" md="2">
+                                    <v-card-text>Time: </v-card-text>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="2" class="dateTime">
+                                    <v-card-text class="dateTime">
+                                        {{item.startTime.split('T')[1]}}
+                                    </v-card-text>
+                                </v-col>
+                            </v-row>
 
-                                </v-row>
                         </v-col>
 
                         <v-col cols="12" md="2" class="movie_poster_container" :class="breakpointSmAndDown
@@ -103,14 +124,20 @@ import movieDetailsService from "../services/movieDetailsService";
     .friendChip {
         padding: 0;
     }
+    .friendChip2{
+        padding: 0;
+        margin-left: -0.4vw;
+    }
     .invitedFriendsList{
         padding: 0;
         margin-left: -3vw;
         margin-top: 0.8vh;
     }
-    .poster{
-        display: flex;
-        justify-content: end;
+
+    .dateTime{
+        padding: 0;
+        margin-left: -2.5vw;
+        margin-top: 0.8vh;
     }
 
 </style>
