@@ -19,7 +19,6 @@
                                                         v-model="eventName"
                                                         required
                                                         label="Event name"
-                                                        :value="eventName"
                                                 />
                                             </v-col>
 

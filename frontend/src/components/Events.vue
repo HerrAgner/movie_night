@@ -35,7 +35,7 @@
 
                                 </v-row>
 
-                            <EventEditor :event="item" :key="i"/>
+                            <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
 
                         <v-avatar
                                 cols="12" md="4"
@@ -60,6 +60,12 @@ import EventEditor from "./EventEditor";
         data: () => ({
             events: [],
         }),
+        methods: {
+            getCurrentUser() {
+                console.log(this.$store.state.loggedInUser)
+                return this.$store.state.loggedInUser
+            }
+        },
         async mounted() {
             let res = await EventsService().getAllEvents();
             res.forEach(item => {
