@@ -8,6 +8,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.*;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.spring.demo.entities.MovieEvent;
+import com.spring.demo.entities.User;
 import com.spring.demo.util.SuperSecretInformation;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ public class GCalendarService {
 
     private final GAuthService gAuthService;
     private final SuperSecretInformation superSecretInformation;
+    private final MovieEventService movieEventService;
+    private final UserService userService;
     private final String FREE_BUSY_URL = "https://www.googleapis.com/calendar/v3/freeBusy";
     private final long NUM_DAYS_AHEAD = 30;
     private final long NUM_DAYS_START = 0;
@@ -31,9 +35,11 @@ public class GCalendarService {
     private final Set<Integer> ACCEPTED_START_HOURS = Set.of(18, 19, 20, 21, 22, 23);
     private final Set<Integer> ACCEPTED_END_HOURS = Set.of(20, 21, 22, 23, 0, 1, 2);
 
-    public GCalendarService(GAuthService gAuthService, SuperSecretInformation superSecretInformation) {
+    public GCalendarService(GAuthService gAuthService, SuperSecretInformation superSecretInformation, MovieEventService movieEventService, UserService userService) {
         this.gAuthService = gAuthService;
         this.superSecretInformation = superSecretInformation;
+        this.movieEventService = movieEventService;
+        this.userService = userService;
     }
 
     public List<TimePeriod> getSuggestedEventPeriods(List<String> users, long duration) {
@@ -185,6 +191,59 @@ public class GCalendarService {
             }
         }
         return freeBusyList;
+    }
+
+    public Event createCalendarEvent(MovieEvent movieEvent) {
+        Calendar calendar = getCalendar(movieEvent.getCreator());
+        TimeZone tz = TimeZone.getTimeZone(movieEvent.getTimeZone());
+        String offset = tz.toZoneId().getRules().getStandardOffset(Instant.now()).getId();
+        Event event = new Event()
+                .setSummary(movieEvent.getEventName())
+                .setDescription("https://www.imdb.com/title/" + movieEvent.getMovieId());
+        DateTime startDateTime = new DateTime(movieEvent.getStartTime() + offset);
+//        2015-05-28T09:00:00-07:00
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime);
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime(movieEvent.getEndTime() + offset);
+        EventDateTime end = new EventDateTime()
+                .setDateTime(endDateTime);
+        event.setEnd(end);
+
+
+        ArrayList<EventAttendee> eventAttendees = new ArrayList<>();
+        for (String attendee : movieEvent.getAttendees()) {
+            User user = userService.getUserByUsername(attendee);
+            if (user != null && user.getGoogleInfo() != null) {
+                String email = user.getGoogleInfo().getEmail();
+                if (email != null && !email.isEmpty()) {
+                    eventAttendees.add(new EventAttendee().setEmail(email));
+                }
+            }
+        }
+        event.setAttendees(eventAttendees);
+
+        EventReminder[] reminderOverrides = new EventReminder[]{
+                new EventReminder().setMethod("email").setMinutes(24 * 60),
+                new EventReminder().setMethod("popup").setMinutes(10),
+        };
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(reminderOverrides));
+        event.setReminders(reminders);
+
+        String calendarId = "primary";
+        try {
+            event = calendar.events().insert(calendarId, event).execute();
+            System.out.printf("Event created: %s\n", event.getHtmlLink());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        movieEvent.setEventId(event.getId());
+        movieEventService.saveMovieEventToDb(movieEvent);
+        return event;
     }
 }
 

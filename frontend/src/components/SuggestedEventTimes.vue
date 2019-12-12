@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="getAttendees.length > 0">
     <Loading v-if="isLoading" />
-    <v-select :items="getSuggestedTimePeriods" />
+    <v-select :items="getSuggestedTimePeriods" @change="updateTime" />
   </v-container>
 </template>
 
@@ -35,6 +35,9 @@ export default {
     }
   },
   methods: {
+    updateTime(data){
+      this.$emit('handleTimeUpdate', data);
+    },
     async getSuggestedTimes() {
       this.loading = true;
 

@@ -79,7 +79,7 @@
 
 
                                             <v-col cols="12" >
-                                                <SuggestedEventTimes :attendees=selectedFriends :runtime=movie.Runtime />
+                                                <SuggestedEventTimes :attendees=selectedFriends :runtime=movie.Runtime @handleTimeUpdate="handleTimeUpdate" />
                                             </v-col>
 
 
@@ -105,7 +105,6 @@
 </template>
 <script>
 import SuggestedEventTimes from '@/components/SuggestedEventTimes';
-
   import GCalendarService from "../services/GCalendarService";
 
   export default {
@@ -118,11 +117,17 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
       dialog: false,
       eventName: '',
       friends: [],
-      date: new Date().toISOString().substr(0, 10),
+      startTime: null,
+      endTime: null,
       menu: false,
       selectedFriends: [],
     }),
     methods: {
+        handleTimeUpdate(data){
+            this.startTime = data.split(' - ')[0].replace(' ', 'T');
+            this.endTime = data.split(' - ')[1].replace(' ', 'T');
+
+        },
       toggle() {
         this.$nextTick(() => {
           this.inviteAllFriends ? this.selectedFriends = [] : this.selectedFriends = this.friends.slice();
@@ -133,8 +138,8 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
           movieId: this.movie.imdbID,
           eventName: this.eventName,
           creator: this.$store.state.loggedInUser,
-          startTime: new Date(this.date).toLocaleString().replace(" ", "T"),
-          endTime: new Date(this.date).toLocaleString().replace(" ", "T"),
+          startTime: this.startTime,
+          endTime: this.endTime,
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           attendees: this.selectedFriends
         };
