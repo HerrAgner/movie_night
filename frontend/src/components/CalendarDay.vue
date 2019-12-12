@@ -1,45 +1,96 @@
 <template>
   <Loading v-if="isLoading" />
   <v-row v-else>
-    <v-col>
-      <v-btn outlined small color="primary" @click="$refs.calendar.prev()">
-        <v-icon>navigate_before</v-icon>
-      </v-btn>
-
-      <v-btn outlined small color="primary" @click="$refs.calendar.next()">
-        <v-icon>navigate_next</v-icon>
-      </v-btn>
-      <v-sheet height="800">
-        <v-calendar
-          ref="calendar"
-          color="primary"
-          type="day"
-          v-model="getStart"
-          :events="getEvents"
-          :event-overlap-threshold="0"
-          interval-height="24"
-          :interval-format="format"
-          :max-days="10"
+    <v-col cols="12">
+      <div class="calendar_time_pickers">
+        <v-dialog
+          ref="dialogStart"
+          v-model="startTimeModal"
+          :return-value.sync="startTime"
+          width="290px"
         >
-          <template v-slot:day-header="{ day }"> </template>
-        </v-calendar>
-      </v-sheet>
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="startTime"
+              label="Start time"
+              prepend-icon="access_time"
+              readonly
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-time-picker
+            v-if="startTimeModal"
+            v-model="startTime"
+            full-width
+            format="24hr"
+            @change="handleChangeStartTime"
+          >
+          </v-time-picker>
+        </v-dialog>
+
+        <v-dialog
+          ref="dialogEnd"
+          v-model="endTimeModal"
+          :return-value.sync="endTime"
+          width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="endTime"
+              label="End time"
+              prepend-icon="access_time"
+              readonly
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-time-picker
+            v-if="endTimeModal"
+            v-model="endTime"
+            full-width
+            format="24hr"
+            @change="handleChangeStartTime"
+          >
+          </v-time-picker>
+        </v-dialog>
+      </div>
+      <div style="display: flex;">
+        <div>
+          <v-btn
+            small
+            style="height: 100%;"
+            color="primary"
+            @click="$refs.calendar.prev()"
+          >
+            <v-icon>navigate_before</v-icon>
+          </v-btn>
+        </div>
+        <v-sheet style="flex-grow: 1;">
+          <v-calendar
+            ref="calendar"
+            color="primary"
+            type="day"
+            v-model="start"
+            :now="start"
+            :events="getEvents"
+            interval-height="24"
+            :interval-format="format"
+            :max-days="10"
+            :event-color="getEventColor"
+          >
+          </v-calendar>
+        </v-sheet>
+        <div>
+          <v-btn
+            small
+            style="height: 100%;"
+            color="primary"
+            @click="$refs.calendar.next()"
+          >
+            <v-icon>navigate_next</v-icon>
+          </v-btn>
+        </div>
+      </div>
     </v-col>
-    <div class="calendar_time_pickers">
-      START
-      <v-time-picker
-        v-model="startTime"
-        format="24hr"
-        @change="handleChangeStartTime"
-      ></v-time-picker>
-      END
-      <v-time-picker
-        v-model="endTime"
-        format="24hr"
-        @change="handleChangeEndTime"
-      ></v-time-picker>
-      <v-btn class="create_event" @click="createEvent">CREATE</v-btn>
-    </div>
   </v-row>
 </template>
 
@@ -53,93 +104,166 @@ export default {
   components: {
     Loading
   },
+  props: {
+    duration: Number
+  },
   data: () => ({
+    startTimeModal: false,
+    endTimeModal: false,
     start: TimeService().getCurrentDate(),
     startTime: null,
     endTime: null,
     events: [],
+    calendarEvents: null,
     newEvent: [],
     loading: true
   }),
   computed: {
-    getStart: {
-      get: function() {
-        return this.start;
-      },
-      set: function(newValue) {
-        this.start = newValue;
-      }
+    getStart() {
+      return this.start;
     },
-    getEvents: {
-      get: function() {
-        return this.events.concat(this.newEvent);
-      },
-      set: function(value) {
-        this.events = value;
-      }
+    getEvents() {
+      return this.events.concat(this.newEvent);
     },
     isLoading() {
       return this.loading;
-    },
-    isEventSet() {
-      return !!this.newEvent.eventSet;
     }
   },
   methods: {
     async getBusyEvents() {
       this.loading = true;
-      let busyEvents = await GCalendarService().getFreeBusyCalendarFromList([
-        'martin',
-        'user'
-      ]);
+      this.calendarEvents = await GCalendarService().getBusyAndFreePeriodsFromCalendars(
+        ['martin', 'user'],
+        this.duration
+      );
+      console.log(this.calendarEvents);
+      if (this.calendarEvents.free[0]) {
+        this.startTime = TimeService()
+          .parseFromMSISO(this.calendarEvents.free[0].start.value)
+          .split(' ')[1];
+        this.endTime = TimeService()
+          .parseFromMSISO(this.calendarEvents.free[0].end.value)
+          .split(' ')[1];
 
-      for (let user of Object.values(busyEvents)) {
-        if (
-          user &&
-          user.calendars &&
-          user.calendars.primary &&
-          user.calendars.primary.busy
-        ) {
-          for (let event of user.calendars.primary.busy) {
-            let startDate = TimeService().parseFromMSISO(event.start.value);
-            let endDate = TimeService().parseFromMSISO(event.end.value);
+        this.createEvent();
+      }
 
-            this.events.push({
-              start: startDate,
-              end: endDate,
-              name: '',
-              color: 'indigo',
-              description: ''
-            });
-          }
+      this.calendarEvents.busy = this.calendarEvents.busy.sort(
+        (a, b) => a.start.value - b.start.value
+      );
+
+      this.calendarEvents.free = this.calendarEvents.free.sort(
+        (a, b) => a.start.value - b.start.value
+      );
+      for (let event of this.calendarEvents.busy) {
+        if (event.start.value && event.end.value) {
+          this.events.push({
+            start: TimeService().parseFromMSISO(event.start.value),
+            end: TimeService().parseFromMSISO(event.end.value),
+            name: '',
+            color: 'grey',
+            description: ''
+          });
         }
       }
+
       this.loading = false;
+    },
+    getEventColor(event) {
+      return event.color;
     },
     format(date) {
       return date.time;
     },
     handleChangeStartTime() {
-      console.log('start', this.startTime);
+      // this.startTime + ':00';
+      this.createEvent();
     },
     handleChangeEndTime() {
-      console.log('end', this.endTime);
+      // this.endTime + ':00';
+      this.createEvent();
+    },
+    isBetweenConvertedToSeconds(x, min, max) {
+      x = Math.floor(x / 1000);
+      min = Math.floor(min / 1000);
+      max = Math.floor(max / 1000);
+      return x > min && x < max;
     },
     createEvent() {
-      console.log(this.getStart);
-      if (this.startTime && this.endTime && this.startTime < this.endTime) {
-        let startTime = `${this.getStart} ${this.startTime}`;
-        let endTime = `${this.getStart} ${this.endTime}`;
+      let newEventStart = TimeService().parseDateTimeStringToMilliseconds(
+        `${this.start} ${this.startTime}`
+      );
+
+      let newEventEnd = TimeService().parseDateTimeStringToMilliseconds(
+        `${this.start} ${this.endTime}`
+      );
+      if (newEventStart > newEventEnd) {
+        newEventEnd += 86400000;
+      }
+      let validated = this.validateTimeAvailable(newEventStart, newEventEnd);
+      if (validated) {
         this.newEvent = [
           {
-            start: startTime,
-            end: endTime,
+            start: TimeService().parseFromMSISO(newEventStart),
+            end: TimeService().parseFromMSISO(newEventEnd),
             name: '',
-            color: '',
+            color: 'green',
             description: ''
           }
         ];
       }
+    },
+    validateTimeAvailable(newEventStart, newEventEnd) {
+      const current = TimeService().parseDateTimeStringToMilliseconds();
+      if (
+        !newEventStart ||
+        !newEventEnd ||
+        newEventStart < current ||
+        newEventEnd < current
+      ) {
+        return false;
+      }
+      for (const busyPeriod of this.calendarEvents.busy) {
+        const busyPeriodStart =
+          busyPeriod.start && busyPeriod.start.value
+            ? busyPeriod.start.value
+            : null;
+        const busyPeriodEnd =
+          busyPeriod.end && busyPeriod.end.value ? busyPeriod.end.value : null;
+
+        if (!busyPeriodStart || !busyPeriodEnd) return false;
+
+        if (
+          this.isBetweenConvertedToSeconds(
+            newEventStart,
+            busyPeriodStart,
+            busyPeriodEnd
+          )
+        ) {
+          return false;
+        }
+
+        if (
+          this.isBetweenConvertedToSeconds(
+            newEventEnd,
+            busyPeriodStart,
+            busyPeriodEnd
+          )
+        ) {
+          return false;
+        }
+
+        if (
+          this.isBetweenConvertedToSeconds(
+            busyPeriodStart,
+            newEventStart,
+            newEventEnd
+          )
+        ) {
+          return false;
+        }
+      }
+      return true;
     }
   },
 
@@ -152,6 +276,5 @@ export default {
 <style>
 .calendar_time_pickers {
   display: flex;
-  flex-direction: column;
 }
 </style>

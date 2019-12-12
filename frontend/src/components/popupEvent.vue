@@ -84,8 +84,8 @@
                                             </v-col>
 
 
-                                            <v-col cols="12" sm="6" md="5">
-                                                <v-menu
+                                            <v-col cols="12" >
+                                                <!-- <v-menu
                                                     v-model="menu"
                                                     :close-on-content-click="false"
                                                     :nudge-right="40"
@@ -103,7 +103,8 @@
                                                         />
                                                     </template>
                                                     <v-date-picker v-model="date" @input="menu = false"/>
-                                                </v-menu>
+                                                </v-menu> -->
+                                                <SuggestedEventTimes :attendees=selectedFriends :runtime=movie.Runtime />
                                             </v-col>
 
 
@@ -128,10 +129,14 @@
     </div>
 </template>
 <script>
+import SuggestedEventTimes from '@/components/SuggestedEventTimes';
 
 export default {
     name: 'popupEvent',
     props: ['movie'],
+    components: {
+        SuggestedEventTimes
+    },
     data: () => ({
         dialog: false,
         eventName: '',
@@ -176,6 +181,7 @@ export default {
         },
     },
     async mounted(){
+        console.log(this.movie);
         let token = this.$store.state.cookie;
         let res = await fetch('/api/event', {
             method: 'GET',

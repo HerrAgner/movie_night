@@ -4,7 +4,7 @@
       <div>
         Hi {{getUsername}}!
 
-        <CalendarDay /> 
+        <!-- <CalendarDay :duration="200" />  -->
       </div>
       </v-container> 
   </div>

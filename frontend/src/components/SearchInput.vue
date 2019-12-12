@@ -6,7 +6,7 @@
                 label="Search"
                 append-icon="search"
                 v-model="search"
-                v-on:keyup="searchForMovies(1000)"
+                v-on:keyup="searchForMovies(500)"
                 v-on:focus="focusTextField"
                 style="position: absolute; width: 30%; top: 5px; z-index: 2; height: 5.5vh; background-color: white"
         >
@@ -126,7 +126,7 @@
     
 
     .fade-enter-active, .fade-leave-active {
-        transition: ease-in-out opacity 0.5s;
+        transition: ease-in-out opacity 0.2s;
     }
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
         opacity: 0;

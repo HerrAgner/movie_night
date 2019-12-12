@@ -1,16 +1,14 @@
 package com.spring.demo.controllers;
 
 
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.FreeBusyResponse;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.TimePeriod;
 import com.spring.demo.services.GCalendarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/gcal")
@@ -23,24 +21,13 @@ public class GCalendarController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, FreeBusyResponse>> getFreeBusyResponse(@RequestBody List<String> requestForUsers) {
-        var response = new HashMap<String, FreeBusyResponse>();
-        for (String username : requestForUsers) {
-            var calendar = gCalendarService.getCalendar(username);
-            var freeBusyResponse = gCalendarService.getFreeBusyFromCalendar(calendar);
-            response.put(username, freeBusyResponse);
+    public ResponseEntity<List<TimePeriod>> getBusyAndFreePeriods(@RequestParam(defaultValue = "0") long duration, @RequestBody List<String> requestForUsers) {
+        try {
+            var suggestedEventPeriods = gCalendarService.getSuggestedEventPeriods(requestForUsers, duration);
+            return new ResponseEntity<>(suggestedEventPeriods, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-//    @PostMapping("events")
-//    public ResponseEntity<Map<String, List<Event>>> getEvents(@RequestBody List<String> requestForUsers) {
-//        var response = new HashMap<String, List<Event>>();
-//        for (String username : requestForUsers) {
-//            var calendar = gCalendarService.getCalendar(username);
-//            var events = gCalendarService.getEventsFromCalendar(calendar);
-//            response.put(username, events);
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
 }

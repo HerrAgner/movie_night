@@ -2,8 +2,8 @@ import AuthService from '@/services/AuthService';
 
 
 export default () => ({
-  async getFreeBusyCalendarFromList(data) {
-    let response = await fetch('/api/gcal', {
+  async fetchSuggestedEventPeriods(data, duration = 0) {
+    let response = await fetch('/api/gcal?duration=' + duration, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
