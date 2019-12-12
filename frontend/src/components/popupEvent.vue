@@ -85,25 +85,6 @@
 
 
                                             <v-col cols="12" >
-                                                <!-- <v-menu
-                                                    v-model="menu"
-                                                    :close-on-content-click="false"
-                                                    :nudge-right="40"
-                                                    transition="scale-transition"
-                                                    offset-y
-                                                    min-width="290px"
-                                                >
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-text-field
-                                                            v-model="date"
-                                                            label="Pick a date"
-                                                            prepend-icon="event"
-                                                            readonly
-                                                            v-on="on"
-                                                        />
-                                                    </template>
-                                                    <v-date-picker v-model="date" @input="menu = false"/>
-                                                </v-menu> -->
                                                 <SuggestedEventTimes :attendees=selectedFriends :runtime=movie.Runtime />
                                             </v-col>
 

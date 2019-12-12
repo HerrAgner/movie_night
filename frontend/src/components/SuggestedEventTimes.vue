@@ -56,9 +56,6 @@ export default {
       this.loading = false;
     }
   },
-  mounted() {
-    // this.getSuggestedTimes();
-  },
   watch: {
     getAttendees: function(value) {
       if(value.length > 0) {
