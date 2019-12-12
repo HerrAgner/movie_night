@@ -66,7 +66,7 @@ public class GCalendarController {
     @PutMapping("event")
     public ResponseEntity<Event> updateEvent(@RequestBody MovieEvent event){
         MovieEvent movieEvent = movieEventService.getMovieEvent(event);
-        movieEvent.setEventId(event.getMovieId());
+        movieEvent.setEventId(event.getEventId());
         movieEvent.setAttendees(event.getAttendees());
         movieEvent.setCreator(event.getCreator());
         movieEvent.setEndTime(event.getEndTime());
@@ -74,9 +74,17 @@ public class GCalendarController {
         movieEvent.setMovieId(event.getMovieId());
         movieEvent.setStartTime(event.getStartTime());
         movieEvent.setTimeZone(event.getTimeZone());
-        movieEventService.saveMovieEventToDb(event);
 
-        return new ResponseEntity<>( HttpStatus.OK);
+        var eventRes = gCalendarService.updateEvent(event);
+        if (eventRes != null) {
+            movieEventService.saveMovieEventToDb(movieEvent);
+            System.out.println("event name: "+eventRes.getSummary());
+            System.out.println("start time: "+eventRes.getStart());
+            System.out.println("end time: "+eventRes.getEnd());
+            return new ResponseEntity<>( HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @DeleteMapping("event/{id}")

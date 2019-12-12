@@ -107,7 +107,7 @@
 
                             <v-btn color="green darken-1" text @click="resetPopup">Cancel</v-btn>
 
-                            <v-btn color="green darken-1" text @click="createEvent">Save</v-btn>
+                            <v-btn color="green darken-1" text @click="update">Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -137,7 +137,7 @@
                     this.inviteAllFriends ? this.selectedFriends = [] : this.selectedFriends = this.friends.slice();
                 })
             },
-            async createEvent() {
+            async update() {
                 const data = {
                     eventId: this.event.eventId,
                     movieId: this.event.movieId,
