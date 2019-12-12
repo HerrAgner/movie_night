@@ -105,9 +105,19 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn color="green darken-1" text @click="resetPopup">Cancel</v-btn>
+                            <v-btn color="green darken-1"
+                                   text
+                                   @click="resetPopup"
+                                   :disabled="saving">
 
-                            <v-btn color="green darken-1" text @click="update">Save</v-btn>
+                                Cancel
+                            </v-btn>
+
+                            <v-btn color="green darken-1"
+                                   text
+                                   @click="update"
+                                   :disabled="saving">
+                                Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -124,6 +134,7 @@
             event: Object,
         },
         data: () => ({
+            saving: false,
             dialog: false,
             eventName: '',
             friends: [],
@@ -138,6 +149,7 @@
                 })
             },
             async update() {
+                this.saving = true;
                 const data = {
                     eventId: this.event.eventId,
                     movieId: this.event.movieId,
@@ -152,6 +164,7 @@
                 if (res) {
                     await this.$emit('childToParent', data);
                     this.dialog = false;
+                    this.saving = false;
                 }
             },
             resetPopup(){

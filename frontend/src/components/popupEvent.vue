@@ -111,9 +111,9 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
+                            <v-btn color="green darken-1" :disabled="saving" text @click="dialog = false">Cancel</v-btn>
 
-                            <v-btn color="green darken-1" text @click="createEvent">Save</v-btn>
+                            <v-btn color="green darken-1" :disabled="saving" text @click="createEvent">Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -129,6 +129,7 @@
     name: 'popupEvent',
     props: ['movie'],
     data: () => ({
+    saving: false,
       dialog: false,
       eventName: '',
       friends: [],
@@ -143,6 +144,7 @@
         })
       },
       async createEvent() {
+          this.saving = true;
         const data = {
           movieId: this.movie.imdbID,
           eventName: this.eventName,
@@ -154,6 +156,7 @@
         };
         await GCalendarService().createGoogleCalendarEvent(data);
         this.dialog = false;
+          this.saving = false;
       }
     },
     computed: {
