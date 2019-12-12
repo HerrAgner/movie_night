@@ -30,8 +30,8 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @PostConstruct
     private void createDefaultUsers() {
-        if (repository.findDistinctFirstByUsernameIgnoreCase("user") == null) {
-            addUser("user", "user");
+        if (repository.findDistinctFirstByUsernameIgnoreCase("usere") == null) {
+            addUser("usere", "usere");
         }
     }
 
@@ -60,6 +60,8 @@ public class MyUserDetailsService implements UserDetailsService {
                 .password(user.getPassword())
                 .roles(roles).build();
     }
+
+
 
 //    @Bean(name = "myPasswordEncoder")
 //    public PasswordEncoder getPasswordEncoder() {

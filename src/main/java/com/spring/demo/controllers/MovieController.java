@@ -1,7 +1,7 @@
 package com.spring.demo.controllers;
 
+import com.spring.demo.db.MovieRepository;
 import com.spring.demo.entities.Movie;
-import com.spring.demo.entities.MovieSearchResult;
 import com.spring.demo.entities.SearchResult;
 import com.spring.demo.services.MovieSearchService;
 import com.spring.demo.services.MovieService;
@@ -11,7 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
 
 
 @RestController
@@ -20,6 +21,9 @@ public class MovieController {
 
     @Autowired
     private OmdbService omdbService;
+
+    @Autowired
+    private MovieRepository movieRepository;
 
     private final MovieService movieService;
     private final MovieSearchService movieSearchService;
@@ -50,6 +54,22 @@ public class MovieController {
         var result = movieSearchService.searchMovies(s, p);
 
         return new ResponseEntity<>(result, result.getTotalResults() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
+
+
+    @PostMapping()
+    public ResponseEntity<ArrayList<Optional<Movie>>> getSomeMovies(@RequestBody ArrayList<Movie> moviesId) {
+        ArrayList<Optional<Movie>> movies = new ArrayList<>();
+
+        moviesId.forEach(item -> {
+            movies.add(movieRepository.findById(item.getImdbID()));
+            movieRepository.findById(item.getImdbID());
+        });
+        //((if(p <= 0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        //var result = movieSearchService.searchMovies(s, p);
+
+        return  ResponseEntity.ok(movies);
     }
 
 

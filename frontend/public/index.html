@@ -19,7 +19,7 @@
       window.gapi.load('auth2', function() {
         window.auth2 = window.gapi.auth2.init({
           client_id: CLIENT_ID,
-          scope: "https://www.googleapis.com/auth/calendar.readonly"
+          scope: "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events"
         });
       });
     }
