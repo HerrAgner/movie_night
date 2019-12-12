@@ -59,6 +59,7 @@ public class MovieController {
 
     @PostMapping()
     public ResponseEntity<ArrayList<Optional<Movie>>> getSomeMovies(@RequestBody ArrayList<Movie> moviesId) {
+        //@RequestParam
         ArrayList<Optional<Movie>> movies = new ArrayList<>();
 
         moviesId.forEach(item -> {

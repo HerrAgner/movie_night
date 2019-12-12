@@ -89,10 +89,13 @@ import GCalendarService from "../services/GCalendarService";
             isLoading: false
         }),
         methods: {
-            deleteEvent(eventId){
-                console.log(eventId, 'events')
+            async deleteEvent(eventId) {
+                console.log(eventId);
+                let eventDeleted = GCalendarService().deleteEvent(eventId);
+                if (eventDeleted) {
+                    this.events = this.events.filter(event => event.eventId !== eventId);
+                }
 
-                GCalendarService().deleteEvent(eventId)
             },
             breakpointSmAndDown() {
                 return this.$vuetify.breakpoint.smAndDown;
@@ -100,26 +103,25 @@ import GCalendarService from "../services/GCalendarService";
             getCurrentUser() {
                 return this.$store.state.loggedInUser
             },
-            async getMoviePoster(id) {
-                let moviePoster = await movieDetailsService().getMovieDetails(id);
-                this.isLoading = true;
-                //console.log(moviePoster.Poster);
-                return moviePoster.Poster;
+            async getMyEvents(){
+                let res = await EventsService().getAllEvents();
+                await res.forEach(item => {
+                    this.events.push(item);
+                    this.moviesID.push({imdbID: item.movieId})
+                });
+            },
+            async getEventsPoster(){
+                let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
+                movies.forEach(movie => {
+                    this.events.forEach(e => {
+                        if (e.movieId === movie.imdbID) e.poster = movie.Poster
+                    })
+                });
             }
         },
         async mounted() {
-            let res = await EventsService().getAllEvents();
-            await res.forEach(item => {
-                this.events.push(item);
-                this.moviesID.push({imdbID: item.movieId})
-            });
-
-            let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
-            movies.forEach(movie => {
-                this.events.forEach(e => {
-                    if (e.movieId === movie.imdbID) e.poster = movie.Poster
-                })
-            });
+            await this.getMyEvents();
+            await this.getEventsPoster();
             this.isLoading = true
         }
     }

@@ -20,6 +20,8 @@ export default () => ({
         //url = url + ',' + allId[i];
       //}
     //}
+
+    //+ encodeURIComponent(JS)
     let response = await fetch('api/movies', {
       method: 'POST',
       headers: {
