@@ -90,6 +90,8 @@ import GCalendarService from "../services/GCalendarService";
         }),
         methods: {
             deleteEvent(eventId){
+                console.log(eventId, 'events')
+
                 GCalendarService().deleteEvent(eventId)
             },
             breakpointSmAndDown() {
