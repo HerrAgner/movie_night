@@ -65,12 +65,36 @@
                     </v-row>
 
                             <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
-                            <v-btn text v-if = "item.creator === getCurrentUser()" @click="deleteEvent(item.eventId)">Delete</v-btn>
+                            <v-btn text v-if = "item.creator === getCurrentUser()" @click="deletePopup">Delete</v-btn>
 
+                    <v-dialog
+                            v-model="dialog"
+                            width="500"
+                    >
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                Delete event
+                            </v-card-title>
+
+                            <v-card-text>
+                                <h3>Are you sure you want to delete this event?</h3>
+                            </v-card-text>
+
+                            <v-divider></v-divider>
+
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" text @click="dialog = false">NO</v-btn>
+                                <v-btn color="primary" text @click="deleteEvent(item.eventId)">YES</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card>
             </v-col>
         </v-row>
-
 </template>
 
 <script>
@@ -84,16 +108,21 @@ import GCalendarService from "../services/GCalendarService";
             EventEditor
         },
         data: () => ({
+            dialog: false,
             events: [],
             moviesID: [],
             isLoading: false
         }),
         methods: {
+            deletePopup(){
+                this.dialog = true;
+            },
             async deleteEvent(eventId) {
                 console.log(eventId);
                 let eventDeleted = GCalendarService().deleteEvent(eventId);
                 if (eventDeleted) {
                     this.events = this.events.filter(event => event.eventId !== eventId);
+                    this.dialog = false;
                 }
 
             },
