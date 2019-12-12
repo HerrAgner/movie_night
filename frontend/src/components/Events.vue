@@ -64,7 +64,7 @@
 
                     </v-row>
 
-                            <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
+                            <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i" v-on:childToParent="eventUpdated"/>
                             <v-btn text v-if = "item.creator === getCurrentUser()" @click="deletePopup">Delete</v-btn>
 
                     <v-dialog
@@ -114,6 +114,16 @@ import GCalendarService from "../services/GCalendarService";
             isLoading: false
         }),
         methods: {
+            eventUpdated(eventFromChild){
+                this.events.forEach(event => {
+                    if(event.eventId === eventFromChild.eventId){
+                        event.eventName = eventFromChild.eventName;
+                        event.startTime = eventFromChild.startTime;
+                        event.endTime = eventFromChild.endTime;
+                        event.attendees = eventFromChild.attendees
+                    }
+                });
+            },
             deletePopup(){
                 this.dialog = true;
             },

@@ -148,8 +148,11 @@
                     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     attendees: this.selectedFriends
                 };
-                await GCalendarService().updateGoogleCalendarEvent(data);
-                this.dialog = false;
+                let res = await GCalendarService().updateGoogleCalendarEvent(data);
+                if (res) {
+                    await this.$emit('childToParent', data);
+                    this.dialog = false;
+                }
             },
             resetPopup(){
                 this.dialog = false;

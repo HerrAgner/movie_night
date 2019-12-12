@@ -47,7 +47,7 @@ export default () => ({
       },
       body: JSON.stringify(data)
     });
-    return res.status === 200 ? true : false;
+    return res.status === 200;
   },
 
 
