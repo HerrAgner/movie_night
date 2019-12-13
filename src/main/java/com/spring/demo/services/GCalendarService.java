@@ -170,25 +170,27 @@ public class GCalendarService {
 
 
         var i = 0;
-        for (var period : busyPeriods) {
-            TimePeriod nextPeriod = null;
-            try {
-                nextPeriod = busyPeriods.get(i + 1);
-            } catch (Exception e) {
-            }
+        if (busyPeriods != null) {
+            for (var period : busyPeriods) {
+                TimePeriod nextPeriod = null;
+                try {
+                    nextPeriod = busyPeriods.get(i + 1);
+                } catch (Exception e) {
+                }
 
-            var startOfFreePeriod = period.getEnd().getValue() < Instant.now().toEpochMilli() ? new DateTime(Date.from(Instant.now())) : new DateTime(Date.from(Instant.ofEpochMilli(period.getEnd().getValue())));
-            DateTime endOfFreePeriod;
-            if (nextPeriod != null && nextPeriod.getStart().getValue() > period.getEnd().getValue()) {
-                endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(nextPeriod.getStart().getValue())));
-            } else {
-                endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(period.getEnd().getValue()).plus(Duration.ofDays(30))));
+                var startOfFreePeriod = period.getEnd().getValue() < Instant.now().toEpochMilli() ? new DateTime(Date.from(Instant.now())) : new DateTime(Date.from(Instant.ofEpochMilli(period.getEnd().getValue())));
+                DateTime endOfFreePeriod;
+                if (nextPeriod != null && nextPeriod.getStart().getValue() > period.getEnd().getValue()) {
+                    endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(nextPeriod.getStart().getValue())));
+                } else {
+                    endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(period.getEnd().getValue()).plus(Duration.ofDays(30))));
+                }
+                var freePeriod = new TimePeriod();
+                freePeriod.setStart(startOfFreePeriod);
+                freePeriod.setEnd(endOfFreePeriod);
+                freePeriods.add(freePeriod);
+                i++;
             }
-            var freePeriod = new TimePeriod();
-            freePeriod.setStart(startOfFreePeriod);
-            freePeriod.setEnd(endOfFreePeriod);
-            freePeriods.add(freePeriod);
-            i++;
         }
         return freePeriods;
     }
