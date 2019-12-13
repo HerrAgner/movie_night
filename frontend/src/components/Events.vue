@@ -151,6 +151,7 @@ import GCalendarService from "../services/GCalendarService";
             },
             async getEventsPoster(){
                 let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
+                console.log(movies)
                 movies.forEach(movie => {
                     this.events.forEach(e => {
                         if (e.movieId === movie.imdbID) e.poster = movie.Poster

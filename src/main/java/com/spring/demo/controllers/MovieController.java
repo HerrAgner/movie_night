@@ -66,9 +66,6 @@ public class MovieController {
             movies.add(movieRepository.findById(item.getImdbID()));
             movieRepository.findById(item.getImdbID());
         });
-        //((if(p <= 0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        //var result = movieSearchService.searchMovies(s, p);
 
         return  ResponseEntity.ok(movies);
     }
