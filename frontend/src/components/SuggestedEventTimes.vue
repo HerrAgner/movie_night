@@ -1,7 +1,7 @@
 <template>
-  <v-container v-if="getAttendees.length > 0">
-    <Loading v-if="isLoading" />
-    <v-select :items="getSuggestedTimePeriods" @change="updateTime" />
+  <v-container pa-0>
+    <!-- <Loading v-if="isLoading" /> -->
+    <v-select :items="getSuggestedTimePeriods" @change="updateTime" label="Pick time" :disabled="getSuggestedTimePeriods.length === 0" />
   </v-container>
 </template>
 
