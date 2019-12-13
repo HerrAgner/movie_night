@@ -51,7 +51,7 @@ export default () => {
       // helper function for getting the timezone offset, used internal
       return new Date().getTimezoneOffset() * 60000;
     },
-    parseDateTimeStringToSeconds(string) {
+    parseDateTimeStringToSeconds(string = this.getCurrentDateTime()) {
       /*
        * Used in order to parse a DateTime from String like "2012-03-04 11:30"
        * returns the epoch second representing that DateTime (UTC)
@@ -72,6 +72,9 @@ export default () => {
       return parseInt(
         (new Date(string).getTime() + this.getLocalOffsetMS()) / 1000
       );
+    },
+    parseDateTimeStringToMilliseconds(string = this.getCurrentDateTime()) {
+      return this.parseDateTimeStringToSeconds(string) * 1000;
     }
   };
 };

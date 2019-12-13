@@ -78,26 +78,8 @@
                                             </v-col>
 
 
-                                            <v-col cols="12" sm="6" md="5">
-                                                <v-menu
-                                                        v-model="menu"
-                                                        :close-on-content-click="false"
-                                                        :nudge-right="40"
-                                                        transition="scale-transition"
-                                                        offset-y
-                                                        min-width="290px"
-                                                >
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-text-field
-                                                                v-model="date"
-                                                                label="Pick a date"
-                                                                prepend-icon="event"
-                                                                readonly
-                                                                v-on="on"
-                                                        />
-                                                    </template>
-                                                    <v-date-picker v-model="date" @input="menu = false"/>
-                                                </v-menu>
+                                            <v-col cols="12" >
+                                                <SuggestedEventTimes :attendees=selectedFriends :runtime=movie.Runtime @handleTimeUpdate="handleTimeUpdate" />
                                             </v-col>
 
 
@@ -122,22 +104,31 @@
     </div>
 </template>
 <script>
-
+import SuggestedEventTimes from '@/components/SuggestedEventTimes';
   import GCalendarService from "../services/GCalendarService";
 
   export default {
     name: 'popupEvent',
     props: ['movie'],
+    components: {
+        SuggestedEventTimes
+    },
     data: () => ({
     saving: false,
       dialog: false,
       eventName: '',
       friends: [],
-      date: new Date().toISOString().substr(0, 10),
+      startTime: null,
+      endTime: null,
       menu: false,
       selectedFriends: [],
     }),
     methods: {
+        handleTimeUpdate(data){
+            this.startTime = data.split(' - ')[0].replace(' ', 'T');
+            this.endTime = data.split(' - ')[1].replace(' ', 'T');
+
+        },
       toggle() {
         this.$nextTick(() => {
           this.inviteAllFriends ? this.selectedFriends = [] : this.selectedFriends = this.friends.slice();
@@ -149,8 +140,8 @@
           movieId: this.movie.imdbID,
           eventName: this.eventName,
           creator: this.$store.state.loggedInUser,
-          startTime: new Date(this.date).toLocaleString().replace(" ", "T"),
-          endTime: new Date(this.date).toLocaleString().replace(" ", "T"),
+          startTime: this.startTime,
+          endTime: this.endTime,
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           attendees: this.selectedFriends
         };

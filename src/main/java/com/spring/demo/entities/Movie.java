@@ -44,6 +44,16 @@ public class Movie {
     private String type;
     @JsonProperty("Production")
     private String production;
+    @JsonProperty("Runtime")
+    private String runtime;
+
+    public int getRuntime() {
+        return Integer.parseInt(runtime.replaceAll("\\D+",""));
+    }
+
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
 
     public Movie(){}
 
