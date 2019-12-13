@@ -50,7 +50,7 @@
                                                 </v-select>
 
 
-                                                <v-container>
+                                                <v-container pa-0>
                                                     <v-row justify="start" class="chipContainer">
                                                         <v-col cols="12" sm="12" md="4"
                                                                v-for="(friend, i) in selectedFriends"
@@ -78,7 +78,7 @@
                                             </v-col>
 
 
-                                            <v-col cols="12" >
+                                            <v-col cols="12">
                                                 <SuggestedEventTimes :attendees=selectedFriends :runtime=movie.Runtime @handleTimeUpdate="handleTimeUpdate" />
                                             </v-col>
 
@@ -195,8 +195,9 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
 </script>
 <style>
     .chipContainer {
-        padding: 0.1vw;
-        margin-top: -3vh;
+        padding: 0;
+        /* margin-top: -3vh; */
+        height: 50px;
     }
 
     .friendChip {

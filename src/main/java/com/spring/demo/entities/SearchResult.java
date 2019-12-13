@@ -1,11 +1,15 @@
 package com.spring.demo.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.UniqueElements;
 
+import javax.persistence.Column;
 import java.util.List;
 
 public class SearchResult {
 
+    @Column(unique=true)
+    private String searchText;
     @JsonProperty("Search")
     private List<MovieSearchResult> searchResult;
     @JsonProperty("totalResults")
@@ -38,5 +42,13 @@ public class SearchResult {
 
     public void setResponse(Boolean response) {
         this.response = response;
+    }
+
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
     }
 }
