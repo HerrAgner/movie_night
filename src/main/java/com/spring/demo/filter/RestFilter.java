@@ -45,6 +45,7 @@ public class RestFilter implements Filter {
         System.out.println("Status: " + response.getStatus());
         System.out.println();
 
+
 //        LOGGER.info("Logging Response :{}", response.getContentType());
     }
 
