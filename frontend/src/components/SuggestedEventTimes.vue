@@ -1,7 +1,7 @@
 <template>
-  <v-container v-if="getAttendees.length > 0">
-    <Loading v-if="isLoading" />
-    <v-select :items="getSuggestedTimePeriods" @change="updateTime" />
+  <v-container pa-0>
+    <!-- <Loading v-if="isLoading" /> -->
+    <v-select :items="getSuggestedTimePeriods" @change="updateTime" label="Pick time" :disabled="getAttendees.length === 0" />
   </v-container>
 </template>
 
@@ -46,6 +46,7 @@ export default {
         this.runtime
       );
       if (response && response.length > 0) {
+        this.suggestedTimes = [];
         for (const time of response) {
           this.suggestedTimes.push(
             TimeService().parseFromMSISO(time.start.value) +
