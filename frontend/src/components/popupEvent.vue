@@ -127,7 +127,6 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
         handleTimeUpdate(data){
             this.startTime = data.split(' - ')[0].replace(' ', 'T');
             this.endTime = data.split(' - ')[1].replace(' ', 'T');
-
         },
       toggle() {
         this.$nextTick(() => {

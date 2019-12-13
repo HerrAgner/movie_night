@@ -149,8 +149,8 @@
                     movieId: this.event.movieId,
                     eventName: this.eventName,
                     creator: this.$store.state.loggedInUser,
-                    startTime: new Date(this.date).toLocaleString().replace(" ", "T"),
-                    endTime: new Date(this.date).toLocaleString().replace(" ", "T"),
+                    startTime: this.event.startTime,
+                    endTime: this.event.endTime,
                     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     attendees: this.selectedFriends
                 };
