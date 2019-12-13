@@ -45,6 +45,7 @@ public class GCalendarService {
         var busyPeriods = getBusyPeriods(freeBusyResponses);
         var mergedBusyPeriods = mergeBusyPeriods(busyPeriods);
         var invertBusyPeriods = invertBusyPeriods(mergedBusyPeriods);
+
         return suggestEventPeriods(invertBusyPeriods, duration);
     }
 
@@ -86,7 +87,7 @@ public class GCalendarService {
     }
 
     public List<TimePeriod> getBusyPeriods(List<FreeBusyResponse> freeBusyResponses) {
-        if (freeBusyResponses.isEmpty() || freeBusyResponses == null) return null;
+        if (freeBusyResponses == null) return null;
 
         return freeBusyResponses.parallelStream()
                 .map(FreeBusyResponse::getCalendars)
@@ -99,8 +100,8 @@ public class GCalendarService {
     }
 
     public List<TimePeriod> mergeBusyPeriods(List<TimePeriod> arr) {
-        if (arr.size() <= 0)
-            return null;
+        if (arr == null) return null;
+        if (arr.size() <= 0) return new ArrayList<>();
         Stack<TimePeriod> stack = new Stack<>();
         arr.sort((i1, i2) -> (int) (i1.getStart().getValue() - i2.getStart().getValue()));
         stack.push(arr.get(0));
@@ -118,7 +119,7 @@ public class GCalendarService {
     }
 
     public List<TimePeriod> suggestEventPeriods(List<TimePeriod> freePeriods, long durationAsMin) {
-        if(freePeriods == null) return null;
+        if (freePeriods == null) return null;
         List<TimePeriod> availablePeriods = new ArrayList<>();
 
         ZonedDateTime zon = ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).plus(Duration.ofHours(1)).truncatedTo(ChronoUnit.SECONDS);
@@ -142,15 +143,26 @@ public class GCalendarService {
     }
 
     public ArrayList<TimePeriod> invertBusyPeriods(List<TimePeriod> busyPeriods) {
-        if(busyPeriods == null) return null;
+        if (busyPeriods == null) return null;
         var freePeriods = new ArrayList<TimePeriod>();
 
 //        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart().getValue() < Instant.now().toEpochMilli() && busyPeriods.get(0).getEnd().getValue() > Instant.now().toEpochMilli()) {
 //        } else
 
+
+
         if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart() != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(busyPeriods.get(0).getStart().getValue())));
+            var freePeriod = new TimePeriod();
+            freePeriod.setStart(startOfFreePeriod);
+            freePeriod.setEnd(endOfFreePeriod);
+            freePeriods.add(freePeriod);
+        }
+
+        if(busyPeriods.isEmpty()) {
+            var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
+            var endOfFreePeriod = new DateTime(Date.from(Instant.now().plus(Duration.ofDays(30))));
             var freePeriod = new TimePeriod();
             freePeriod.setStart(startOfFreePeriod);
             freePeriod.setEnd(endOfFreePeriod);
