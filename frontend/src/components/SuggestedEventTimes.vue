@@ -8,7 +8,7 @@
 <script>
 import GCalendarService from '@/services/GCalendarService';
 import TimeService from '@/services/TimeService';
-import Loading from '@/components/Loading';
+// import Loading from '@/components/Loading';
 
 export default {
   name: 'SuggestedEventTimes',
@@ -17,7 +17,7 @@ export default {
     attendees: Array
   },
   components: {
-    Loading
+    // Loading
   },
   data: () => ({
     suggestedTimes: [],
