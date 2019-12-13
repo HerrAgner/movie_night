@@ -3,7 +3,7 @@
     <v-container>
       <div>
         Hi {{getUsername}}!
-
+        <Events />
         <!-- <CalendarDay :duration="200" />  -->
       </div>
       </v-container> 
@@ -12,7 +12,7 @@
 
 <script>
 import Cookie from "js-cookie";
-import CalendarDay from '@/components/CalendarDay';
+import Events from '@/components/Events';
 
 // @ is an alias to /src
 
@@ -20,9 +20,9 @@ export default {
   name: 'home',
   data: () => ({
     // username: ''
-  }),
+    }),
   components: {
-    CalendarDay
+    Events
   },
   computed: {
     getUsername() {

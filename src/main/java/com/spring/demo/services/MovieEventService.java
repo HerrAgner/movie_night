@@ -16,4 +16,12 @@ public class MovieEventService {
     public void saveMovieEventToDb(MovieEvent event){
         movieEventRepository.save(event);
     }
+
+    public MovieEvent getMovieEvent(MovieEvent event){
+        return movieEventRepository.findByEventId(event.getEventId());
+    }
+
+    public void deleteMovieEvent(String id){
+         movieEventRepository.deleteByEventId(id);
+    }
 }

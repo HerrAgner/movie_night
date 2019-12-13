@@ -244,5 +244,48 @@ public class GCalendarService {
         movieEventService.saveMovieEventToDb(movieEvent);
         return event;
     }
+
+    public Event updateEvent(MovieEvent event) {
+        var calendar = getCalendar(event.getCreator());
+
+        try {
+            Event eventFromCalendar = calendar.events().get("primary", event.getEventId()).execute();
+
+
+            ArrayList<EventAttendee> eventAttendees = new ArrayList<>();
+            for (String attendee : event.getAttendees()) {
+                User user = userService.getUserByUsername(attendee);
+                if (user != null && user.getGoogleInfo() != null) {
+                    String email = user.getGoogleInfo().getEmail();
+                    if (email != null && !email.isEmpty()) {
+                        eventAttendees.add(new EventAttendee().setEmail(email));
+                    }
+                }
+            }
+            eventFromCalendar.setAttendees(eventAttendees);
+            eventFromCalendar.setSummary(event.getEventName());
+
+
+            TimeZone tz = TimeZone.getTimeZone(event.getTimeZone());
+            String offset = tz.toZoneId().getRules().getStandardOffset(Instant.now()).getId();
+            DateTime startDateTime = new DateTime(event.getStartTime() + offset);
+//        2015-05-28T09:00:00-07:00
+            EventDateTime start = new EventDateTime()
+                    .setDateTime(startDateTime);
+            eventFromCalendar.setStart(start);
+
+
+            DateTime endDateTime = new DateTime(event.getEndTime() + offset);
+            EventDateTime end = new EventDateTime()
+                    .setDateTime(endDateTime);
+            eventFromCalendar.setEnd(end);
+
+            return calendar.events().update("primary", event.getEventId(), eventFromCalendar).execute();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
 

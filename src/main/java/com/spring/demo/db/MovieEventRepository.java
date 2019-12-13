@@ -9,5 +9,7 @@ public interface MovieEventRepository extends MongoRepository<MovieEvent, String
 
     List<MovieEvent> findAllByAttendeesContains(String email);
     List<MovieEvent> findAllByCreator(String email);
+    MovieEvent findByEventId(String eventId);
+    void deleteByEventId(String eventId);
 
 }

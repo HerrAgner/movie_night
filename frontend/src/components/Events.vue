@@ -64,57 +64,105 @@
 
                     </v-row>
 
-                            <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i"/>
+                            <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i" v-on:childToParent="eventUpdated"/>
+                            <v-btn text v-if = "item.creator === getCurrentUser()" @click="deletePopup">Delete</v-btn>
 
+                    <v-dialog
+                            v-model="dialog"
+                            width="500"
+                    >
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                Delete event
+                            </v-card-title>
+
+                            <v-card-text>
+                                <h3>Are you sure you want to delete this event?</h3>
+                            </v-card-text>
+
+                            <v-divider></v-divider>
+
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" text @click="dialog = false">NO</v-btn>
+                                <v-btn color="primary" text @click="deleteEvent(item.eventId)">YES</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card>
             </v-col>
         </v-row>
-
 </template>
 
 <script>
 import EventsService from "../services/EventsService";
 import EventEditor from "./EventEditor";
 import movieDetailsService from "../services/movieDetailsService";
+import GCalendarService from "../services/GCalendarService";
 
     export default {
         components: {
             EventEditor
         },
         data: () => ({
+            dialog: false,
             events: [],
             moviesID: [],
             isLoading: false
         }),
         methods: {
+            eventUpdated(eventFromChild){
+                this.events.forEach(event => {
+                    if(event.eventId === eventFromChild.eventId){
+                        event.eventName = eventFromChild.eventName;
+                        event.startTime = eventFromChild.startTime;
+                        event.endTime = eventFromChild.endTime;
+                        event.attendees = eventFromChild.attendees
+                    }
+                });
+            },
+            deletePopup(){
+                this.dialog = true;
+            },
+            async deleteEvent(eventId) {
+                console.log(eventId);
+                let eventDeleted = GCalendarService().deleteEvent(eventId);
+                if (eventDeleted) {
+                    this.events = this.events.filter(event => event.eventId !== eventId);
+                    this.dialog = false;
+                }
+
+            },
             breakpointSmAndDown() {
                 return this.$vuetify.breakpoint.smAndDown;
             },
             getCurrentUser() {
                 return this.$store.state.loggedInUser
             },
-            async getMoviePoster(id) {
-                let moviePoster = await movieDetailsService().getMovieDetails(id);
-                this.isLoading = true;
-                //console.log(moviePoster.Poster);
-                return moviePoster.Poster;
+            async getMyEvents(){
+                let res = await EventsService().getAllEvents();
+                await res.forEach(item => {
+                    this.events.push(item);
+                    this.moviesID.push({imdbID: item.movieId})
+                });
+            },
+            async getEventsPoster(){
+                let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
+                console.log(movies)
+                movies.forEach(movie => {
+                    this.events.forEach(e => {
+                        if (e.movieId === movie.imdbID) e.poster = movie.Poster
+                    })
+                });
             }
         },
         async mounted() {
-            let res = await EventsService().getAllEvents();
-            await res.forEach(item => {
-                this.events.push(item);
-                this.moviesID.push({imdbID: item.movieId})
-            });
-
-            let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
-            movies.forEach(movie => {
-                this.events.forEach(e => {
-                    if (e.movieId === movie.imdbID) e.poster = movie.Poster
-                })
-            });
+            await this.getMyEvents();
+            await this.getEventsPoster();
             this.isLoading = true
-            console.log(this.events[0])
         }
     }
 </script>

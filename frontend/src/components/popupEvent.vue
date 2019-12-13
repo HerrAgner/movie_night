@@ -93,9 +93,9 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
+                            <v-btn color="green darken-1" :disabled="saving" text @click="dialog = false">Cancel</v-btn>
 
-                            <v-btn color="green darken-1" text @click="createEvent">Save</v-btn>
+                            <v-btn color="green darken-1" :disabled="saving" text @click="createEvent">Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -114,6 +114,7 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
         SuggestedEventTimes
     },
     data: () => ({
+    saving: false,
       dialog: false,
       eventName: '',
       friends: [],
@@ -134,6 +135,7 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
         })
       },
       async createEvent() {
+          this.saving = true;
         const data = {
           movieId: this.movie.imdbID,
           eventName: this.eventName,
@@ -145,6 +147,7 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
         };
         await GCalendarService().createGoogleCalendarEvent(data);
         this.dialog = false;
+          this.saving = false;
       }
     },
     computed: {

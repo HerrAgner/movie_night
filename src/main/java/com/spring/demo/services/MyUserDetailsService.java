@@ -30,8 +30,8 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @PostConstruct
     private void createDefaultUsers() {
-        if (repository.findDistinctFirstByUsernameIgnoreCase("usere") == null) {
-            addUser("usere", "usere");
+        if (repository.findDistinctFirstByUsernameIgnoreCase("user") == null) {
+            addUser("user", "user");
         }
     }
 

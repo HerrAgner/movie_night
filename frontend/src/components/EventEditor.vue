@@ -105,9 +105,19 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn color="green darken-1" text @click="resetPopup">Cancel</v-btn>
+                            <v-btn color="green darken-1"
+                                   text
+                                   @click="resetPopup"
+                                   :disabled="saving">
 
-                            <v-btn color="green darken-1" text @click="createEvent">Save</v-btn>
+                                Cancel
+                            </v-btn>
+
+                            <v-btn color="green darken-1"
+                                   text
+                                   @click="update"
+                                   :disabled="saving">
+                                Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -124,6 +134,7 @@
             event: Object,
         },
         data: () => ({
+            saving: false,
             dialog: false,
             eventName: '',
             friends: [],
@@ -137,9 +148,11 @@
                     this.inviteAllFriends ? this.selectedFriends = [] : this.selectedFriends = this.friends.slice();
                 })
             },
-            async createEvent() {
+            async update() {
+                this.saving = true;
                 const data = {
-                    movieId: this.movie.imdbID,
+                    eventId: this.event.eventId,
+                    movieId: this.event.movieId,
                     eventName: this.eventName,
                     creator: this.$store.state.loggedInUser,
                     startTime: new Date(this.date).toLocaleString().replace(" ", "T"),
@@ -147,8 +160,12 @@
                     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     attendees: this.selectedFriends
                 };
-                await GCalendarService().createGoogleCalendarEvent(data);
-                this.dialog = false;
+                let res = await GCalendarService().updateGoogleCalendarEvent(data);
+                if (res) {
+                    await this.$emit('childToParent', data);
+                    this.dialog = false;
+                    this.saving = false;
+                }
             },
             resetPopup(){
                 this.dialog = false;

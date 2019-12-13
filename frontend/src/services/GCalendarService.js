@@ -36,5 +36,30 @@ export default () => ({
       body: JSON.stringify(data)
     });
     return res.status === 200 ? true : false;
-  }
+  }  ,
+
+  async updateGoogleCalendarEvent(data) {
+       let res = await fetch('/api/gcal/event', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthService().getBearerTokenAsString()
+      },
+      body: JSON.stringify(data)
+    });
+    return res.status === 200;
+  },
+
+
+    async deleteEvent(eventId){
+        console.log(eventId)
+        let response = await fetch('api/gcal/event/'+eventId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: AuthService().getBearerTokenAsString()
+            },
+        });
+        return response.status === 200 ? true : null;
+    },
 });

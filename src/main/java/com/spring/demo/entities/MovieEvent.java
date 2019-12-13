@@ -1,9 +1,13 @@
 package com.spring.demo.entities;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.List;
 
 public class MovieEvent {
 
+    @Id
+    private String Id;
     private String eventId;
     private String movieId;
     private String eventName;
@@ -25,6 +29,10 @@ public class MovieEvent {
         this.endTime = endTime;
         this.timeZone = timeZone;
         this.attendees = attendees;
+    }
+
+    public String getId() {
+        return Id;
     }
 
     public String getCreator() {
