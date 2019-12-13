@@ -147,7 +147,12 @@ public class GCalendarService {
 //        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart().getValue() < Instant.now().toEpochMilli() && busyPeriods.get(0).getEnd().getValue() > Instant.now().toEpochMilli()) {
 //        } else
 
-        if (!busyPeriods.isEmpty() && busyPeriods.get(0) != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
+        DateTime nextStart = null;
+        try {
+            nextStart = busyPeriods.get(0).getStart();
+        } catch (Exception e) {
+        }
+        if (!busyPeriods.isEmpty() && nextStart != null && nextStart.getValue() > Instant.now().toEpochMilli()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(busyPeriods.get(0).getStart().getValue())));
             var freePeriod = new TimePeriod();
