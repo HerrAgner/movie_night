@@ -28,12 +28,11 @@ public class GCalendarService {
     private final SuperSecretInformation superSecretInformation;
     private final MovieEventService movieEventService;
     private final UserService userService;
-    private final String FREE_BUSY_URL = "https://www.googleapis.com/calendar/v3/freeBusy";
     private final long NUM_DAYS_AHEAD = 30;
     private final long NUM_DAYS_START = 0;
     private final long PADDING_DURATION_FOR_EVENTS_IN_MIN = 30;
-    private final Set<Integer> ACCEPTED_START_HOURS = Set.of(18, 19, 20, 21, 22, 23);
-    private final Set<Integer> ACCEPTED_END_HOURS = Set.of(20, 21, 22, 23, 0, 1, 2);
+    private final Set<Integer> ACCEPTED_START_HOURS = Set.of(18, 19, 20, 21);
+    private final Set<Integer> ACCEPTED_END_HOURS = Set.of(20, 21, 22, 23, 0, 1);
 
     public GCalendarService(GAuthService gAuthService, SuperSecretInformation superSecretInformation, MovieEventService movieEventService, UserService userService) {
         this.gAuthService = gAuthService;
@@ -52,8 +51,8 @@ public class GCalendarService {
 
     private FreeBusyRequest getFreeBusyRequest(long start, long end) {
         var request = new FreeBusyRequest();
-        var timeMin = new DateTime(Instant.now().plus(Duration.ofDays(start)).toString());
-        var timeMax = new DateTime(Instant.now().plus(Duration.ofDays(end)).toString());
+        var timeMin = new DateTime(Instant.now().plus(Duration.ofDays(start)).toEpochMilli());
+        var timeMax = new DateTime(Instant.now().plus(Duration.ofDays(end)).toEpochMilli());
         request.setTimeMin(timeMin);
         request.setTimeMax(timeMax);
         request.setItems(List.of(new FreeBusyRequestItem().setId("primary")));
@@ -70,6 +69,7 @@ public class GCalendarService {
             response = calendar.freebusy().query(request).execute();
         } catch (IOException io) {
             System.out.println("Connection timed out.....");
+            io.printStackTrace();
             return null;
         }
         return response;
@@ -87,15 +87,16 @@ public class GCalendarService {
     }
 
     public List<TimePeriod> getBusyPeriods(List<FreeBusyResponse> freeBusyResponses) {
-        return freeBusyResponses.size() > 0 ?
-                freeBusyResponses.parallelStream()
-                        .map(FreeBusyResponse::getCalendars)
-                        .map(Map::values)
-                        .flatMap(fbCal -> fbCal
-                                .stream()
-                                .map(FreeBusyCalendar::getBusy))
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList()) : null;
+        if (freeBusyResponses.isEmpty() || freeBusyResponses == null) return null;
+
+        return freeBusyResponses.parallelStream()
+                .map(FreeBusyResponse::getCalendars)
+                .map(Map::values)
+                .flatMap(fbCal -> fbCal
+                        .stream()
+                        .map(FreeBusyCalendar::getBusy))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public List<TimePeriod> mergeBusyPeriods(List<TimePeriod> arr) {
@@ -127,17 +128,16 @@ public class GCalendarService {
             var eventDuration = Duration.ofMinutes(durationAsMin + (PADDING_DURATION_FOR_EVENTS_IN_MIN * 2));
             if (ACCEPTED_START_HOURS.contains(zon.getHour()) && ACCEPTED_END_HOURS.contains(zon.plus(eventDuration).getHour())) {
                 for (var free : freePeriods) {
-                    if (zon.toEpochSecond() * 1000 >= free.getStart().getValue() && zon.plus(eventDuration).toEpochSecond() * 1000 < free.getEnd().getValue()) {
+                    if (zon.toInstant().toEpochMilli() >= free.getStart().getValue() && zon.plus(eventDuration).toInstant().toEpochMilli() < free.getEnd().getValue()) {
                         var freePeriod = new TimePeriod();
-                        freePeriod.setStart(new DateTime(zon.toInstant().toString()));
-                        freePeriod.setEnd(new DateTime(zon.plus(eventDuration).toInstant().toString()));
+                        freePeriod.setStart(new DateTime(zon.toInstant().toEpochMilli()));
+                        freePeriod.setEnd(new DateTime(zon.plus(eventDuration).toInstant().toEpochMilli()));
                         availablePeriods.add(freePeriod);
                     }
                 }
             }
             zon = zon.plusHours(1);
         }
-        availablePeriods.forEach(p -> System.out.println(p.getStart().toStringRfc3339() + " - " + p.getEnd().toStringRfc3339()));
         return availablePeriods;
     }
 
