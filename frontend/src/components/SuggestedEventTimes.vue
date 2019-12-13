@@ -23,6 +23,13 @@ export default {
     suggestedTimes: [],
     loading: true
   }),
+  mounted() {
+    if(this.attendees.length > 0 && this.$route.path === '/') {
+      this.getSuggestedTimes();
+    } else {
+      this.suggestedTimes = [];
+    }
+  },
   computed: {
     getAttendees() {
       return this.attendees;

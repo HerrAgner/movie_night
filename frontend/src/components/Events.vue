@@ -154,7 +154,10 @@ import GCalendarService from "../services/GCalendarService";
                 console.log(movies)
                 movies.forEach(movie => {
                     this.events.forEach(e => {
-                        if (e.movieId === movie.imdbID) e.poster = movie.Poster
+                        if (e.movieId === movie.imdbID) {
+                            e.poster = movie.Poster;
+                            e.runtime = movie.Runtime
+                        }
                     })
                 });
             }

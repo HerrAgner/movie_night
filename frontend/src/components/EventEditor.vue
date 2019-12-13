@@ -72,26 +72,8 @@
                                             </v-col>
 
 
-                                            <v-col cols="12" sm="6" md="5">
-                                                <v-menu
-                                                        v-model="menu"
-                                                        :close-on-content-click="false"
-                                                        :nudge-right="40"
-                                                        transition="scale-transition"
-                                                        offset-y
-                                                        min-width="290px"
-                                                >
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-text-field
-                                                                v-model="date"
-                                                                label="Pick a date"
-                                                                prepend-icon="event"
-                                                                readonly
-                                                                v-on="on"
-                                                        />
-                                                    </template>
-                                                    <v-date-picker v-model="date" @input="menu = false"/>
-                                                </v-menu>
+                                            <v-col cols="12" >
+                                                <SuggestedEventTimes :attendees=selectedFriends :runtime=event.runtime @handleTimeUpdate="handleTimeUpdate" />
                                             </v-col>
 
 
@@ -127,11 +109,15 @@
 <script>
 
     import GCalendarService from "../services/GCalendarService";
+    import SuggestedEventTimes from "./SuggestedEventTimes";
 
     export default {
         name: 'popupEvent',
         props: {
             event: Object,
+        },
+        components: {
+            SuggestedEventTimes
         },
         data: () => ({
             saving: false,
@@ -143,6 +129,14 @@
             selectedFriends: []
         }),
         methods: {
+            handleTimeUpdate(data){
+                this.event.startTime = data.split(' - ')[0].replace(' ', 'T');
+                this.event.endTime = data.split(' - ')[1].replace(' ', 'T');
+
+                console.log("start time"+this.event.startTime)
+                console.log("end time"+this.event.endTime)
+
+            },
             toggle() {
                 this.$nextTick(() => {
                     this.inviteAllFriends ? this.selectedFriends = [] : this.selectedFriends = this.friends.slice();
