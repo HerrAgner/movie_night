@@ -45,7 +45,7 @@ public class GCalendarService {
         var freeBusyResponses = getAllFreeBusyResponse(users);
         var busyPeriods = getBusyPeriods(freeBusyResponses);
         var mergedBusyPeriods = mergeBusyPeriods(busyPeriods);
-        var invertBusyPeriods = invertBusyPeriods(mergedBusyPeriods, duration);
+        var invertBusyPeriods = invertBusyPeriods(mergedBusyPeriods);
         return suggestEventPeriods(invertBusyPeriods, duration);
     }
 
@@ -81,7 +81,7 @@ public class GCalendarService {
         gAuthService.tryRefreshToken(username);
         GoogleCredentials credential = GoogleCredentials.create(accessToken);
         if (credential == null || credential.getAccessToken() == null) return null;
-        return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(credential.getAccessToken().getTokenValue()))
+        return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(accessToken.getTokenValue()))
                 .setApplicationName(superSecretInformation.getApplicationName())
                 .build();
     }
@@ -141,14 +141,13 @@ public class GCalendarService {
         return availablePeriods;
     }
 
-    public ArrayList<TimePeriod> invertBusyPeriods(List<TimePeriod> busyPeriods, long durationAsMin) {
-        var durationAsMilli = TimeUnit.MILLISECONDS.convert(Duration.ofMinutes(durationAsMin));
+    public ArrayList<TimePeriod> invertBusyPeriods(List<TimePeriod> busyPeriods) {
         var freePeriods = new ArrayList<TimePeriod>();
 
 //        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart().getValue() < Instant.now().toEpochMilli() && busyPeriods.get(0).getEnd().getValue() > Instant.now().toEpochMilli()) {
 //        } else
 
-        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
+        if (!busyPeriods.isEmpty() && busyPeriods.get(0) != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(busyPeriods.get(0).getStart().getValue())));
             var freePeriod = new TimePeriod();
@@ -167,7 +166,7 @@ public class GCalendarService {
 
             var startOfFreePeriod = period.getEnd().getValue() < Instant.now().toEpochMilli() ? new DateTime(Date.from(Instant.now())) : new DateTime(Date.from(Instant.ofEpochMilli(period.getEnd().getValue())));
             DateTime endOfFreePeriod;
-            if (nextPeriod != null && (nextPeriod.getStart().getValue() - period.getEnd().getValue()) > durationAsMilli) {
+            if (nextPeriod != null && nextPeriod.getStart().getValue() > period.getEnd().getValue()) {
                 endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(nextPeriod.getStart().getValue())));
             } else {
                 endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(period.getEnd().getValue()).plus(Duration.ofDays(30))));
