@@ -1,23 +1,27 @@
 package com.spring.demo.services;
 
 import com.spring.demo.db.MovieRepository;
+import com.spring.demo.db.SearchResultRepository;
 import com.spring.demo.entities.Movie;
+import com.spring.demo.entities.SearchResult;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class MovieCache {
 
     private static Set<String> movieCache;
+    private static Set<String> movieSearchCache;
     private static MovieRepository movieRepository;
+    private static SearchResultRepository searchResultRepository;
 
-    public MovieCache(MovieRepository movieRepository) {
+    public MovieCache(MovieRepository movieRepository, SearchResultRepository searchResultRepository) {
         this.movieRepository = movieRepository;
+        MovieCache.searchResultRepository = searchResultRepository;
         movieCache = movieRepository.findAll().stream().parallel().map(m -> m.getImdbID()).collect(Collectors.toSet());
+        movieSearchCache = searchResultRepository.findAll().stream().parallel().map(SearchResult::getSearchText).collect(Collectors.toSet());
     }
 
     public static Set<String> getMovieCache() {
@@ -39,5 +43,19 @@ public class MovieCache {
         if (movieCache.contains(movieId)) {
             return movieRepository.findById(movieId);
         } else return Optional.empty();
+    }
+
+    public static void addSearchToCache(SearchResult searchResult) {
+        if (searchResult != null && searchResult.getTotalResults() > 0) {
+            movieSearchCache.add(searchResult.getSearchText());
+            searchResultRepository.insert(searchResult);
+        }
+    }
+
+    public static SearchResult getSearchFromCache(String searchText) {
+        if (movieSearchCache.contains(searchText)) {
+            return searchResultRepository.findBySearchText(searchText);
+        }
+        return null;
     }
 }
