@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -119,6 +118,7 @@ public class GCalendarService {
     }
 
     public List<TimePeriod> suggestEventPeriods(List<TimePeriod> freePeriods, long durationAsMin) {
+        if(freePeriods == null) return null;
         List<TimePeriod> availablePeriods = new ArrayList<>();
 
         ZonedDateTime zon = ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC).plus(Duration.ofHours(1)).truncatedTo(ChronoUnit.SECONDS);
@@ -142,17 +142,13 @@ public class GCalendarService {
     }
 
     public ArrayList<TimePeriod> invertBusyPeriods(List<TimePeriod> busyPeriods) {
+        if(busyPeriods == null) return null;
         var freePeriods = new ArrayList<TimePeriod>();
 
 //        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart().getValue() < Instant.now().toEpochMilli() && busyPeriods.get(0).getEnd().getValue() > Instant.now().toEpochMilli()) {
 //        } else
 
-        DateTime nextStart = null;
-        try {
-            nextStart = busyPeriods.get(0).getStart();
-        } catch (Exception e) {
-        }
-        if (!busyPeriods.isEmpty() && nextStart != null && nextStart.getValue() > Instant.now().toEpochMilli()) {
+        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart() != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(busyPeriods.get(0).getStart().getValue())));
             var freePeriod = new TimePeriod();

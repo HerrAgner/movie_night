@@ -37,7 +37,11 @@ public class GCalendarController {
     public ResponseEntity<List<TimePeriod>> getBusyAndFreePeriods(@RequestParam(defaultValue = "0") long duration, @RequestBody List<String> requestForUsers) {
         try {
             var suggestedEventPeriods = gCalendarService.getSuggestedEventPeriods(requestForUsers, duration);
-            return new ResponseEntity<>(suggestedEventPeriods, HttpStatus.OK);
+            if (suggestedEventPeriods != null) {
+                return new ResponseEntity<>(suggestedEventPeriods, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -45,7 +49,7 @@ public class GCalendarController {
     }
 
     @PostMapping("events/create")
-    public ResponseEntity<Event> createEvent(@RequestBody MovieEvent event){
+    public ResponseEntity<Event> createEvent(@RequestBody MovieEvent event) {
         Event newEvent = gCalendarService.createCalendarEvent(event);
         if (newEvent == null || newEvent.getCreator() == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -54,7 +58,7 @@ public class GCalendarController {
     }
 
     @PutMapping("event")
-    public ResponseEntity<Event> updateEvent(@RequestBody MovieEvent event){
+    public ResponseEntity<Event> updateEvent(@RequestBody MovieEvent event) {
         MovieEvent movieEvent = movieEventService.getMovieEvent(event);
         movieEvent.setEventId(event.getEventId());
         movieEvent.setAttendees(event.getAttendees());
@@ -68,17 +72,17 @@ public class GCalendarController {
         var eventRes = gCalendarService.updateEvent(event);
         if (eventRes != null) {
             movieEventService.saveMovieEventToDb(movieEvent);
-            System.out.println("event name: "+eventRes.getSummary());
-            System.out.println("start time: "+eventRes.getStart());
-            System.out.println("end time: "+eventRes.getEnd());
-            return new ResponseEntity<>( HttpStatus.OK);
+            System.out.println("event name: " + eventRes.getSummary());
+            System.out.println("start time: " + eventRes.getStart());
+            System.out.println("end time: " + eventRes.getEnd());
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @DeleteMapping("event/{id}")
-    public ResponseEntity<Event> deleteEvent(@PathVariable String id, Principal principal){
+    public ResponseEntity<Event> deleteEvent(@PathVariable String id, Principal principal) {
         System.out.println(id);
         System.out.println(principal.getName());
         movieEventService.deleteMovieEvent(id);
@@ -89,9 +93,9 @@ public class GCalendarController {
             System.out.println("the event deleted from google calendar!");
         } catch (IOException e) {
             System.out.println(e);
-            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>( HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
