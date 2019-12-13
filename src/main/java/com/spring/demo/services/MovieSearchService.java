@@ -16,7 +16,6 @@ public class MovieSearchService {
     public SearchResult searchMovies(String query, int page) {
 
         SearchResult cachedSearch = MovieCache.getSearchFromCache(query);
-
         if (cachedSearch != null && cachedSearch.getTotalResults() > 0) {
             cachedSearch.setSearchText(query);
             return cachedSearch;

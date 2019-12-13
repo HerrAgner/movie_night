@@ -46,7 +46,7 @@ public class MovieCache {
     }
 
     public static void addSearchToCache(SearchResult searchResult) {
-        if (searchResult != null && searchResult.getTotalResults() > 0) {
+        if (searchResult != null && searchResult.getTotalResults() > 0 && !movieSearchCache.contains(searchResult)) {
             movieSearchCache.add(searchResult.getSearchText());
             searchResultRepository.insert(searchResult);
         }
@@ -54,7 +54,7 @@ public class MovieCache {
 
     public static SearchResult getSearchFromCache(String searchText) {
         if (movieSearchCache.contains(searchText)) {
-            return searchResultRepository.findBySearchText(searchText);
+            return searchResultRepository.findFirstBySearchText(searchText);
         }
         return null;
     }

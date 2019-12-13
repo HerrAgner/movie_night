@@ -191,6 +191,7 @@ public class GCalendarService {
                 freePeriods.add(freePeriod);
                 i++;
             }
+
         }
         return freePeriods;
     }
