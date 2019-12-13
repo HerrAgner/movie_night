@@ -1,7 +1,5 @@
 package com.spring.demo.entities;
 
-import java.time.Instant;
-
 public class RestInfo {
 
     private String URI;
@@ -10,9 +8,9 @@ public class RestInfo {
     private String time;
     private String type;
     private String contentType;
-    private String statusCode;
+    private int statusCode;
 
-    public RestInfo(String URI, String query, String ip, String time, String type, String contentType, String statusCode) {
+    public RestInfo(String URI, String query, String ip, String time, String type, String contentType, int statusCode) {
         this.URI = URI;
         this.query = query;
         this.ip = ip;
@@ -73,11 +71,11 @@ public class RestInfo {
         this.contentType = contentType;
     }
 
-    public String getStatusCode() {
+    public int getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(String statusCode) {
+    public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
 }
