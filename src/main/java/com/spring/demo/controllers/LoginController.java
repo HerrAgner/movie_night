@@ -3,6 +3,7 @@ package com.spring.demo.controllers;
 import com.spring.demo.services.MyUserDetailsService;
 import com.spring.demo.models.AuthenticationRequest;
 import com.spring.demo.models.AuthenticationResponse;
+import com.spring.demo.util.FailedLoginHandler;
 import com.spring.demo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ import javax.annotation.security.PermitAll;
 public class LoginController {
 
     @Autowired
-    @Resource(name="authenticationManager")
+    @Resource(name = "authenticationManager")
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -35,19 +36,24 @@ public class LoginController {
 
 
     @GetMapping
-    public Object getUsers(){
+    public Object getUsers() {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authRequest) throws Exception {
-        System.out.println("came a request");
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        }catch (BadCredentialsException e){
+            if (!FailedLoginHandler.isUserAllowedToLogin(authRequest.getUsername())) {
+                var lockoutSeconds = FailedLoginHandler.getLockoutTimeInSeconds(authRequest.getUsername());
+                return new ResponseEntity<>(lockoutSeconds, HttpStatus.TOO_MANY_REQUESTS);
+            }
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        } catch (BadCredentialsException e) {
+            FailedLoginHandler.addNewFailedRequest(authRequest.getUsername());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        FailedLoginHandler.tryRemoveLoginRequest(authRequest.getUsername());
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authRequest.getUsername());
 
