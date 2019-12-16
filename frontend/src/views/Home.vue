@@ -6,7 +6,7 @@
         <h2 v-else> Hi you!</h2>
         <Events v-if="this.$store.state.isLoggedin" />
       </div>
-      </v-container> 
+      </v-container>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ export default {
         // this.username = res.username
         this.$store.commit('setLoggedInUser', res.username);
       }else {
-        await this.$router.push({path: '/login'})
+        //await this.$router.push({path: '/login'})
         this.$store.state.isLoggedin = false
 
       }
