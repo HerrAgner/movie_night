@@ -230,6 +230,7 @@ public class GCalendarService {
         ArrayList<EventAttendee> eventAttendees = new ArrayList<>();
         for (String attendee : movieEvent.getAttendees()) {
             User user = userService.getUserByUsername(attendee);
+            gAuthService.tryRefreshToken(user.getUsername());
             if (user != null && user.getGoogleInfo() != null) {
                 String email = user.getGoogleInfo().getEmail();
                 if (email != null && !email.isEmpty()) {

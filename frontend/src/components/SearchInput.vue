@@ -1,5 +1,6 @@
 <template>
     <v-container>
+        
         <v-text-field
                 class="searchField"
                 outlined
@@ -8,29 +9,30 @@
                 v-model="search"
                 v-on:keyup="searchForMovies(500)"
                 v-on:focus="focusTextField"
-                style="position: absolute; width: 30%; top: 5px; z-index: 2; height: 5.5vh; background-color: white"
+                style="position: absolute; width: 30%; top: 5px; z-index: 2; height: 5.5vh;"
         >
         </v-text-field>
         <transition name="fade">
-        <div @click="closeMenu" v-if="movieList.length > 0" class="overlay"
-             style="position:fixed; top:0; left:0; width: 100vw; height: 100vh; background-color: rgba(10,10,10,0.4); z-index: 1"/>
+            <div @click="closeMenu" v-if="movieList.length > 0" class="overlay"
+                 style="position:fixed; top:0; left:0; width: 100vw; height: 100vh; background-color: rgba(10,10,10,0.4); z-index: 1"/>
         </transition>
         <transition name="fade">
-        <Loading class="listComponent" v-if="isLoading && searching && movieList.length === 0" style="right: 25%;"/>
-        <v-list class="listComponent" v-else-if="movieList.length > 0"
-                style="max-height: 60vh; overflow-x:scroll;">
-            <SearchResult v-for="search in searches"
-                          :key="search.imdbID"
-                          :poster="search.Poster"
-                          :title="search.Title"
-                          :year="search.Year"
-                          :id="search.imdbID"
-                          v-on:closemenu="closeMenu"/>
-            <v-btn @click="loadMoreMovies">Load more</v-btn>
-        </v-list>
-        <v-container class="listComponent" v-else-if="!isLoading && this.search.length > 0 && this.searchResponse === 0"
-                     style="background-color: white">No movies found
-        </v-container>
+            <Loading class="listComponent" v-if="isLoading && searching && movieList.length === 0" style="right: 25%;"/>
+            <v-list class="listComponent" v-else-if="movieList.length > 0"
+                    style="max-height: 60vh; overflow-x:scroll;">
+                <SearchResult v-for="search in searches"
+                              :key="search.imdbID"
+                              :poster="search.Poster"
+                              :title="search.Title"
+                              :year="search.Year"
+                              :id="search.imdbID"
+                              v-on:closemenu="closeMenu"/>
+                <v-btn @click="loadMoreMovies">Load more</v-btn>
+            </v-list>
+            <v-container class="listComponent"
+                         v-else-if="!isLoading && this.search.length > 0 && this.searchResponse === 0"
+                         style="background-color: white">No movies found
+            </v-container>
         </transition>
     </v-container>
 </template>
@@ -38,7 +40,6 @@
 <script>
   import SearchResult from "./SearchResult";
   import Loading from '@/components/Loading';
-
 
   export default {
     name: "SearchInput",
@@ -50,17 +51,36 @@
         movieList: [],
         loading: true,
         searching: false,
-        pageNumber: 1
+        pageNumber: 1,
+        suggest: [],
+        suggestNumber: 0
       }
     },
     methods: {
+      async suggestMovies(letter, word) {
+        this.suggest = [];
+          let response = await fetch('api/movies/suggest?l=' + letter + '&s=' + word);
+          response = response.status === 200 ? await response.json() : null;
+          response.d.forEach(text => this.suggest.push(text.l))
+      },
+
       async searchForMovies(timeout) {
+        this.suggestMovies(this.search.charAt(0), this.search);
         this.searching = true;
         this.loading = true;
         setTimeout(async () => {
-          let response = await fetch('api/movies/search?s=' + this.search + "&p=" + this.pageNumber);
-          response = response.status === 200 ? await response.json() : null;
-          this.searchResponse = response ? response.Search : [];
+          let response;
+          console.log(this.suggest[0]);
+          if (this.suggest[0] !== undefined && this.search.length > 0) {
+            response = await fetch('api/movies/search?s=' + this.suggest[0] + "&p=" + this.pageNumber);
+            response = response.status === 200 ? await response.json() : null;
+            this.searchResponse = response ? response.Search : [];
+          }
+          if (this.searchResponse.length < 2) {
+            response = await fetch('api/movies/search?s=' + this.search + "&p=" + this.pageNumber);
+            response = response.status === 200 ? await response.json() : null;
+            this.searchResponse = response ? response.Search : [];
+          }
           this.loading = false;
           this.searching = false;
           this.addMoviesToList()
@@ -105,11 +125,12 @@
       }
     },
     watch: {
-      searchChange: function(value, oldValue) {
+      searchChange: function (value, oldValue) {
         if (value !== oldValue) {
           this.movieList = [];
         }
-      }
+      },
+      
     }
   }
 
@@ -124,16 +145,22 @@
     }
     
     
-
     .fade-enter-active, .fade-leave-active {
         transition: ease-in-out opacity 0.2s;
     }
-    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+    {
         opacity: 0;
     }
+    
     @keyframes fadein {
-        from { opacity: 0; }
-        to   { opacity: 1; }
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
 </style>
 

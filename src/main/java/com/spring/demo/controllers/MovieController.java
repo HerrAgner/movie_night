@@ -70,5 +70,12 @@ public class MovieController {
         return  ResponseEntity.ok(movies);
     }
 
+    @GetMapping("suggest")
+    public ResponseEntity<String> suggestMovies(@RequestParam String l, @RequestParam String s) {
+        String result = movieSearchService.suggestMovies(l, s);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
 }
