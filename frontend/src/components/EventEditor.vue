@@ -60,7 +60,7 @@
                                                                 </v-avatar>
                                                                 {{ friend }}
                                                                 <v-avatar left @click="selectedFriends.splice(i, 1)">
-                                                                    <v-icon class="ss">cancel</v-icon>
+                                                                    <v-icon class="cancelIcon">cancel</v-icon>
                                                                 </v-avatar>
 
                                                             </v-chip>
@@ -90,8 +90,7 @@
                             <v-btn color="green darken-1"
                                    text
                                    @click="resetPopup"
-                                   :disabled="saving">
-
+                                   :disabled="canceling">
                                 Cancel
                             </v-btn>
 
@@ -99,7 +98,8 @@
                                    text
                                    @click="update"
                                    :disabled="saving">
-                                Save</v-btn>
+                                Save
+                            </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -120,6 +120,7 @@
             SuggestedEventTimes
         },
         data: () => ({
+            canceling: false,
             saving: false,
             dialog: false,
             eventName: '',
@@ -132,10 +133,6 @@
             handleTimeUpdate(data){
                 this.event.startTime = data.split(' - ')[0].replace(' ', 'T');
                 this.event.endTime = data.split(' - ')[1].replace(' ', 'T');
-
-                console.log("start time"+this.event.startTime)
-                console.log("end time"+this.event.endTime)
-
             },
             toggle() {
                 this.$nextTick(() => {
@@ -144,6 +141,7 @@
             },
             async update() {
                 this.saving = true;
+                this.canceling = true;
                 const data = {
                     eventId: this.event.eventId,
                     movieId: this.event.movieId,
@@ -154,11 +152,15 @@
                     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     attendees: this.selectedFriends
                 };
+
                 let res = await GCalendarService().updateGoogleCalendarEvent(data);
                 if (res) {
                     await this.$emit('childToParent', data);
                     this.dialog = false;
                     this.saving = false;
+                    this.canceling = false;
+                }else{
+                    this.canceling = true;
                 }
             },
             resetPopup(){
@@ -182,9 +184,18 @@
                 if (this.inviteSomeFriends) return 'minimize';
                 return 'check_circle_outline'
             },
+            getEventName(){
+                return  this.eventName
+            },
+            getSelectedFriends(){
+                return  this.selectedFriends
+            },
+            getDate(){
+                return  this.event.startTime
+            }
         },
         async created() {
-            this.selectedFriends = [...this.event.attendees]
+            this.selectedFriends = [...this.event.attendees];
             this.eventName = this.event.eventName
         },
         async mounted() {
@@ -203,9 +214,24 @@
                     }
                 });
             }
+        },
+        watch: {
+            getEventName(value) {
+                this.saving = !(value !== '' && this.selectedFriends.length !== 0 && this.startTime !== null);
+            },
+            getSelectedFriends(value) {
+                this.saving = !(value.length !== 0 && this.eventName !== '' && this.startTime !== null);
+            },
+            getDate(value) {
+                this.saving = !(value !== null && this.selectedFriends.length !== 0 && this.eventName !== '');
+            }
         }
     };
 </script>
 <style>
+    .cancelIcon {
+        padding-left: 3vw;
+        padding-right: 1vw;
+    }
 
 </style>
