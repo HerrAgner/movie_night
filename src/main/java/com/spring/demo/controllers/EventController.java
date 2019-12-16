@@ -6,6 +6,7 @@ import com.spring.demo.entities.MovieEvent;
 import com.spring.demo.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class EventController {
     @GetMapping("/all/{page}")
     public ResponseEntity<List<MovieEvent>> getEvents(@PathVariable int page, Principal principal){
         List<MovieEvent> events = movieEventRepository
-                .findAllByAttendeesContainsOrCreator(principal.getName(), PageRequest.of(page, 3));
+                .findAllByAttendeesContainsOrCreator(principal.getName(), PageRequest.of(page, 3, Sort.by("startTime")));
         return new ResponseEntity<>(events, HttpStatus.OK);
 
     }
