@@ -94,7 +94,8 @@
                 </v-dialog>
             </v-card>
         </v-col>
-        <v-btn v-if="this.$store.state.isLoggedin" block color="secondary" @click="getMyEvents" dark>More..</v-btn>
+        <v-btn v-if="!this.noMore" block color="secondary" @click="getMyEvents" dark>More..</v-btn>
+        <h2 v-else> No More</h2>
     </v-row>
 </template>
 
@@ -113,7 +114,8 @@ import GCalendarService from "../services/GCalendarService";
             events: [],
             moviesID: [],
             isLoading: false,
-            pageCounter: 0
+            pageCounter: 0,
+            noMore: false
         }),
         methods: {
             eventUpdated(eventFromChild){
@@ -146,12 +148,15 @@ import GCalendarService from "../services/GCalendarService";
             },
             async getMyEvents(){
                 let res = await EventsService().getAllEvents(this.pageCounter);
+                this.moviesID = [];
                 await res.forEach(item => {
                     this.events.push(item);
                     this.moviesID.push({imdbID: item.movieId})
                 });
-                await this.getEventsPoster();
-                this.pageCounter++
+                if (this.moviesID.length !== 0) {
+                    await this.getEventsPoster();
+                    this.pageCounter++
+                }else this.noMore = true
             },
             async getEventsPoster(){
                 let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
