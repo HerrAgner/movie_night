@@ -59,33 +59,35 @@
     methods: {
       async suggestMovies(letter, word) {
         this.suggest = [];
-          let response = await fetch('api/movies/suggest?l=' + letter + '&s=' + word);
-          response = response.status === 200 ? await response.json() : null;
-          response.d.forEach(text => this.suggest.push(text.l))
+        let response = await fetch('api/movies/suggest?l=' + letter + '&s=' + word);
+        response = response.status === 200 ? await response.json() : null;
+        response.d.forEach(text => this.suggest.push(text.l))
       },
 
       async searchForMovies(timeout) {
-        this.suggestMovies(this.search.charAt(0), this.search);
-        this.searching = true;
-        this.loading = true;
-        setTimeout(async () => {
-          let response;
-          console.log(this.suggest[0]);
-          if (this.suggest[0] !== undefined && this.search.length > 0) {
-            response = await fetch('api/movies/search?s=' + this.suggest[0] + "&p=" + this.pageNumber);
-            response = response.status === 200 ? await response.json() : null;
-            this.searchResponse = response ? response.Search : [];
-          }
-          if (this.searchResponse.length < 2) {
-            response = await fetch('api/movies/search?s=' + this.search + "&p=" + this.pageNumber);
-            response = response.status === 200 ? await response.json() : null;
-            this.searchResponse = response ? response.Search : [];
-          }
-          this.loading = false;
-          this.searching = false;
-          this.addMoviesToList()
-          return response;
-        }, timeout);
+        if (this.search.length > 2) {
+
+          this.suggestMovies(this.search.charAt(0), this.search);
+          this.searching = true;
+          this.loading = true;
+          setTimeout(async () => {
+            let response;
+            if (this.suggest[this.suggestNumber] !== undefined && this.search.length > 0) {
+              response = await fetch('api/movies/search?s=' + this.suggest[this.suggestNumber] + "&p=" + this.pageNumber);
+              response = response.status === 200 ? await response.json() : null;
+              this.searchResponse = response ? response.Search : [];
+            }
+            if (this.searchResponse.length < 2) {
+              response = await fetch('api/movies/search?s=' + this.search + "&p=" + this.pageNumber);
+              response = response.status === 200 ? await response.json() : null;
+              this.searchResponse = response ? response.Search : [];
+            }
+            this.loading = false;
+            this.searching = false;
+            this.addMoviesToList()
+            return response;
+          }, timeout);
+        }
       },
       closeMenu() {
         this.search = "";
@@ -130,7 +132,7 @@
           this.movieList = [];
         }
       },
-      
+
     }
   }
 
