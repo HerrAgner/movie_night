@@ -22,7 +22,6 @@ export default () => ({
     //}
 
     //+ encodeURIComponent(JS)
-    console.log( JSON.stringify(ids))
     let response = await fetch('api/movies', {
       method: 'POST',
       headers: {

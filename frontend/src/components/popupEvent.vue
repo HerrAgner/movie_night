@@ -2,7 +2,8 @@
     <div id="app">
         <v-app id="inspire">
             <v-row justify="center">
-                <v-btn color="primary" dark @click.stop="dialog = true">Create event</v-btn>
+                <v-btn v-if="this.$store.state.isLoggedin" color="primary" dark @click.stop="dialog = true">Create event</v-btn>
+                <h4 v-else>You have to login to create an event</h4>
 
                 <v-dialog v-model="dialog" max-width="800">
                     <v-card>
@@ -175,21 +176,23 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
         },
     },
     async mounted() {
-      let token = this.$store.state.cookie;
-      let res = await fetch('/api/event', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-      });
-      if (res.status === 200) {
-        res = await res.json();
-        res.forEach(item => {
-          if (this.$store.state.loggedInUser !== item.username && item.googleToken !== null) {
+        let token = this.$store.state.cookie;
+        if (token !== ''){
+            let res = await fetch('/api/event', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+        if (res.status === 200) {
+            res = await res.json();
+            res.forEach(item => {
+                if (this.$store.state.loggedInUser !== item.username && item.googleToken !== null) {
                     this.friends.push(item.username);
-          }
-        });
-      }
+                }
+            });
+        }
+    }
     }
   };
 </script>

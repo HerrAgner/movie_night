@@ -59,7 +59,7 @@
 
                     <v-col cols="12" md="2" class="movie_poster_container" :class="breakpointSmAndDown
                                 && 'poster_below_sm'">
-                        <v-img v-if="isLoading" :src="item.poster" class="movie_poster" alt="Image not found"/>
+                        <v-img :src="item.poster" class="movie_poster" alt="Image not found"/>
                     </v-col>
 
                 </v-row>
@@ -95,7 +95,9 @@
             </v-card>
         </v-col>
         <v-btn v-if="!this.noMore" block color="secondary" @click="getMyEvents" dark>More..</v-btn>
-        <h2 v-else> No More</h2>
+        <div v-else class="flex">
+            <h2 class="justify-center"> No More</h2>
+        </div>
     </v-row>
 </template>
 
@@ -113,7 +115,6 @@ import GCalendarService from "../services/GCalendarService";
             dialog: false,
             events: [],
             moviesID: [],
-            isLoading: false,
             pageCounter: 0,
             noMore: false
         }),
@@ -148,12 +149,12 @@ import GCalendarService from "../services/GCalendarService";
             },
             async getMyEvents(){
                 let res = await EventsService().getAllEvents(this.pageCounter);
-                this.moviesID = [];
-                await res.forEach(item => {
-                    this.events.push(item);
-                    this.moviesID.push({imdbID: item.movieId})
-                });
-                if (this.moviesID.length !== 0) {
+                if (res.length !== 0) {
+                    this.moviesID = [];
+                    await res.forEach(item => {
+                        this.events.push(item);
+                        this.moviesID.push({imdbID: item.movieId})
+                    });
                     await this.getEventsPoster();
                     this.pageCounter++
                 }else this.noMore = true
@@ -168,11 +169,12 @@ import GCalendarService from "../services/GCalendarService";
                         }
                     })
                 });
+
+                this.events = [...this.events];
             }
         },
         async mounted() {
             await this.getMyEvents();
-            this.isLoading = true
         }
     }
 </script>
