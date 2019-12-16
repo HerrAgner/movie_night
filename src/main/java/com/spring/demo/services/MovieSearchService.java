@@ -39,7 +39,9 @@ public class MovieSearchService {
         String json = "";
         if (word.length() > 0) {
             String s = suggestRestTemplate.getForObject(suggestUrl + letter + "/" + word + ".json", String.class);
-            json = s.substring(s.indexOf("(") + 1, s.lastIndexOf(")"));
+            if (s != null) {
+                json = s.substring(s.indexOf("(") + 1, s.lastIndexOf(")"));
+            }
         }
         return json;
 
