@@ -145,15 +145,16 @@ import GCalendarService from "../services/GCalendarService";
                 return this.$store.state.loggedInUser
             },
             async getMyEvents(){
-                let res = await EventsService().getAllEvents();
+                let res = await EventsService().getAllEvents(this.pageCounter);
                 await res.forEach(item => {
                     this.events.push(item);
                     this.moviesID.push({imdbID: item.movieId})
                 });
+                await this.getEventsPoster();
+                this.pageCounter++
             },
             async getEventsPoster(){
                 let movies = await movieDetailsService().getAllMoviesDetails(this.moviesID);
-                console.log(movies);
                 movies.forEach(movie => {
                     this.events.forEach(e => {
                         if (e.movieId === movie.imdbID) {
@@ -166,7 +167,6 @@ import GCalendarService from "../services/GCalendarService";
         },
         async mounted() {
             await this.getMyEvents();
-            await this.getEventsPoster();
             this.isLoading = true
         }
     }

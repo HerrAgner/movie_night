@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,10 +32,10 @@ public class EventController {
         return users;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<MovieEvent>> getEvents(Principal principal){
+    @GetMapping("/all/{page}")
+    public ResponseEntity<List<MovieEvent>> getEvents(@PathVariable int page, Principal principal){
         List<MovieEvent> events = movieEventRepository
-                .findAllByAttendeesContainsOrCreator(principal.getName(), PageRequest.of(0, 3));
+                .findAllByAttendeesContainsOrCreator(principal.getName(), PageRequest.of(page, 3));
         return new ResponseEntity<>(events, HttpStatus.OK);
 
     }
