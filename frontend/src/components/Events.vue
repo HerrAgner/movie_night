@@ -1,4 +1,6 @@
 <template>
+    <div>
+        <Loading v-if="isLoading" />
     <v-row>
         <v-col
                 v-for="(item, i) in events"
@@ -64,12 +66,21 @@
 
                 </v-row>
 
+                <v-row>
+                    <v-col md="6">
                         <EventEditor v-if = "item.creator === getCurrentUser()" :event="item" :key="i" v-on:childToParent="eventUpdated"/>
+                    </v-col>
+
+                    <v-col md="6">
                         <v-btn text v-if = "item.creator === getCurrentUser()" @click="deletePopup">Delete</v-btn>
+                    </v-col>
+
+                </v-row>
 
                 <v-dialog
                         v-model="dialog"
                         width="500"
+                        :retain-focus="false"
                 >
                     <v-card>
                         <v-card-title
@@ -99,6 +110,7 @@
             <h2 class="justify-center"> No More</h2>
         </div>
     </v-row>
+    </div>
 </template>
 
 <script>
@@ -106,12 +118,15 @@ import EventsService from "../services/EventsService";
 import EventEditor from "./EventEditor";
 import movieDetailsService from "../services/movieDetailsService";
 import GCalendarService from "../services/GCalendarService";
+import Loading from '@/components/Loading';
 
     export default {
         components: {
-            EventEditor
+            EventEditor,
+            Loading
         },
         data: () => ({
+            isLoading: true,
             dialog: false,
             events: [],
             moviesID: [],
@@ -155,6 +170,7 @@ import GCalendarService from "../services/GCalendarService";
                         this.events.push(item);
                         this.moviesID.push({imdbID: item.movieId})
                     });
+                    this.isLoading = false
                     await this.getEventsPoster();
                     this.pageCounter++
                 }else this.noMore = true
