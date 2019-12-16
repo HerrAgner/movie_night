@@ -8,6 +8,12 @@
             <Search id="search"/>
             </v-col>
             <v-btn
+                    to="/about"
+                    color="teal"
+                    text>
+                <span>About stuff</span>
+            </v-btn>
+            <v-btn
                     to="/login"
                     color="teal"
                     text
