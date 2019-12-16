@@ -5,9 +5,10 @@
       v-else-if="!isLoading && getMovie"
       class="movie_info_container"
     >
+      {{lurig}}
       <v-row justify="center">
         <v-col
-          cols="12"
+          cols="6"
           md="4"
           class="movie_poster_container"
           :class="breakpointSmAndDown && 'poster_below_sm'"
@@ -120,6 +121,13 @@ export default {
     },
     breakpointSmAndDown() {
       return this.$vuetify.breakpoint.smAndDown;
+    },
+    lurig(){
+      console.log(this.movie);
+      if (this.movie.Title === "Stranger Things") {
+        document.body.style.transform = "rotate(180deg)";
+        setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 1000);
+      }
     }
   },
   methods: {
