@@ -56,8 +56,10 @@ export default {
       if(this.$refs.loginForm.validate()) {
         await this.$store.dispatch('login', 
                       {email: this.email, password: this.password});                       
-        if (!this.$store.state.isLoggedin){
+        if (!this.$store.state.isLoggedin && !this.$store.state.lockedOut){
           this.errorMessage = 'Username and/or password is incorrect';
+        } else if(this.$store.state.lockedOut) {
+          this.errorMessage = `Try again in ${this.$store.state.lockedOut} seconds.`;
         }                                                                    
       }
     }

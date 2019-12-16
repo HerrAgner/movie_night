@@ -83,7 +83,6 @@
 
 <script>
 import movieDetailsService from '@/services/movieDetailsService';
-import GCalendarService from '@/services/GCalendarService';
 import Loading from '@/components/Loading';
 import popupEvent from '@/components/popupEvent';
 

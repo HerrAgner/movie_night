@@ -1,8 +1,8 @@
 import AuthService from './AuthService';
 
 export default () => ({
-    async getAllEvents() {
-        let res = await fetch('/api/event/all', {
+    async getAllEvents(page) {
+        let res = await fetch('/api/event/all/' + page, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
