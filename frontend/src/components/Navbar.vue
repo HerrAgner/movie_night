@@ -1,6 +1,6 @@
 <template>
-    <v-card id="nav">
-        <v-container style="display: flex; justify-content: space-around; align-items: center; height: 5vh">
+    <v-card id="nav" style="display:flex; align-items: center">
+        <v-container style="display: flex; justify-content: space-between; align-items: center; height: 5vh;">
             <v-btn to="/" color="teal" text value="home">
                 <span>Home</span>
             </v-btn>
@@ -115,16 +115,17 @@ name: "Navbar",
 
 <style scoped>
     #nav {
-        height: 6.5vh;
+        min-height: 66px;
         z-index: 999;
         padding: 5px;
     }
 
     #search {
-        margin-top: 3vh;
+        margin-top: 5px;
     }
 
     #alert {
         color: red;
     }
+    
 </style>

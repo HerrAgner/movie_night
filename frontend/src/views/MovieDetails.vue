@@ -153,7 +153,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .movie_info_table {
   text-align: left;
 }

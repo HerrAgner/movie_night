@@ -9,7 +9,7 @@
                 v-model="search"
                 v-on:keyup="searchForMovies(500)"
                 v-on:focus="focusTextField"
-                style="position: absolute; width: 30%; top: 5px; z-index: 2; height: 5.5vh;"
+                style="position: absolute; width: 30%; top: 5px; z-index: 2; padding: 0"
         >
         </v-text-field>
         <transition name="fade">
@@ -161,6 +161,9 @@
         to {
             opacity: 1;
         }
+    }
+    .v-text-field--filled{
+        height: 1vh;
     }
 </style>
 
