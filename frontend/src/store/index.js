@@ -56,6 +56,7 @@ export default new Vuex.Store({
       Cookie.remove('token');
       this.commit('setLogin', false);
       this.commit('setIsConnectedToGoogleAccount', false);
+      this.commit('setLoggedInUser', '');
     }
   },
   modules: {}

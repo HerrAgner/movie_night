@@ -38,7 +38,7 @@ public class Movie {
     private String poster;
     @JsonProperty("Metascore")
     private String metascore;
-    private float imdbRating;
+    private String imdbRating;
     private String imdbVotes;
     @JsonProperty("Type")
     private String type;
@@ -48,7 +48,11 @@ public class Movie {
     private String runtime;
 
     public int getRuntime() {
-        return Integer.parseInt(runtime.replaceAll("\\D+",""));
+        try{
+            return Integer.parseInt(runtime.replaceAll("\\D+",""));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public void setRuntime(String runtime) {
@@ -179,11 +183,11 @@ public class Movie {
         this.metascore = metascore;
     }
 
-    public float getImdbRating() {
+    public String getImdbRating() {
         return imdbRating;
     }
 
-    public void setImdbRating(float imdbRating) {
+    public void setImdbRating(String imdbRating) {
         this.imdbRating = imdbRating;
     }
 

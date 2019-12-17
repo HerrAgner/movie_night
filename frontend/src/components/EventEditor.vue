@@ -44,7 +44,7 @@
                                                 </v-select>
 
 
-                                                <v-container>
+                                                <v-container pa-0>
                                                     <v-row justify="start" class="chipContainer">
                                                         <v-col cols="12" sm="12" md="4"
                                                                v-for="(friend, i) in selectedFriends"
@@ -108,10 +108,10 @@
 </template>
 <script>
 
-    import GCalendarService from "../services/GCalendarService";
-    import SuggestedEventTimes from "./SuggestedEventTimes";
+  import GCalendarService from "../services/GCalendarService";
+  import SuggestedEventTimes from "./SuggestedEventTimes";
 
-    export default {
+  export default {
         name: 'popupEvent',
         props: {
             event: Object,
@@ -229,6 +229,14 @@
     };
 </script>
 <style>
+    .chipContainer {
+        padding: 0;
+        /* margin-top: -3vh; */
+        height: 50px;
+    }
+        .friendChip {
+        padding: 0.1vw;
+    }
     .cancelIcon {
         padding-left: 3vw;
         padding-right: 1vw;

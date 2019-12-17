@@ -2,16 +2,12 @@ package com.spring.demo.services;
 
 import com.spring.demo.db.UserRepository;
 import com.spring.demo.entities.User;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 
@@ -61,13 +57,4 @@ public class MyUserDetailsService implements UserDetailsService {
                 .roles(roles).build();
     }
 
-
-
-//    @Bean(name = "myPasswordEncoder")
-//    public PasswordEncoder getPasswordEncoder() {
-//        DelegatingPasswordEncoder delPasswordEncoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
-//        delPasswordEncoder.setDefaultPasswordEncoderForMatches(bcryptPasswordEncoder);
-//        return delPasswordEncoder;
-//    }
 }

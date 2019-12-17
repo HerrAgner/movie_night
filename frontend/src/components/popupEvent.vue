@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <v-app id="inspire">
+        <v-container id="inspire">
             <v-row justify="center">
                 <v-btn v-if="this.$store.state.isLoggedin && getConnectedToGoogleAccount" color="primary" dark @click.stop="dialog = true">Create event</v-btn>
                 <h4 v-else>You have to login or connect to a google account to create an event</h4>
@@ -14,7 +14,7 @@
                                 <v-row justify="center">
                                     <v-col cols="12" md="4" class="movie_poster_container" :class="breakpointSmAndDown
                                     && 'poster_below_sm'">
-                                        <v-img :src="movie.Poster" class="movie_poster" alt="Image not found"/>
+                                        <v-img :src="getPoster" class="movie_poster" alt="Image not found"/>
                                     </v-col>
 
                                     <v-col cols="12" md="8" class="movie_info">
@@ -30,9 +30,10 @@
                                             <v-col cols="12" sm="6" md="10">
                                                 <v-select cols="12" sm="6" md="4"
                                                           v-model="selectedFriends"
-                                                          :items="friends"
-                                                          label="Invite friends"
+                                                          :items="getFriends"
+                                                          :label="getFriends.length > 0 ? 'Invite friends' : 'No friends'"
                                                           multiple
+                                                          :disabled="getFriends.length === 0"
                                                 >
                                                     <template v-slot:prepend-item>
                                                         <v-list-item
@@ -101,11 +102,11 @@
                     </v-card>
                 </v-dialog>
             </v-row>
-        </v-app>
+        </v-container>
     </div>
 </template>
 <script>
-import SuggestedEventTimes from '@/components/SuggestedEventTimes';
+  import SuggestedEventTimes from '@/components/SuggestedEventTimes';
   import GCalendarService from "../services/GCalendarService";
 
   export default {
@@ -168,6 +169,14 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
       }
     },
     computed: {
+        getFriends() {
+            return this.friends; 
+        },
+        getPoster() {
+      return this.movie && this.movie.Poster && this.movie.Poster !== 'N/A'
+        ? this.movie.Poster
+        : 'not-found.jpg';
+    },
       selections() {
         const selections = []
 

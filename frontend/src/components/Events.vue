@@ -61,7 +61,7 @@
 
                         <v-col cols="12" md="2" class="movie_poster_container" :class="breakpointSmAndDown
                                     && 'poster_below_sm'">
-                            <v-img :src="item.poster" class="movie_poster" alt="Image not found"/>
+                            <v-img :src="getPoster(item)" class="movie_poster" alt="Image not found"/>
                         </v-col>
 
                     </v-row>
@@ -114,13 +114,13 @@
 </template>
 
 <script>
-import EventsService from "../services/EventsService";
-import EventEditor from "./EventEditor";
-import movieDetailsService from "../services/movieDetailsService";
-import GCalendarService from "../services/GCalendarService";
-import Loading from '@/components/Loading';
+  import EventsService from "../services/EventsService";
+  import EventEditor from "./EventEditor";
+  import movieDetailsService from "../services/movieDetailsService";
+  import GCalendarService from "../services/GCalendarService";
+  import Loading from '@/components/Loading';
 
-    export default {
+  export default {
         components: {
             EventEditor,
             Loading
@@ -134,6 +134,11 @@ import Loading from '@/components/Loading';
             noMore: true
         }),
         methods: {
+            getPoster(item) {
+                return item && item.poster && item.poster !== 'N/A'
+                    ? item.poster
+                    : 'not-found.jpg';
+                },
             eventUpdated(eventFromChild){
                 this.events.forEach(event => {
                     if(event.eventId === eventFromChild.eventId){
@@ -148,7 +153,6 @@ import Loading from '@/components/Loading';
                 this.dialog = true;
             },
             async deleteEvent(eventId) {
-                console.log(eventId);
                 let eventDeleted = GCalendarService().deleteEvent(eventId);
                 if (eventDeleted) {
                     this.events = this.events.filter(event => event.eventId !== eventId);

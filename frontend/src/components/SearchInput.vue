@@ -7,7 +7,7 @@
                 label="Search"
                 append-icon="search"
                 v-model="search"
-                v-on:keyup="searchForMovies(500)"
+                v-on:keyup="searchForMovies(200)"
                 v-on:focus="focusTextField"
                 style="position: absolute; width: 30%; top: 5px; z-index: 2; padding: 0"
         >
@@ -60,14 +60,19 @@
       async suggestMovies(letter, word) {
         this.suggest = [];
         let response = await fetch('api/movies/suggest?l=' + letter + '&s=' + word.replace(" ", "%20"));
-        response = response.status === 200 ? await response.json() : null;
-        response.d.forEach(text => this.suggest.push(text.l))
+        if (response !== null && this.search.length > 0 && response !== undefined) {
+          response = response.status === 200 ? await response.json() : null;
+          if (response.d !== undefined) {
+            response.d.forEach(text => this.suggest.push(text.l))
+          }
+        }
       },
 
       async searchForMovies(timeout) {
+        await this.suggestMovies(this.search.charAt(0), this.search);
+
         if (this.search.length > 2) {
 
-          await this.suggestMovies(this.search.charAt(0), this.search);
           this.searching = true;
           this.loading = true;
           setTimeout(async () => {
@@ -82,7 +87,7 @@
             }
             this.loading = false;
             this.searching = false;
-            this.addMoviesToList()
+            await this.addMoviesToList()
             return response;
           }, timeout);
         }
@@ -146,7 +151,7 @@
     
     
     .fade-enter-active, .fade-leave-active {
-        transition: ease-in-out opacity 0.2s;
+        transition: ease-in-out opacity 0.4s;
     }
     
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
@@ -162,8 +167,6 @@
             opacity: 1;
         }
     }
-    .v-text-field--filled{
-        height: 1vh;
-    }
+   
 </style>
 

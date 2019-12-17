@@ -92,7 +92,6 @@ public class User {
         try {
             this.googleToken.setAccessToken(googleTokenResponse.getAccessToken());
         } catch (Exception e) {
-            System.out.println("GoogleAccessToken not set!");
         }
     }
 

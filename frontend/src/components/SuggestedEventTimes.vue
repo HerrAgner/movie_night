@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import GCalendarService from '@/services/GCalendarService';
-import TimeService from '@/services/TimeService';
-// import Loading from '@/components/Loading';
+  import GCalendarService from '@/services/GCalendarService';
+  import TimeService from '@/services/TimeService';
+  // import Loading from '@/components/Loading';
 
 export default {
   name: 'SuggestedEventTimes',

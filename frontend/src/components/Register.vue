@@ -32,17 +32,17 @@
                 >
                 submit
                 </v-btn> 
-                {{messageToClient}}
             </v-form>
+                {{messageToClient}}
       </v-app>
     </div>    
 </template>
 
 
 <script>
-import AddUserService from '../services/AddUserService.js'
+  import AddUserService from '../services/AddUserService.js'
 
-export default {
+  export default {
     data: () => ({
     valid: true,
     show: false,

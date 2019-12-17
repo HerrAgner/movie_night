@@ -11,10 +11,14 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.spring.demo.entities.MovieEvent;
 import com.spring.demo.entities.User;
 import com.spring.demo.util.SuperSecretInformation;
+import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,6 +46,9 @@ public class GCalendarService {
 
     public List<TimePeriod> getSuggestedEventPeriods(List<String> users, long duration) {
         var freeBusyResponses = getAllFreeBusyResponse(users);
+        if (freeBusyResponses == null) {
+            return null;
+        }
         var busyPeriods = getBusyPeriods(freeBusyResponses);
         var mergedBusyPeriods = mergeBusyPeriods(busyPeriods);
         var invertBusyPeriods = invertBusyPeriods(mergedBusyPeriods);
@@ -68,17 +75,20 @@ public class GCalendarService {
         try {
             response = calendar.freebusy().query(request).execute();
         } catch (IOException io) {
-            System.out.println("Connection timed out.....");
-            io.printStackTrace();
-            return null;
+            try {
+                response = calendar.freebusy().query(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         return response;
     }
 
     public Calendar getCalendar(String username) {
+        gAuthService.tryRefreshToken(username);
         var accessToken = gAuthService.getAccessToken(username);
         if (accessToken == null) return null;
-        gAuthService.tryRefreshToken(username);
         GoogleCredentials credential = GoogleCredentials.create(accessToken);
         if (credential == null || credential.getAccessToken() == null) return null;
         return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(accessToken.getTokenValue()))
@@ -87,7 +97,7 @@ public class GCalendarService {
     }
 
     public List<TimePeriod> getBusyPeriods(List<FreeBusyResponse> freeBusyResponses) {
-        if (freeBusyResponses == null) return null;
+        if (freeBusyResponses == null || freeBusyResponses.size() == 0 || freeBusyResponses.get(0) == null) return null;
 
         return freeBusyResponses.parallelStream()
                 .map(FreeBusyResponse::getCalendars)
@@ -143,22 +153,16 @@ public class GCalendarService {
     }
 
     public ArrayList<TimePeriod> invertBusyPeriods(List<TimePeriod> busyPeriods) {
-//        if (busyPeriods == null) return null;
         var freePeriods = new ArrayList<TimePeriod>();
 
-//        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart().getValue() < Instant.now().toEpochMilli() && busyPeriods.get(0).getEnd().getValue() > Instant.now().toEpochMilli()) {
-//        } else
-
-        if(busyPeriods == null || busyPeriods.isEmpty()) {
+        if (busyPeriods == null || busyPeriods.isEmpty()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.now().plus(Duration.ofDays(30))));
             var freePeriod = new TimePeriod();
             freePeriod.setStart(startOfFreePeriod);
             freePeriod.setEnd(endOfFreePeriod);
             freePeriods.add(freePeriod);
-        }
-
-        else if (busyPeriods.get(0).getStart() != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
+        } else if (busyPeriods.get(0).getStart() != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(busyPeriods.get(0).getStart().getValue())));
             var freePeriod = new TimePeriod();
@@ -166,8 +170,6 @@ public class GCalendarService {
             freePeriod.setEnd(endOfFreePeriod);
             freePeriods.add(freePeriod);
         }
-
-
 
         var i = 0;
         if (busyPeriods != null) {
@@ -202,6 +204,9 @@ public class GCalendarService {
             var calendar = getCalendar(username);
             if (calendar != null) {
                 var freeBusyResponse = getFreeBusyFromCalendar(calendar);
+                if (freeBusyResponse == null) {
+                    return null;
+                }
                 freeBusyList.add(freeBusyResponse);
             }
         }
@@ -216,7 +221,6 @@ public class GCalendarService {
                 .setSummary(movieEvent.getEventName())
                 .setDescription("https://www.imdb.com/title/" + movieEvent.getMovieId());
         DateTime startDateTime = new DateTime(movieEvent.getStartTime() + offset);
-//        2015-05-28T09:00:00-07:00
         EventDateTime start = new EventDateTime()
                 .setDateTime(startDateTime);
         event.setStart(start);
@@ -250,11 +254,16 @@ public class GCalendarService {
         event.setReminders(reminders);
 
         String calendarId = "primary";
+
         try {
             event = calendar.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                event = calendar.events().insert(calendarId, event).execute();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                return null;
+            }
         }
 
         movieEvent.setEventId(event.getId());
@@ -264,7 +273,6 @@ public class GCalendarService {
 
     public Event updateEvent(MovieEvent event) {
         var calendar = getCalendar(event.getCreator());
-
         try {
             Event eventFromCalendar = calendar.events().get("primary", event.getEventId()).execute();
 
@@ -286,7 +294,6 @@ public class GCalendarService {
             TimeZone tz = TimeZone.getTimeZone(event.getTimeZone());
             String offset = tz.toZoneId().getRules().getStandardOffset(Instant.now()).getId();
             DateTime startDateTime = new DateTime(event.getStartTime() + offset);
-//        2015-05-28T09:00:00-07:00
             EventDateTime start = new EventDateTime()
                     .setDateTime(startDateTime);
             eventFromCalendar.setStart(start);

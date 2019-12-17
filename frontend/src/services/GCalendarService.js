@@ -53,7 +53,6 @@ export default () => ({
 
 
     async deleteEvent(eventId){
-        console.log(eventId)
         let response = await fetch('api/gcal/event/'+eventId, {
             method: 'DELETE',
             headers: {

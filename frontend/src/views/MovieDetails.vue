@@ -7,12 +7,12 @@
     >
       <v-row justify="center">
         <v-col
-          cols="12"
+          cols="6"
           md="4"
           class="movie_poster_container"
           :class="breakpointSmAndDown && 'poster_below_sm'"
         >
-          <v-img :src="getPoster" class="movie_poster" alt="Image not found" />
+          <v-img @click="lurig" :src="getPoster" class="movie_poster" alt="Image not found" />
           <div v-if="breakpointSmAndDown">
             <div class="text-center display-1">
               {{ getMovie.Title }}
@@ -41,7 +41,7 @@
             <div class="movie_rating">
               <v-rating
                 v-if="!breakpointSmAndDown"
-                :value="getMovie.imdbRating"
+                :value="getRating"
                 empty-icon="star_border"
                 half-icon="star_half"
                 full-icon="star"
@@ -79,9 +79,6 @@
       Could not find movie..
     </v-container>
 
-
-
-
     <v-snackbar
             v-model="snackbar"
             :timeout="timeout"
@@ -98,17 +95,16 @@
       </v-btn>
     </v-snackbar>
 
-
   </v-container>
 </template>
 
 <script>
-import movieDetailsService from '@/services/movieDetailsService';
-import Loading from '@/components/Loading';
-import popupEvent from '@/components/popupEvent';
+  import movieDetailsService from '@/services/movieDetailsService';
+  import Loading from '@/components/Loading';
+  import popupEvent from '@/components/popupEvent';
 
 
-export default {
+  export default {
   name: 'MovieDetails',
   components: {
     Loading,
@@ -129,10 +125,10 @@ export default {
     getPoster() {
       return this.movie && this.movie.Poster && this.movie.Poster !== 'N/A'
         ? this.movie.Poster
-        : 'assets/not-found.png';
+        : 'not-found.jpg';
     },
     getRating() {
-      return this.getMovie.imdbRating;
+      return this.getMovie.imdbRating && this.getMovie.imdbRating !== 'N/A' ? parseInt(this.getMovie.imdbRating) : 0;
     },
     getGenres() {
       return this.movie.Genre.join(', ');
@@ -149,7 +145,6 @@ export default {
   },
   methods: {
     eventUpdated(data){
-      console.log("it went well right?",data);
       if (data !== true) {
         this.color = 'red';
         this.text = 'Something went wrong'
@@ -170,6 +165,11 @@ export default {
       } else {
         this.$router.push({ path: '/' });
       }
+    },
+    lurig(){
+      if (this.movie.Title === "Stranger Things") {
+        document.body.style.transform = "rotate(180deg)";
+      }
     }
   },
   mounted() {
@@ -181,7 +181,7 @@ export default {
       if (value !== oldValue) {
         this.fetchMovie();
       }
-    },
+    }
   }
 };
 </script>
