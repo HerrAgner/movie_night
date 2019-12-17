@@ -36,9 +36,7 @@ public class UserService {
     }
 
     public User findUserByUsername(String username) {
-        System.out.println("usernamew: "+username);
         User user = userRepository.findDistinctFirstByUsernameIgnoreCase("user");
-        System.out.println(user.getId());
         return user;
     }
 
