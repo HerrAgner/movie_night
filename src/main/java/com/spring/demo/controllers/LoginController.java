@@ -37,7 +37,7 @@ public class LoginController {
 
     @GetMapping
     public Object getUsers() {
-        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @PostMapping
