@@ -41,7 +41,7 @@
             <div class="movie_rating">
               <v-rating
                 v-if="!breakpointSmAndDown"
-                :value="getMovie.imdbRating"
+                :value="getRating"
                 empty-icon="star_border"
                 half-icon="star_half"
                 full-icon="star"
@@ -104,10 +104,10 @@
     getPoster() {
       return this.movie && this.movie.Poster && this.movie.Poster !== 'N/A'
         ? this.movie.Poster
-        : 'assets/not-found.png';
+        : 'not-found.jpg';
     },
     getRating() {
-      return this.getMovie.imdbRating;
+      return this.getMovie.imdbRating && this.getMovie.imdbRating !== 'N/A' ? parseInt(this.getMovie.imdbRating) : 0;
     },
     getGenres() {
       return this.movie.Genre.join(', ');

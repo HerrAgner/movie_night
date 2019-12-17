@@ -49,7 +49,7 @@ public class GCalendarController {
     public ResponseEntity<Event> createEvent(@RequestBody MovieEvent event) {
         Event newEvent = gCalendarService.createCalendarEvent(event);
         if (newEvent == null || newEvent.getCreator() == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
         }
         return new ResponseEntity<>(newEvent, HttpStatus.OK);
     }

@@ -61,7 +61,7 @@
 
                         <v-col cols="12" md="2" class="movie_poster_container" :class="breakpointSmAndDown
                                     && 'poster_below_sm'">
-                            <v-img :src="item.poster" class="movie_poster" alt="Image not found"/>
+                            <v-img :src="getPoster(item)" class="movie_poster" alt="Image not found"/>
                         </v-col>
 
                     </v-row>
@@ -134,6 +134,11 @@
             noMore: true
         }),
         methods: {
+            getPoster(item) {
+                return item && item.poster && item.poster !== 'N/A'
+                    ? item.poster
+                    : 'not-found.jpg';
+                },
             eventUpdated(eventFromChild){
                 this.events.forEach(event => {
                     if(event.eventId === eventFromChild.eventId){

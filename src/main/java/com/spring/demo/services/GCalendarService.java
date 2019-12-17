@@ -11,6 +11,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.spring.demo.entities.MovieEvent;
 import com.spring.demo.entities.User;
 import com.spring.demo.util.SuperSecretInformation;
+import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -45,6 +46,9 @@ public class GCalendarService {
 
     public List<TimePeriod> getSuggestedEventPeriods(List<String> users, long duration) {
         var freeBusyResponses = getAllFreeBusyResponse(users);
+        if (freeBusyResponses == null) {
+            return null;
+        }
         var busyPeriods = getBusyPeriods(freeBusyResponses);
         var mergedBusyPeriods = mergeBusyPeriods(busyPeriods);
         var invertBusyPeriods = invertBusyPeriods(mergedBusyPeriods);
@@ -71,8 +75,12 @@ public class GCalendarService {
         try {
             response = calendar.freebusy().query(request).execute();
         } catch (IOException io) {
-            io.printStackTrace();
-            return null;
+            try {
+                response = calendar.freebusy().query(request).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         return response;
     }
@@ -89,7 +97,7 @@ public class GCalendarService {
     }
 
     public List<TimePeriod> getBusyPeriods(List<FreeBusyResponse> freeBusyResponses) {
-        if (freeBusyResponses == null) return null;
+        if (freeBusyResponses == null || freeBusyResponses.size() == 0 || freeBusyResponses.get(0) == null) return null;
 
         return freeBusyResponses.parallelStream()
                 .map(FreeBusyResponse::getCalendars)
@@ -147,16 +155,14 @@ public class GCalendarService {
     public ArrayList<TimePeriod> invertBusyPeriods(List<TimePeriod> busyPeriods) {
         var freePeriods = new ArrayList<TimePeriod>();
 
-        if(busyPeriods == null || busyPeriods.isEmpty()) {
+        if (busyPeriods == null || busyPeriods.isEmpty()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.now().plus(Duration.ofDays(30))));
             var freePeriod = new TimePeriod();
             freePeriod.setStart(startOfFreePeriod);
             freePeriod.setEnd(endOfFreePeriod);
             freePeriods.add(freePeriod);
-        }
-
-        else if (busyPeriods.get(0).getStart() != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
+        } else if (busyPeriods.get(0).getStart() != null && busyPeriods.get(0).getStart().getValue() > Instant.now().toEpochMilli()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
             var endOfFreePeriod = new DateTime(Date.from(Instant.ofEpochMilli(busyPeriods.get(0).getStart().getValue())));
             var freePeriod = new TimePeriod();
@@ -198,6 +204,9 @@ public class GCalendarService {
             var calendar = getCalendar(username);
             if (calendar != null) {
                 var freeBusyResponse = getFreeBusyFromCalendar(calendar);
+                if (freeBusyResponse == null) {
+                    return null;
+                }
                 freeBusyList.add(freeBusyResponse);
             }
         }
@@ -245,10 +254,16 @@ public class GCalendarService {
         event.setReminders(reminders);
 
         String calendarId = "primary";
+
         try {
             event = calendar.events().insert(calendarId, event).execute();
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                event = calendar.events().insert(calendarId, event).execute();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                return null;
+            }
         }
 
         movieEvent.setEventId(event.getId());
@@ -258,7 +273,6 @@ public class GCalendarService {
 
     public Event updateEvent(MovieEvent event) {
         var calendar = getCalendar(event.getCreator());
-
         try {
             Event eventFromCalendar = calendar.events().get("primary", event.getEventId()).execute();
 

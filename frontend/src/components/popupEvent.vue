@@ -14,7 +14,7 @@
                                 <v-row justify="center">
                                     <v-col cols="12" md="4" class="movie_poster_container" :class="breakpointSmAndDown
                                     && 'poster_below_sm'">
-                                        <v-img :src="movie.Poster" class="movie_poster" alt="Image not found"/>
+                                        <v-img :src="getPoster" class="movie_poster" alt="Image not found"/>
                                     </v-col>
 
                                     <v-col cols="12" md="8" class="movie_info">
@@ -30,9 +30,10 @@
                                             <v-col cols="12" sm="6" md="10">
                                                 <v-select cols="12" sm="6" md="4"
                                                           v-model="selectedFriends"
-                                                          :items="friends"
-                                                          label="Invite friends"
+                                                          :items="getFriends"
+                                                          :label="getFriends.length > 0 ? 'Invite friends' : 'No friends'"
                                                           multiple
+                                                          :disabled="getFriends.length === 0"
                                                 >
                                                     <template v-slot:prepend-item>
                                                         <v-list-item
@@ -154,6 +155,14 @@
       }
     },
     computed: {
+        getFriends() {
+            return this.friends; 
+        },
+        getPoster() {
+      return this.movie && this.movie.Poster && this.movie.Poster !== 'N/A'
+        ? this.movie.Poster
+        : 'not-found.jpg';
+    },
       selections() {
         const selections = []
 
