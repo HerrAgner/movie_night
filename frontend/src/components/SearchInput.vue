@@ -60,9 +60,11 @@
       async suggestMovies(letter, word) {
         this.suggest = [];
         let response = await fetch('api/movies/suggest?l=' + letter + '&s=' + word.replace(" ", "%20"));
-        if (response !== null && this.search.length > 0) {
+        if (response !== null && this.search.length > 0 && response !== undefined) {
           response = response.status === 200 ? await response.json() : null;
-          response.d.forEach(text => this.suggest.push(text.l))
+          if (response.d !== undefined) {
+            response.d.forEach(text => this.suggest.push(text.l))
+          }
         }
       },
 
