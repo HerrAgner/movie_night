@@ -148,7 +148,6 @@
                 this.dialog = true;
             },
             async deleteEvent(eventId) {
-                console.log(eventId);
                 let eventDeleted = GCalendarService().deleteEvent(eventId);
                 if (eventDeleted) {
                     this.events = this.events.filter(event => event.eventId !== eventId);

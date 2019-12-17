@@ -136,7 +136,6 @@
         ['martin', 'user'],
         this.duration
       );
-      console.log(this.calendarEvents);
       if (this.calendarEvents.free[0]) {
         this.startTime = TimeService()
           .parseFromMSISO(this.calendarEvents.free[0].start.value)
