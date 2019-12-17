@@ -7,8 +7,4 @@ import java.util.List;
 
 public interface MovieRepository extends MongoRepository <Movie, String> {
 
-    Movie findByTitle(String title);
-    List<Movie> findByTitleContaining(String title);
-    List<Movie> findByImdbRating(float rating);
-
 }

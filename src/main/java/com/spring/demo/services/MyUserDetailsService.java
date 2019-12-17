@@ -57,13 +57,4 @@ public class MyUserDetailsService implements UserDetailsService {
                 .roles(roles).build();
     }
 
-
-
-//    @Bean(name = "myPasswordEncoder")
-//    public PasswordEncoder getPasswordEncoder() {
-//        DelegatingPasswordEncoder delPasswordEncoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//        BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
-//        delPasswordEncoder.setDefaultPasswordEncoderForMatches(bcryptPasswordEncoder);
-//        return delPasswordEncoder;
-//    }
 }

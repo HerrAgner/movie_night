@@ -32,10 +32,7 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) {
-        var user = userRepository.findDistinctFirstByUsernameIgnoreCase(username);
-        if (user == null) return null;
-
-        return user;
+        return userRepository.findDistinctFirstByUsernameIgnoreCase(username);
     }
 
     public User findUserByUsername(String username) {

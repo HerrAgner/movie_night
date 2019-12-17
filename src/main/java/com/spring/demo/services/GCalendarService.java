@@ -145,11 +145,7 @@ public class GCalendarService {
     }
 
     public ArrayList<TimePeriod> invertBusyPeriods(List<TimePeriod> busyPeriods) {
-//        if (busyPeriods == null) return null;
         var freePeriods = new ArrayList<TimePeriod>();
-
-//        if (!busyPeriods.isEmpty() && busyPeriods.get(0).getStart().getValue() < Instant.now().toEpochMilli() && busyPeriods.get(0).getEnd().getValue() > Instant.now().toEpochMilli()) {
-//        } else
 
         if(busyPeriods == null || busyPeriods.isEmpty()) {
             var startOfFreePeriod = new DateTime(Date.from(Instant.now()));
@@ -168,8 +164,6 @@ public class GCalendarService {
             freePeriod.setEnd(endOfFreePeriod);
             freePeriods.add(freePeriod);
         }
-
-
 
         var i = 0;
         if (busyPeriods != null) {
@@ -218,7 +212,6 @@ public class GCalendarService {
                 .setSummary(movieEvent.getEventName())
                 .setDescription("https://www.imdb.com/title/" + movieEvent.getMovieId());
         DateTime startDateTime = new DateTime(movieEvent.getStartTime() + offset);
-//        2015-05-28T09:00:00-07:00
         EventDateTime start = new EventDateTime()
                 .setDateTime(startDateTime);
         event.setStart(start);
@@ -254,7 +247,6 @@ public class GCalendarService {
         String calendarId = "primary";
         try {
             event = calendar.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -288,7 +280,6 @@ public class GCalendarService {
             TimeZone tz = TimeZone.getTimeZone(event.getTimeZone());
             String offset = tz.toZoneId().getRules().getStandardOffset(Instant.now()).getId();
             DateTime startDateTime = new DateTime(event.getStartTime() + offset);
-//        2015-05-28T09:00:00-07:00
             EventDateTime start = new EventDateTime()
                     .setDateTime(startDateTime);
             eventFromCalendar.setStart(start);

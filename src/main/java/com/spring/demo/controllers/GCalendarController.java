@@ -69,9 +69,6 @@ public class GCalendarController {
         var eventRes = gCalendarService.updateEvent(event);
         if (eventRes != null) {
             movieEventService.saveMovieEventToDb(movieEvent);
-            System.out.println("event name: " + eventRes.getSummary());
-            System.out.println("start time: " + eventRes.getStart());
-            System.out.println("end time: " + eventRes.getEnd());
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -80,16 +77,12 @@ public class GCalendarController {
 
     @DeleteMapping("event/{id}")
     public ResponseEntity<Event> deleteEvent(@PathVariable String id, Principal principal) {
-        System.out.println(id);
-        System.out.println(principal.getName());
         movieEventService.deleteMovieEvent(id);
         var calendar = gCalendarService.getCalendar(principal.getName());
 
         try {
             calendar.events().delete("primary", id).execute();
-            System.out.println("the event deleted from google calendar!");
         } catch (IOException e) {
-            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

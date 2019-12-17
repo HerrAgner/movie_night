@@ -17,13 +17,8 @@ public class RegisterController {
     @Autowired
     private UserRepository repository;
 
-    @GetMapping
-    public String getHej(){
-        return "Hello";
-    }
-
     @PostMapping
-    public ResponseEntity createUser(@RequestBody User user){
+    public ResponseEntity<User> createUser(@RequestBody User user){
         if (repository.findDistinctFirstByUsernameIgnoreCase(user.getUsername()) == null) {
             myUserDetailsService.addUser(user.getUsername(), user.getPassword());
             return ResponseEntity.ok().build();
