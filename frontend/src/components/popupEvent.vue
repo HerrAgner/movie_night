@@ -105,7 +105,7 @@
     </div>
 </template>
 <script>
-import SuggestedEventTimes from '@/components/SuggestedEventTimes';
+  import SuggestedEventTimes from '@/components/SuggestedEventTimes';
   import GCalendarService from "../services/GCalendarService";
 
   export default {

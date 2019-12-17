@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import Login from "@/components/Login.vue"
-import Register from "@/components/Register.vue"
-
-export default {
+  import Login from "@/components/Login.vue"
+  import Register from "@/components/Register.vue"
+  
+  export default {
   components:{
     Login,
     Register

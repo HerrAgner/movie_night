@@ -6,7 +6,8 @@ import com.spring.demo.entities.Movie;
 import com.spring.demo.entities.SearchResult;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service

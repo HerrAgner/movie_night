@@ -82,12 +82,12 @@
 </template>
 
 <script>
-import movieDetailsService from '@/services/movieDetailsService';
-import Loading from '@/components/Loading';
-import popupEvent from '@/components/popupEvent';
-
-
-export default {
+  import movieDetailsService from '@/services/movieDetailsService';
+  import Loading from '@/components/Loading';
+  import popupEvent from '@/components/popupEvent';
+  
+  
+  export default {
   name: 'MovieDetails',
   components: {
     Loading,

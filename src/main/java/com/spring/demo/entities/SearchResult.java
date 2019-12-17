@@ -1,7 +1,6 @@
 package com.spring.demo.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.Column;
 import java.util.List;

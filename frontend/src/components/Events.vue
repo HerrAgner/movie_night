@@ -114,13 +114,13 @@
 </template>
 
 <script>
-import EventsService from "../services/EventsService";
-import EventEditor from "./EventEditor";
-import movieDetailsService from "../services/movieDetailsService";
-import GCalendarService from "../services/GCalendarService";
-import Loading from '@/components/Loading';
+  import EventsService from "../services/EventsService";
+  import EventEditor from "./EventEditor";
+  import movieDetailsService from "../services/movieDetailsService";
+  import GCalendarService from "../services/GCalendarService";
+  import Loading from '@/components/Loading';
 
-    export default {
+  export default {
         components: {
             EventEditor,
             Loading
