@@ -10,7 +10,8 @@ export default new Vuex.Store({
     isLoggedin: false,
     loggedInUser: '',
     cookie: '',
-    lockedOut: 0
+    lockedOut: 0,
+    isConnectedToGoogleAccount: false
   },
   mutations: {
     setLogin(state, status) {
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     },
     setCookie(state, cookie) {
       state.cookie = cookie;
+    },
+    setIsConnectedToGoogleAccount(state, status) {
+      state.isConnectedToGoogleAccount = status;
     }
   },
   actions: {
@@ -51,6 +55,7 @@ export default new Vuex.Store({
     async logout() {
       Cookie.remove('token');
       this.commit('setLogin', false);
+      this.commit('setIsConnectedToGoogleAccount', false);
       this.commit('setLoggedInUser', '');
     }
   },
