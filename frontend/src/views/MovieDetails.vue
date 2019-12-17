@@ -5,7 +5,6 @@
       v-else-if="!isLoading && getMovie"
       class="movie_info_container"
     >
-      {{lurig}}
       <v-row justify="center">
         <v-col
           cols="6"
@@ -13,7 +12,7 @@
           class="movie_poster_container"
           :class="breakpointSmAndDown && 'poster_below_sm'"
         >
-          <v-img :src="getPoster" class="movie_poster" alt="Image not found" />
+          <v-img @click="lurig" :src="getPoster" class="movie_poster" alt="Image not found" />
           <div v-if="breakpointSmAndDown">
             <div class="text-center display-1">
               {{ getMovie.Title }}
@@ -121,13 +120,6 @@ export default {
     },
     breakpointSmAndDown() {
       return this.$vuetify.breakpoint.smAndDown;
-    },
-    lurig(){
-      console.log(this.movie);
-      if (this.movie.Title === "Stranger Things") {
-        document.body.style.transform = "rotate(180deg)";
-        setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 1000);
-      }
     }
   },
   methods: {
@@ -146,6 +138,13 @@ export default {
         this.$router.push({ path: '/' });
       }
     },
+    lurig(){
+      console.log(this.movie);
+      if (this.movie.Title === "Stranger Things") {
+        document.body.style.transform = "rotate(180deg)";
+        setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 1000);
+      }
+    }
   },
   mounted() {
     this.fetchMovie();

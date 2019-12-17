@@ -65,9 +65,10 @@
       },
 
       async searchForMovies(timeout) {
+        // await this.suggestMovies(this.search.charAt(0), this.search);
+
         if (this.search.length > 2) {
 
-          await this.suggestMovies(this.search.charAt(0), this.search);
           this.searching = true;
           this.loading = true;
           setTimeout(async () => {
@@ -82,7 +83,7 @@
             }
             this.loading = false;
             this.searching = false;
-            this.addMoviesToList()
+            await this.addMoviesToList()
             return response;
           }, timeout);
         }
@@ -99,6 +100,7 @@
       },
       addMoviesToList() {
         if (this.loading === false) {
+          console.log("hej");
           let tempArray = this.movieList.concat(this.searchResponse);
           tempArray = tempArray.filter((thing, index, self) =>
             index === self.findIndex((t) => (

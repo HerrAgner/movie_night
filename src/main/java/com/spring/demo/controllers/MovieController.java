@@ -51,7 +51,7 @@ public class MovieController {
     public ResponseEntity<SearchResult> searchMovies(@RequestParam String s, @RequestParam(defaultValue = "1") int p) {
         if(p <= 0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        var result = movieSearchService.searchMovies(s, p);
+        SearchResult result = movieSearchService.searchMovies(s, p);
 
         return new ResponseEntity<>(result, result.getTotalResults() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }

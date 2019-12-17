@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SearchResultRepository extends MongoRepository<SearchResult, String> {
 
-    SearchResult findFirstBySearchText(String text);
+    SearchResult findFirstBySearchTextAndPage(String text, int p);
 }

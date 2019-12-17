@@ -1,13 +1,9 @@
 package com.spring.demo.services;
 
-import com.spring.demo.entities.Movie;
 import com.spring.demo.entities.SearchResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class MovieSearchService {
@@ -22,14 +18,15 @@ public class MovieSearchService {
     }
 
     public SearchResult searchMovies(String query, int page) {
-
-        SearchResult cachedSearch = MovieCache.getSearchFromCache(query);
+        SearchResult cachedSearch = MovieCache.getSearchFromCache(query, page);
         if (cachedSearch != null && cachedSearch.getTotalResults() > 0) {
             cachedSearch.setSearchText(query);
             return cachedSearch;
-        } else {
+        } else
+            {
             SearchResult search = omdbService.searchMovies(query, page);
             search.setSearchText(query);
+            search.setPage(page);
             MovieCache.addSearchToCache(search);
             return search;
         }

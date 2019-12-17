@@ -46,7 +46,7 @@ public class OmdbService {
 
     public SearchResult searchMovies(String query, int page) {
         query =  query.replace(" ", "+");
-        var url = omdbUrl + "?s=" + query + "&type=" + type + "&page=" + page + apikey;
+        var url = omdbUrl + "?s=" + query + "&page=" + page + apikey;
         return omdbRestTemplate.getForObject(url, SearchResult.class);
     }
 
