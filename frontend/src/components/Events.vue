@@ -4,7 +4,7 @@
         <v-row>
             <v-col
                     v-for="(item, i) in events"
-                    :key="i"
+                    :key="item.eventId"
                     cols="12"
             >
                 <v-card
@@ -72,11 +72,18 @@
                         </v-col>
 
                         <v-col md="6">
-                            <v-btn text v-if = "item.creator === getCurrentUser()" @click="deletePopup">Delete</v-btn>
+                            <v-btn text v-if = "item.creator === getCurrentUser()" @click="deletePopup(item.eventId)">Delete</v-btn>
                         </v-col>
 
                     </v-row>
 
+                </v-card>
+            </v-col>
+            <v-btn v-if="!this.noMore" block color="secondary" @click="getMyEvents" dark>More..</v-btn>
+            <div v-else class="flex">
+                <h2 class="justify-center">No events</h2>
+            </div>
+        </v-row>
                     <v-dialog
                             v-model="dialog"
                             width="500"
@@ -99,17 +106,10 @@
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn color="primary" text @click="dialog = false">NO</v-btn>
-                                <v-btn color="primary" text @click="deleteEvent(item.eventId)">YES</v-btn>
+                                <v-btn color="primary" text @click="deleteEvent()">YES</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
-                </v-card>
-            </v-col>
-            <v-btn v-if="!this.noMore" block color="secondary" @click="getMyEvents" dark>More..</v-btn>
-            <div v-else class="flex">
-                <h2 class="justify-center">No events</h2>
-            </div>
-        </v-row>
     </div>
 </template>
 
@@ -131,7 +131,8 @@
             events: [],
             moviesID: [],
             pageCounter: 0,
-            noMore: true
+            noMore: true,
+            selectedEventId: ''
         }),
         methods: {
             getPoster(item) {
@@ -149,13 +150,14 @@
                     }
                 });
             },
-            deletePopup(){
+            deletePopup(eventId){
+                this.selectedEventId = eventId;
                 this.dialog = true;
             },
-            async deleteEvent(eventId) {
-                let eventDeleted = GCalendarService().deleteEvent(eventId);
+            async deleteEvent() {
+                let eventDeleted = await GCalendarService().deleteEvent(this.selectedEventId);
                 if (eventDeleted) {
-                    this.events = this.events.filter(event => event.eventId !== eventId);
+                    this.events = this.events.filter(event => event.eventId !== this.selectedEventId);
                     this.dialog = false;
                 }
 
