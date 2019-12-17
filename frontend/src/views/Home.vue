@@ -39,9 +39,8 @@ export default {
         },
       });
       if (res.status === 200){
-        res = await res.json();
-        // this.username = res.username
-        this.$store.commit('setLoggedInUser', res.username);
+        res = await res.text();
+        this.$store.commit('setLoggedInUser', res);
       }else {
         //await this.$router.push({path: '/login'})
         this.$store.state.isLoggedin = false
