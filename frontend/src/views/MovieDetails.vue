@@ -143,7 +143,6 @@
           document.body.style.transition = "transform 3s ease-in-out"
             document.body.style.transform = "rotate(180deg)";
           document.title = "ʇɥƃᴉN ǝᴉʌoW";
-          console.log(this.$vuetify);
           this.$vuetify.theme.dark = true
         }
       }
