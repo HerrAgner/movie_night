@@ -29,8 +29,8 @@
                 >
                 submit
                 </v-btn> 
-                {{messageToClient}}
             </v-form>
+                {{messageToClient}}
       </v-app>
     </div>    
 </template>
