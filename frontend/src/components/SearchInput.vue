@@ -147,7 +147,7 @@
     
     
     .fade-enter-active, .fade-leave-active {
-        transition: ease-in-out opacity 0.2s;
+        transition: ease-in-out opacity 0.4s;
     }
     
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
@@ -163,8 +163,6 @@
             opacity: 1;
         }
     }
-    .v-text-field--filled{
-        height: 1vh;
-    }
+   
 </style>
 
