@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
+import Cookie from 'js-cookie';
+import store from '../store/index.js';
 
 Vue.use(VueRouter);
 
@@ -51,35 +53,24 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
 };
 
 router.beforeEach((to, from, next) => {
-  // const publicPages = [
-  //   'Home',
-  //   'about',
-  //   'MovieDetails'
-  // ];
+  const noAccessWhenLoggedIn = ['LoginRegister'].includes(to.name);
+  let validAuth;
+  try {
+    validAuth =
+      new Date() <
+      new Date(JSON.parse(atob(Cookie.get('token').split('.')[1])).exp * 1000);
+  } catch {
+    validAuth = false;
+  }
 
-  // const noAccessWhenLoggedIn = ['login'].includes(to.name);
-  // const authRequired = !publicPages.includes(to.name);
-  // const loggedInUser = localStorage.myToken;
-  // let validAuth = false;
-  // if (loggedInUser) {
-  //   validAuth =
-  //     new Date() <
-  //     new Date(JSON.parse(atob(localStorage.myToken.split('.')[1])).exp * 1000);
-  // }
+  if (!validAuth) {
+    store.dispatch('logout');
+  } else if (validAuth && noAccessWhenLoggedIn) {
+    return next('/');
+  }
 
-  // if (authRequired && !validAuth) {
-  //   delete localStorage.myToken;
-  //   Store.dispatch('authUser');
-  //   return next('/login');
-  // } else if (validAuth && noAccessWhenLoggedIn) {
-  //   return next('/');
-  // }
-
-    window.scrollTo(0, 0);
-    next();
-
-  
-
+  window.scrollTo(0, 0);
+  next();
 });
 
 export default router;

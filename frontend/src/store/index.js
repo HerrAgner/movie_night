@@ -51,6 +51,7 @@ export default new Vuex.Store({
     async logout() {
       Cookie.remove('token');
       this.commit('setLogin', false);
+      this.commit('setLoggedInUser', '');
     }
   },
   modules: {}

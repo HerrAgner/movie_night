@@ -75,7 +75,7 @@ public class GCalendarService {
     }
 
     public Calendar getCalendar(String username) {
-        var token = gAuthService.tryRefreshToken(username);
+        gAuthService.tryRefreshToken(username);
         var accessToken = gAuthService.getAccessToken(username);
         if (accessToken == null) return null;
         GoogleCredentials credential = GoogleCredentials.create(accessToken);
