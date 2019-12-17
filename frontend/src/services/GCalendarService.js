@@ -35,7 +35,8 @@ export default () => ({
       },
       body: JSON.stringify(data)
     });
-    return res.status === 200 ? true : false;
+      console.log(res.status)
+    return res.status === 200;
   }  ,
 
   async updateGoogleCalendarEvent(data) {

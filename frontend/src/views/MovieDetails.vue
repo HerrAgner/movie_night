@@ -70,7 +70,7 @@
               <td class="movie_info_prop">Awards:</td>
               <td>{{ getMovie.Awards }}</td>
             </tr>
-            <popupEvent :movie="movie" />
+            <popupEvent :movie="movie" v-on:childToParent="eventUpdated"/>
           </table>
         </v-col>
       </v-row>
@@ -78,6 +78,27 @@
     <v-container v-else>
       Could not find movie..
     </v-container>
+
+
+
+
+    <v-snackbar
+            v-model="snackbar"
+            :timeout="timeout"
+            :top="true"
+            :color="color"
+    >
+      {{ text }}
+      <v-btn
+              color="black"
+              text
+              @click="snackbar = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
+
+
   </v-container>
 </template>
 
@@ -95,7 +116,11 @@ export default {
   },
   data: () => ({
     movie: null,
-    loading: true
+    loading: true,
+    snackbar: false,
+    text: 'Movie event was added.',
+    timeout: 5000,
+    color: 'green'
   }),
   computed: {
     getMovie() {
@@ -123,6 +148,14 @@ export default {
     }
   },
   methods: {
+    eventUpdated(data){
+      console.log("it went well right?",data);
+      if (data !== true) {
+        this.color = 'red';
+        this.text = 'Something went wrong'
+      }
+      this.snackbar = true;
+    },
     async fetchMovie() {
       if (this.$route.query.id) {
         this.loading = true;
