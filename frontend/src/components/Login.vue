@@ -29,9 +29,9 @@
                 >
                 Log in
                 </v-btn>
-                {{errorMessage}}
 
             </v-form>
+                {{errorMessage}}
       </v-app>
     </div>    
 </template>
