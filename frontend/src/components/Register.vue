@@ -8,19 +8,22 @@
                 lazy-validation
                 >
                 <v-text-field
-                v-model="username"
-                :counter="8"
-                :rules="usernameRules"
-                label="Username"
-                required
-                ></v-text-field>
+                        v-model="username"
+                        :counter="8"
+                        :rules="usernameRules"
+                        label="Username"
+                        required
+                />
 
                 <v-text-field
-                v-model="password"
-                :rules="passwordRules"
-                label="Password"
-                required
-                ></v-text-field>
+                        v-model="password"
+                        :type="show ? 'text' : 'password'"
+                        :rules="passwordRules"
+                        label="Password"
+                        required
+                        :append-icon="show ? 'remove_red_eye' : 'visibility_off'"
+                        @click:append="show = !show"
+                />
             
                 <v-btn
                 :disabled="!valid"
@@ -42,6 +45,7 @@
   export default {
     data: () => ({
     valid: true,
+    show: false,
     messageToClient: '',
     password: '',
     passwordRules: [

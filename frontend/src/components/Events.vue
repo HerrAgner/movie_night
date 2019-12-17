@@ -201,7 +201,9 @@
             }
         },
         async mounted() {
-            await this.getMyEvents();
+            if (this.$store.state.isLoggedin){
+                await this.getMyEvents();
+            }
         }
     }
 </script>

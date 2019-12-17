@@ -50,7 +50,8 @@
 
 <script>
   import Search from "@/components/SearchInput.vue"
-  import Cookie from "js-cookie";
+import Cookie from "js-cookie";
+  import GetUserService from "../services/GetUserService";
 
   export default {
     components: {
@@ -86,6 +87,7 @@ name: "Navbar",
                     },
                     body: authResult['code']
                 });
+                GetUserService().getUser();
                 console.log(result)
             } else {
                 console.log("error")

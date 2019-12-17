@@ -11,16 +11,11 @@
 </template>
 
 <script>
-  import Cookie from "js-cookie";
-  import Events from '@/components/Events';
-  
-  // @ is an alias to /src
+import Events from '@/components/Events';
+import GetUserService from "../services/GetUserService";
 
 export default {
   name: 'home',
-  data: () => ({
-    // username: ''
-    }),
   components: {
     Events
   },
@@ -29,25 +24,8 @@ export default {
       return this.$store.state.loggedInUser;
     }
   },
-  async mounted(){   
-    if (Cookie.get("token") !== undefined){
-      let token = Cookie.get("token");
-      let res = await fetch('/api/login', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-      });
-      if (res.status === 200){
-        res = await res.text();
-        this.$store.commit('setLoggedInUser', res);
-      }else {
-        //await this.$router.push({path: '/login'})
-        this.$store.state.isLoggedin = false
-
-      }
-  }
-
+  mounted() {
+    GetUserService().getUser();
   }
 }
 </script>

@@ -9,20 +9,15 @@
   </v-app>
 </template>
 <script>
-  import Navbar from './components/Navbar';
-  import Cookie from "js-cookie";
-  
-  export default {
+import Navbar from './components/Navbar';
+
+export default {
   name: 'App',
   components: {
     Navbar
   },
-  mounted(){
-    if (Cookie.get("token") !== undefined) {
-      this.$store.state.isLoggedin = true
-      this.$store.state.cookie = Cookie.get("token");
-    }
-    if(this.$route.query.redirect) {
+  async mounted() {
+    if (this.$route.query.redirect) {
       this.$router.push({path: this.$route.query.redirect})
     }
   }

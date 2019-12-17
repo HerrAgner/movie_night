@@ -2,10 +2,10 @@
     <div id="app">
         <v-container id="inspire">
             <v-row justify="center">
-                <v-btn v-if="this.$store.state.isLoggedin" color="primary" dark @click.stop="dialog = true">Create event</v-btn>
-                <h4 v-else>You have to login to create an event</h4>
+                <v-btn v-if="this.$store.state.isLoggedin && getConnectedToGoogleAccount" color="primary" dark @click.stop="dialog = true">Create event</v-btn>
+                <h4 v-else>You have to login or connect to a google account to create an event</h4>
 
-                <v-dialog v-model="dialog" max-width="800">
+                <v-dialog v-model="dialog" max-width="800" @click:outside="resetPopup">
                     <v-card>
                         <v-card-title class="headline">MOVIE NIGHTS EVENT</v-card-title>
 
@@ -95,7 +95,7 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn color="green darken-1" :disabled="canceling" text @click="dialog = false">Cancel</v-btn>
+                            <v-btn color="green darken-1" :disabled="canceling" text @click="cancel">Cancel</v-btn>
 
                             <v-btn color="green darken-1" :disabled="!saving" text @click="createEvent">Save</v-btn>
                         </v-card-actions>
@@ -124,9 +124,21 @@
       endTime: null,
       menu: false,
       selectedFriends: [],
-        canceling: false
+        canceling: false,
+        isConnectedToGoogleAccount: false
     }),
     methods: {
+        cancel(){
+            this.resetPopup();
+            this.dialog = false
+        },
+        resetPopup(){
+            this.dialog = false;
+            this.selectedFriends = [];
+            this.eventName = '';
+            this.startTime = null;
+            this.endTime = null
+        },
         handleTimeUpdate(data){
             this.startTime = data.split(' - ')[0].replace(' ', 'T');
             this.endTime = data.split(' - ')[1].replace(' ', 'T');
@@ -137,7 +149,7 @@
         })
       },
       async createEvent() {
-          this.saving = true;
+          this.saving = false;
           this.canceling = true;
         const data = {
           movieId: this.movie.imdbID,
@@ -148,10 +160,12 @@
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           attendees: this.selectedFriends
         };
-        await GCalendarService().createGoogleCalendarEvent(data);
+        let res = await GCalendarService().createGoogleCalendarEvent(data);
         this.dialog = false;
-          this.saving = false;
-          this.canceling = false;
+        this.saving = true;
+        this.canceling = false;
+
+          await this.$emit('childToParent', res);
       }
     },
     computed: {
@@ -194,7 +208,10 @@
       },
       getDate(){
           return  this.startTime
-      }
+      },
+        getConnectedToGoogleAccount(){
+            return this.$store.state.isConnectedToGoogleAccount
+        }
     },
     async mounted() {
         let token = this.$store.state.cookie;
@@ -224,7 +241,7 @@
           },
           getDate(value) {
               this.saving = !(value === null && this.selectedFriends.length === 0 && this.eventName === '');
-          }
+          },
       }
   };
 </script>
