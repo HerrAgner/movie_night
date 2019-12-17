@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <v-app id="inspire">
+        <v-container id="inspire">
             <v-row justify="center">
                 <v-btn v-if="this.$store.state.isLoggedin" color="primary" dark @click.stop="dialog = true">Create event</v-btn>
                 <h4 v-else>You have to login to create an event</h4>
@@ -101,7 +101,7 @@
                     </v-card>
                 </v-dialog>
             </v-row>
-        </v-app>
+        </v-container>
     </div>
 </template>
 <script>
