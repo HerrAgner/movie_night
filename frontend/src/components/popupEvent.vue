@@ -2,8 +2,8 @@
     <div id="app">
         <v-app id="inspire">
             <v-row justify="center">
-                <v-btn v-if="this.$store.state.isLoggedin" color="primary" dark @click.stop="dialog = true">Create event</v-btn>
-                <h4 v-else>You have to login to create an event</h4>
+                <v-btn v-if="this.$store.state.isLoggedin && getConnectedToGoogleAccount" color="primary" dark @click.stop="dialog = true">Create event</v-btn>
+                <h4 v-else>You have to login or connect to a google account to create an event</h4>
 
                 <v-dialog v-model="dialog" max-width="800">
                     <v-card>
@@ -123,7 +123,8 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
       endTime: null,
       menu: false,
       selectedFriends: [],
-        canceling: false
+        canceling: false,
+        isConnectedToGoogleAccount: false
     }),
     methods: {
         handleTimeUpdate(data){
@@ -185,7 +186,10 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
       },
       getDate(){
           return  this.startTime
-      }
+      },
+        getConnectedToGoogleAccount(){
+            return this.$store.state.isConnectedToGoogleAccount
+        }
     },
     async mounted() {
         let token = this.$store.state.cookie;
@@ -215,7 +219,7 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
           },
           getDate(value) {
               this.saving = !(value === null && this.selectedFriends.length === 0 && this.eventName === '');
-          }
+          },
       }
   };
 </script>

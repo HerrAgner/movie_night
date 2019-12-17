@@ -137,7 +137,7 @@ export default {
       } else {
         this.$router.push({ path: '/' });
       }
-    },
+    }
   },
   mounted() {
     this.fetchMovie();
@@ -148,7 +148,7 @@ export default {
       if (value !== oldValue) {
         this.fetchMovie();
       }
-    }
+    },
   }
 };
 </script>

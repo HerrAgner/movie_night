@@ -12,10 +12,13 @@ export default () => ({
                 },
             });
             if (res.status === 200) {
-                let username = await res.text();
+                let user = await res.json();
                 store.state.isLoggedin = true;
                 store.state.cookie = Cookie.get("token");
-                store.state.loggedInUser = username
+                store.state.loggedInUser = user.username;
+                if (user.googleToken !== "null"){
+                    store.state.isConnectedToGoogleAccount = true
+                }
             } else if (res.status === 500){
                 store.state.isLoggedin = false;
                 Cookie.remove('token');

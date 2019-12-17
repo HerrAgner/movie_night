@@ -10,7 +10,8 @@ export default new Vuex.Store({
     isLoggedin: false,
     loggedInUser: '',
     cookie: '',
-    lockedOut: 0
+    lockedOut: 0,
+    isConnectedToGoogleAccount: false
   },
   mutations: {
     setLogin(state, status) {
