@@ -141,6 +141,7 @@
     lurig(){
       if (this.movie.Title === "Stranger Things") {
         document.body.style.transform = "rotate(180deg)";
+        document.title = "ʇɥƃᴉN ǝᴉʌoW";
       }
     }
   },
