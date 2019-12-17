@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import Cookie from "js-cookie";
-import Events from '@/components/Events';
-
-// @ is an alias to /src
+  import Cookie from "js-cookie";
+  import Events from '@/components/Events';
+  
+  // @ is an alias to /src
 
 export default {
   name: 'home',

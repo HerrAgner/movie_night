@@ -108,10 +108,10 @@
 </template>
 <script>
 
-    import GCalendarService from "../services/GCalendarService";
-    import SuggestedEventTimes from "./SuggestedEventTimes";
+  import GCalendarService from "../services/GCalendarService";
+  import SuggestedEventTimes from "./SuggestedEventTimes";
 
-    export default {
+  export default {
         name: 'popupEvent',
         props: {
             event: Object,

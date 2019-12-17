@@ -48,7 +48,11 @@ public class Movie {
     private String runtime;
 
     public int getRuntime() {
-        return Integer.parseInt(runtime.replaceAll("\\D+",""));
+        try{
+            return Integer.parseInt(runtime.replaceAll("\\D+",""));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public void setRuntime(String runtime) {

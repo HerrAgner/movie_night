@@ -7,12 +7,12 @@
     >
       <v-row justify="center">
         <v-col
-          cols="12"
+          cols="6"
           md="4"
           class="movie_poster_container"
           :class="breakpointSmAndDown && 'poster_below_sm'"
         >
-          <v-img :src="getPoster" class="movie_poster" alt="Image not found" />
+          <v-img @click="lurig" :src="getPoster" class="movie_poster" alt="Image not found" />
           <div v-if="breakpointSmAndDown">
             <div class="text-center display-1">
               {{ getMovie.Title }}
@@ -82,12 +82,12 @@
 </template>
 
 <script>
-import movieDetailsService from '@/services/movieDetailsService';
-import Loading from '@/components/Loading';
-import popupEvent from '@/components/popupEvent';
-
-
-export default {
+  import movieDetailsService from '@/services/movieDetailsService';
+  import Loading from '@/components/Loading';
+  import popupEvent from '@/components/popupEvent';
+  
+  
+  export default {
   name: 'MovieDetails',
   components: {
     Loading,
@@ -138,6 +138,11 @@ export default {
         this.$router.push({ path: '/' });
       }
     },
+    lurig(){
+      if (this.movie.Title === "Stranger Things") {
+        document.body.style.transform = "rotate(180deg)";
+      }
+    }
   },
   mounted() {
     this.fetchMovie();

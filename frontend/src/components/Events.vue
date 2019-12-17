@@ -114,13 +114,13 @@
 </template>
 
 <script>
-import EventsService from "../services/EventsService";
-import EventEditor from "./EventEditor";
-import movieDetailsService from "../services/movieDetailsService";
-import GCalendarService from "../services/GCalendarService";
-import Loading from '@/components/Loading';
+  import EventsService from "../services/EventsService";
+  import EventEditor from "./EventEditor";
+  import movieDetailsService from "../services/movieDetailsService";
+  import GCalendarService from "../services/GCalendarService";
+  import Loading from '@/components/Loading';
 
-    export default {
+  export default {
         components: {
             EventEditor,
             Loading
@@ -148,7 +148,6 @@ import Loading from '@/components/Loading';
                 this.dialog = true;
             },
             async deleteEvent(eventId) {
-                console.log(eventId);
                 let eventDeleted = GCalendarService().deleteEvent(eventId);
                 if (eventDeleted) {
                     this.events = this.events.filter(event => event.eventId !== eventId);

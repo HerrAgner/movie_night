@@ -40,13 +40,13 @@
           if (this.posterError === false && this.poster !== "N/A") {
             return this.poster;
           } else {
-            return "/assets/not-found.png";
+            return "/not-found.jpg";
           }
         }
     }
   }
 </script>
 
-<style scoped>
+<style>
 
 </style>

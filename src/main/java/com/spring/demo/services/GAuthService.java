@@ -2,7 +2,6 @@ package com.spring.demo.services;
 
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -40,28 +39,19 @@ public class GAuthService {
                     superSecretInformation.getClientId(),
                     superSecretInformation.getClientSecret(),
                     code,
-                    "http://localhost:8080") // Make sure you set the correct port
+                    "http://localhost:8080")
                     .execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Store these 3 in your DB
-        String accessToken = tokenResponse.getAccessToken();
-        String refreshToken = tokenResponse.getRefreshToken();
-
-        Long expiresAt = Instant.now().getEpochSecond() + (tokenResponse.getExpiresInSeconds());
+        long expiresAt = Instant.now().getEpochSecond() + (tokenResponse.getExpiresInSeconds());
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (tokenResponse != null && username != null) {
             userService.setGoogleToken(username, tokenResponse, expiresAt);
         }
-
-        // Debug purpose only
-        System.out.println("accessToken: " + accessToken);
-        System.out.println("refreshToken: " + refreshToken);
-        System.out.println("expiresAt: " + expiresAt);
 
         return tokenResponse;
     }

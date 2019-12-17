@@ -50,7 +50,7 @@
 
 <script>
   import Search from "@/components/SearchInput.vue"
-import Cookie from "js-cookie";
+  import Cookie from "js-cookie";
 
   export default {
     components: {

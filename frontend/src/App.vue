@@ -9,10 +9,10 @@
   </v-app>
 </template>
 <script>
-import Navbar from './components/Navbar';
-import Cookie from "js-cookie";
-
-export default {
+  import Navbar from './components/Navbar';
+  import Cookie from "js-cookie";
+  
+  export default {
   name: 'App',
   components: {
     Navbar

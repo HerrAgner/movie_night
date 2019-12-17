@@ -37,9 +37,9 @@
 
 
 <script>
-import AddUserService from '../services/AddUserService.js'
+  import AddUserService from '../services/AddUserService.js'
 
-export default {
+  export default {
     data: () => ({
     valid: true,
     messageToClient: '',

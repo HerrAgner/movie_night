@@ -1,7 +1,6 @@
 package com.spring.demo.controllers;
 
 
-import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.TimePeriod;
 import com.spring.demo.entities.MovieEvent;
@@ -13,13 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/gcal")
@@ -74,9 +69,6 @@ public class GCalendarController {
         var eventRes = gCalendarService.updateEvent(event);
         if (eventRes != null) {
             movieEventService.saveMovieEventToDb(movieEvent);
-            System.out.println("event name: " + eventRes.getSummary());
-            System.out.println("start time: " + eventRes.getStart());
-            System.out.println("end time: " + eventRes.getEnd());
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -85,16 +77,12 @@ public class GCalendarController {
 
     @DeleteMapping("event/{id}")
     public ResponseEntity<Event> deleteEvent(@PathVariable String id, Principal principal) {
-        System.out.println(id);
-        System.out.println(principal.getName());
         movieEventService.deleteMovieEvent(id);
         var calendar = gCalendarService.getCalendar(principal.getName());
 
         try {
             calendar.events().delete("primary", id).execute();
-            System.out.println("the event deleted from google calendar!");
         } catch (IOException e) {
-            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

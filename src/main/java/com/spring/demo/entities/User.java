@@ -5,10 +5,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.sql.SQLOutput;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 @Document("users")
 public class User {
@@ -94,7 +92,6 @@ public class User {
         try {
             this.googleToken.setAccessToken(googleTokenResponse.getAccessToken());
         } catch (Exception e) {
-            System.out.println("GoogleAccessToken not set!");
         }
     }
 
