@@ -68,7 +68,6 @@ public class GCalendarService {
         try {
             response = calendar.freebusy().query(request).execute();
         } catch (IOException io) {
-            System.out.println("Connection timed out.....");
             io.printStackTrace();
             return null;
         }
@@ -76,9 +75,9 @@ public class GCalendarService {
     }
 
     public Calendar getCalendar(String username) {
+        var token = gAuthService.tryRefreshToken(username);
         var accessToken = gAuthService.getAccessToken(username);
         if (accessToken == null) return null;
-        gAuthService.tryRefreshToken(username);
         GoogleCredentials credential = GoogleCredentials.create(accessToken);
         if (credential == null || credential.getAccessToken() == null) return null;
         return new Calendar.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), new GoogleCredential().setAccessToken(accessToken.getTokenValue()))

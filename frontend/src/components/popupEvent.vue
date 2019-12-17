@@ -94,9 +94,9 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn color="green darken-1" :disabled="saving" text @click="dialog = false">Cancel</v-btn>
+                            <v-btn color="green darken-1" :disabled="canceling" text @click="dialog = false">Cancel</v-btn>
 
-                            <v-btn color="green darken-1" :disabled="saving" text @click="createEvent">Save</v-btn>
+                            <v-btn color="green darken-1" :disabled="!saving" text @click="createEvent">Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -123,6 +123,7 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
       endTime: null,
       menu: false,
       selectedFriends: [],
+        canceling: false
     }),
     methods: {
         handleTimeUpdate(data){
@@ -136,6 +137,7 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
       },
       async createEvent() {
           this.saving = true;
+          this.canceling = true;
         const data = {
           movieId: this.movie.imdbID,
           eventName: this.eventName,
@@ -148,6 +150,7 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
         await GCalendarService().createGoogleCalendarEvent(data);
         this.dialog = false;
           this.saving = false;
+          this.canceling = false;
       }
     },
     computed: {
@@ -174,6 +177,15 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
             if (this.inviteSomeFriends) return 'minimize';
             return 'check_circle_outline'
         },
+      getEventName(){
+          return  this.eventName
+      },
+      getSelectedFriends(){
+          return  this.selectedFriends
+      },
+      getDate(){
+          return  this.startTime
+      }
     },
     async mounted() {
         let token = this.$store.state.cookie;
@@ -193,7 +205,18 @@ import SuggestedEventTimes from '@/components/SuggestedEventTimes';
             });
         }
     }
-    }
+    },
+      watch: {
+          getEventName(value) {
+              this.saving = (value !== '' && this.selectedFriends.length !== 0 && this.startTime !== null);
+          },
+          getSelectedFriends(value) {
+              this.saving = (value.length !== 0 && this.eventName !== '' && this.startTime !== null);
+          },
+          getDate(value) {
+              this.saving = !(value === null && this.selectedFriends.length === 0 && this.eventName === '');
+          }
+      }
   };
 </script>
 <style>
