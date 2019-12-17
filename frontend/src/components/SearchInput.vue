@@ -7,7 +7,7 @@
                 label="Search"
                 append-icon="search"
                 v-model="search"
-                v-on:keyup="searchForMovies(500)"
+                v-on:keyup="searchForMovies(200)"
                 v-on:focus="focusTextField"
                 style="position: absolute; width: 30%; top: 5px; z-index: 2; padding: 0"
         >
@@ -65,7 +65,7 @@
       },
 
       async searchForMovies(timeout) {
-        // await this.suggestMovies(this.search.charAt(0), this.search);
+        await this.suggestMovies(this.search.charAt(0), this.search);
 
         if (this.search.length > 2) {
 
@@ -100,7 +100,6 @@
       },
       addMoviesToList() {
         if (this.loading === false) {
-          console.log("hej");
           let tempArray = this.movieList.concat(this.searchResponse);
           tempArray = tempArray.filter((thing, index, self) =>
             index === self.findIndex((t) => (
