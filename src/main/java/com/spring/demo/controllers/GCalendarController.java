@@ -10,6 +10,7 @@ import com.spring.demo.services.MovieEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -36,6 +37,7 @@ public class GCalendarController {
     @PostMapping
     public ResponseEntity<List<TimePeriod>> getBusyAndFreePeriods(@RequestParam(defaultValue = "0") long duration, @RequestBody List<String> requestForUsers) {
         try {
+            requestForUsers.add(SecurityContextHolder.getContext().getAuthentication().getName());
             var suggestedEventPeriods = gCalendarService.getSuggestedEventPeriods(requestForUsers, duration);
             if (suggestedEventPeriods != null) {
                 return new ResponseEntity<>(suggestedEventPeriods, HttpStatus.OK);
