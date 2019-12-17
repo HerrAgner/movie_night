@@ -141,7 +141,6 @@ export default {
     lurig(){
       if (this.movie.Title === "Stranger Things") {
         document.body.style.transform = "rotate(180deg)";
-        setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 1000);
       }
     }
   },
