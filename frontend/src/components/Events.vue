@@ -18,48 +18,36 @@
                                     v-text="item.eventName"
                             />
 
-                            <v-row >
-                                <v-col class="friendChip2" cols="12" md="3">
-                                    <v-card-text>Invited friends:</v-card-text>
-                                </v-col>
+                            <v-card-text class="text-md-left eventInfo thick">
+                                Event creator: {{item.creator}}
+                            </v-card-text>
 
-                                <v-col cols="12" sm="12" md="2" class="invitedFriendsList">
-                                    <v-card-text
-                                        v-for="(friend, i) in item.attendees"
-                                            :key="i"
-                                        class="invitedFriendsList">
-                                        <v-icon>account_circle</v-icon>
-                                        {{friend}}
+                            <v-card-text class="text-md-left eventInfo thick">
+                                Date: {{item.startTime.split('T')[0]}}
+                            </v-card-text>
+
+                            <v-card-text class="text-md-left eventInfo thick">
+                                Time: {{item.startTime.split('T')[1]}} - {{item.endTime.split('T')[1]}}
+                            </v-card-text>
+
+                            <v-row justify="start" class="eventInfo invitedFriendsBlock">
+                                <div >
+                                    <v-card-text class="thick">Invited friends:</v-card-text>
+                                </div>
+
+                                <div >
+                                    <v-card-text class="friendsList" v-for="(friend, i) in item.attendees" :key="i">
+                                        <v-row justify="start">
+                                            <v-icon>account_circle</v-icon>
+                                            <p class="attendeeName thick">{{friend}}</p>
+                                        </v-row>
                                     </v-card-text>
-                                </v-col>
-                            </v-row>
-
-                            <v-row >
-                                <v-col class="friendChip" cols="12" md="2">
-                                    <v-card-text>Date: </v-card-text>
-                                </v-col>
-                                <v-col cols="12" sm="12" md="2" class="dateTime">
-                                    <v-card-text class="dateTime">
-                                            {{item.startTime.split('T')[0]}}
-                                    </v-card-text>
-                                </v-col>
-                            </v-row>
-
-
-                            <v-row >
-                                <v-col class="friendChip" cols="12" md="2">
-                                    <v-card-text>Time: </v-card-text>
-                                </v-col>
-                                <v-col cols="12" sm="12" md="2" class="dateTime">
-                                    <v-card-text class="dateTime">
-                                        {{item.startTime.split('T')[1]}}
-                                    </v-card-text>
-                                </v-col>
+                                </div>
                             </v-row>
 
                         </v-col>
 
-                        <v-col cols="12" md="2" class="movie_poster_container" :class="breakpointSmAndDown
+                        <v-col cols="12" md="2" class="poster" :class="breakpointSmAndDown
                                     && 'poster_below_sm'">
                             <v-img :src="getPoster(item)" class="movie_poster" alt="Image not found"/>
                         </v-col>
@@ -84,32 +72,32 @@
                 <h2 class="justify-center">No events</h2>
             </div>
         </v-row>
-                    <v-dialog
-                            v-model="dialog"
-                            width="500"
-                            :retain-focus="false"
+            <v-dialog
+                    v-model="dialog"
+                    width="500"
+                    :retain-focus="false"
+            >
+                <v-card>
+                    <v-card-title
+                            class="headline grey lighten-2"
+                            primary-title
                     >
-                        <v-card>
-                            <v-card-title
-                                    class="headline grey lighten-2"
-                                    primary-title
-                            >
-                                Delete event
-                            </v-card-title>
+                        Delete event
+                    </v-card-title>
 
-                            <v-card-text>
-                                <h3>Are you sure you want to delete this event?</h3>
-                            </v-card-text>
+                    <v-card-text>
+                        <h3>Are you sure you want to delete this event?</h3>
+                    </v-card-text>
 
-                            <v-divider></v-divider>
+                    <v-divider></v-divider>
 
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="primary" text @click="dialog = false">NO</v-btn>
-                                <v-btn color="primary" text @click="deleteEvent()">YES</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" text @click="dialog = false">NO</v-btn>
+                        <v-btn color="primary" text @click="deleteEvent()">YES</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
     </div>
 </template>
 
@@ -210,23 +198,28 @@
 
 <style scoped>
 
-    .friendChip {
-        padding: 0;
-    }
-    .friendChip2{
-        padding: 0;
-        margin-left: -0.4vw;
-    }
-    .invitedFriendsList{
-        padding: 0;
-        margin-left: -3vw;
-        margin-top: 0.8vh;
+    .invitedFriendsBlock{
+        margin-left: 0vw;
     }
 
-    .dateTime{
+    .eventInfo{
+        margin-top: 2vh;
+        margin-bottom: -3vh;
+    }
+    .friendsList{
+        margin-top: 1.7vh;
         padding: 0;
-        margin-left: -2.5vw;
-        margin-top: 0.8vh;
+        margin-bottom: 2vh;
+    }
+    .attendeeName{
+        margin-left: 0.3vw;
+        margin-bottom: 0;
+    }
+    .poster{
+        margin-top: 2vh;
+    }
+    .thick{
+        font-weight: bold;
     }
 
 </style>
