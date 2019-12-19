@@ -70,15 +70,13 @@ name: "Navbar",
       },
         async signInCallback(authResult){
 
-            console.log('authResult', authResult);
+            //console.log('authResult', authResult);
 
             if (authResult['code']) {
-                // Hide the sign-in button now that the user is authorized
-                //$('#signinButton').hide();
 
                 // Send the code to the server
                 let token = Cookie.get("token");
-                let result = await fetch('api/gauth', {
+                await fetch('api/gauth', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/octet-stream; charset=utf-8',
@@ -88,7 +86,7 @@ name: "Navbar",
                     body: authResult['code']
                 });
                 GetUserService().getUser();
-                console.log(result)
+                //console.log(result)
             } else {
                 console.log("error")
             }
