@@ -39,7 +39,7 @@ public class GAuthService {
                     superSecretInformation.getClientId(),
                     superSecretInformation.getClientSecret(),
                     code,
-                    "https://tfhell.me:443")
+                    "https://tfhell.me")
                     .execute();
         } catch (IOException e) {
             e.printStackTrace();
